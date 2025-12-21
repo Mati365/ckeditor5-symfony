@@ -1,0 +1,38 @@
+name: Code checks
+
+on:
+  push:
+
+jobs:
+  js_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run ESLint
+        run: npx eslint .
+
+      - name: Build npm package
+        run: pnpm run npm_package:build
+
+      - name: Run TypeScript type check
+        run: pnpm run typecheck
+
+      - name: Run tests
+        run: pnpm run npm_package:test
+
+      - name: Upload JS coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./npm_package/coverage/lcov.info
+          flags: javascript
+          name: javascript-coverage
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
