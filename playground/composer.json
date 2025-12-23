@@ -37,7 +37,17 @@
     "symfony/web-link": "6.4.*",
     "symfony/yaml": "6.4.*",
     "twig/extra-bundle": "^2.12|^3.0",
-    "twig/twig": "^2.12|^3.0"
+    "twig/twig": "^2.12|^3.0",
+    "mati365/ckeditor5-symfony": "@dev"
+  },
+  "repositories": {
+    "ckeditor5-symfony": {
+      "type": "path",
+      "url": "../",
+      "options": {
+        "symlink": true
+      }
+    }
   },
   "config": {
     "allow-plugins": {
