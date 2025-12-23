@@ -15,6 +15,28 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 This package is currently under active development. It'll be ready for production use soon. Stay tuned!
 
+## Development ⚙️
+
+To start the development environment, run:
+
+```bash
+pnpm run dev
+```
+
+The playground app will be available at [http://localhost:8000](http://localhost:8000).
+
+### Running Tests 🧪
+
+The project includes comprehensive PHP unit tests with 100% code coverage requirement:
+
+```bash
+# Run all tests
+composer test
+
+# Run tests with coverage report (requires pcov)
+composer test:coverage
+```
+
 ## Psst... 👀
 
 If you're looking for similar stuff, check these out:
