@@ -15,6 +15,10 @@
 !var/logs/.gitkeep
 !var/sessions/.gitkeep
 
+.php-cs-fixer.cache
+.phpunit.cache
+coverage/
+
 # Logs (Symfony4)
 /var/log/*
 !var/log/.gitkeep
@@ -34,10 +38,6 @@
 # Assets and user uploads
 /web/bundles/
 /web/uploads/
-
-# PHPUnit
-/app/phpunit.xml
-/phpunit.xml
 
 # Build data
 /build/
