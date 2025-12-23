@@ -1,11 +1,11 @@
 when@dev:
-    web_profiler:
-        toolbar: true
+  web_profiler:
+    toolbar: true
 
-    framework:
-        profiler:
-            collect_serializer_data: true
+  framework:
+    profiler:
+      collect_serializer_data: true
 
 when@test:
-    framework:
-        profiler: { collect: false }
+  framework:
+    profiler: {collect: false}

@@ -10,6 +10,9 @@ export default antfu({
     '**/*/dist',
     '**/*/build',
     'node_modules',
+    'vendor',
+    'playground/vendor',
+    'playground/assets/vendor',
   ],
   languageOptions: {
     parserOptions: {
