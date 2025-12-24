@@ -7,6 +7,9 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+assets/vendor/
+public/build/
+
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/

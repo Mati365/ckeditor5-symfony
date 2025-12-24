@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Classic Editor - CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-2xl">
+    <div class="mb-4">
+        <a href="{{ path('app_index') }}" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm hover:underline">
+            &larr; Back to Home
+        </a>
+    </div>
+
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Classic Editor</h1>
+
+    <div class="bg-white p-4 border border-gray-200 rounded-lg">
+        <p class="mb-4 text-gray-600 text-sm">This is where the Classic Editor will be initialized.</p>
+        <!-- Editor placeholder -->
+        <div id="editor"></div>
+    </div>
+</div>
+{% endblock %}

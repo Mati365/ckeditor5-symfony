@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-2xl">
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">CKEditor 5 Symfony Playground</h1>
+    <p class="mb-4 text-gray-600">Welcome to the playground! This is a demo application for CKEditor 5 integration with Symfony.</p>
+
+    <div class="flex flex-col gap-2">
+        <a href="{{ path('app_classic') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
+            <h5 class="font-bold text-gray-900 text-lg tracking-tight">Classic Editor</h5>
+            <p class="font-normal text-gray-700 text-sm">Check out the Classic Editor implementation.</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

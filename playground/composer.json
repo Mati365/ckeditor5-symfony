@@ -8,6 +8,7 @@
     "php": ">=8.1",
     "ext-ctype": "*",
     "ext-iconv": "*",
+    "mati365/ckeditor5-symfony": "@dev",
     "phpdocumentor/reflection-docblock": "^5.6",
     "phpstan/phpdoc-parser": "^2.3",
     "symfony/asset": "6.4.*",
@@ -36,9 +37,9 @@
     "symfony/validator": "6.4.*",
     "symfony/web-link": "6.4.*",
     "symfony/yaml": "6.4.*",
+    "symfonycasts/tailwind-bundle": "^0.12.0",
     "twig/extra-bundle": "^2.12|^3.0",
-    "twig/twig": "^2.12|^3.0",
-    "mati365/ckeditor5-symfony": "@dev"
+    "twig/twig": "^2.12|^3.0"
   },
   "repositories": {
     "ckeditor5-symfony": {
@@ -84,7 +85,7 @@
       "@auto-scripts"
     ],
     "dev": [
-      "symfony server:start "
+      "symfony server:start"
     ]
   },
   "conflict": {
