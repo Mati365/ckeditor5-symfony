@@ -85,7 +85,8 @@
       "@auto-scripts"
     ],
     "dev": [
-      "symfony server:start"
+      "Composer\\Config::disableProcessTimeout",
+      "symfony server:start --no-tls --port=8000"
     ]
   },
   "conflict": {
