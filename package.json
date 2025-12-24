@@ -22,7 +22,7 @@
     "vite": "^7.1.11"
   },
   "lint-staged": {
-    "*.{ts,js,mjs}": [
+    "*.{ts,js,mjs,yml,yaml,json,css,scss,html}": [
       "eslint --fix"
     ],
     "*.php": [
