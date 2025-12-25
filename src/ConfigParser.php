@@ -9,7 +9,7 @@ use Mati365\CKEditor5Symfony\Exceptions\{UnknownPreset, UnknownContext};
 /**
  * CKEditor 5 configuration class. It's used internally by the package.
  */
-final class Config
+final class ConfigParser
 {
     /**
      * Holds the package configuration array.

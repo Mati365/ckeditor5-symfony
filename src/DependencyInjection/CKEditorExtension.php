@@ -13,6 +13,15 @@ use Symfony\Component\AssetMapper\AssetMapperInterface;
 class CKEditorExtension extends Extension implements PrependExtensionInterface
 {
     #[\Override]
+    public function getAlias(): string
+    {
+        return 'ckeditor5';
+    }
+
+    /**
+     * Loads the CKEditor 5 configuration into the service container.
+     */
+    #[\Override]
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
