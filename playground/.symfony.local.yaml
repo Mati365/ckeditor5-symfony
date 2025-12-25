@@ -1,3 +1,6 @@
 workers:
   tailwind:
     cmd: [symfony, console, 'tailwind:build', --watch]
+
+  assets_watch:
+    cmd: [node, ./scripts/watch-and-rebuild-importmap.mjs]
