@@ -281,7 +281,7 @@
             "dist": {
                 "type": "path",
                 "url": "..",
-                "reference": "e1a864f8d387cc74b94567b2397c277710746e75"
+                "reference": "6e54582c74c73303ba01425f2c27e5491164026d"
             },
             "require": {
                 "php": ">=8.3",

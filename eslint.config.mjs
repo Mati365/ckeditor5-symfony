@@ -13,6 +13,7 @@ export default antfu({
     'vendor',
     'playground/vendor',
     'playground/assets/vendor',
+    'playground/assets/controllers.json',
   ],
   languageOptions: {
     parserOptions: {

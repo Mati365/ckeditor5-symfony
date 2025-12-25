@@ -5,6 +5,9 @@ namespace Mati365\CKEditor5Symfony\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+/**
+ * CKEditor 5 Symfony Configuration.
+ */
 class Configuration implements ConfigurationInterface
 {
     #[\Override]
