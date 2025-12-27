@@ -1,6 +1,6 @@
 <?php
 
-namespace Mati365\CKEditor5Symfony;
+namespace Mati365\CKEditor5Symfony\Service;
 
 use Mati365\CKEditor5Symfony\Preset\{Preset, PresetParser};
 use Mati365\CKEditor5Symfony\Context\{Context, ContextParser};
@@ -9,25 +9,17 @@ use Mati365\CKEditor5Symfony\Exceptions\{UnknownPreset, UnknownContext};
 /**
  * CKEditor 5 configuration class. It's used internally by the package.
  */
-final class ConfigParser
+final class ConfigManager
 {
-    /**
-     * Holds the package configuration array.
-     *
-     * @var array
-     */
-    protected array $config;
-
     /**
      * Constructor receives the framework config repository and
      * extracts this package's configuration.
      *
      * @param array $config
      */
-    public function __construct(array $config)
-    {
-        $this->config = $config;
-    }
+    public function __construct(
+        protected array $config
+    ) {}
 
     /**
      * Return the package's default editor configuration.

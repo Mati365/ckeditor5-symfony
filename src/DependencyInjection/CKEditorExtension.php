@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\{Loader, ContainerBuilder};
 use Symfony\Component\DependencyInjection\Extension\{Extension, PrependExtensionInterface};
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
+use Mati365\CKEditor5Symfony\Service\ConfigManager;
 
 /**
  * CKEditor 5 Symfony Extension.
@@ -31,7 +32,7 @@ class CKEditorExtension extends Extension implements PrependExtensionInterface
         $config = $this->processConfiguration($configuration, $configs);
 
         $container
-            ->getDefinition('ckeditor5.config')
+            ->getDefinition(ConfigManager::class)
             ->addArgument($config);
     }
 
@@ -41,20 +42,27 @@ class CKEditorExtension extends Extension implements PrependExtensionInterface
     #[\Override]
     public function prepend(ContainerBuilder $container): void
     {
-        if (!$this->isAssetMapperAvailable($container)) {
-            return;
+        if ($this->isAssetMapperAvailable($container)) {
+            $container->prependExtensionConfig('framework', [
+                'asset_mapper' => [
+                    'paths' => [
+                        __DIR__ . '/../../npm_package/dist' => '@mati365/ckeditor5-symfony',
+                    ],
+                    'importmap_script_attributes' => [
+                        'data-turbo-track' => 'reload',
+                    ],
+                ],
+            ]);
         }
 
-        $container->prependExtensionConfig('framework', [
-            'asset_mapper' => [
+        if ($container->hasExtension('twig')) {
+            $templatesPath = \dirname(__DIR__, 2) . '/templates';
+            $container->prependExtensionConfig('twig', [
                 'paths' => [
-                    __DIR__ . '/../../npm_package/dist' => '@mati365/ckeditor5-symfony',
+                    $templatesPath => 'CKEditor5',
                 ],
-                'importmap_script_attributes' => [
-                    'data-turbo-track' => 'reload',
-                ],
-            ],
-        ]);
+            ]);
+        }
     }
 
     /**

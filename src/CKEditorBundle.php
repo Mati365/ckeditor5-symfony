@@ -25,6 +25,6 @@ final class CKEditorBundle extends Bundle
             $this->extension = new CKEditorExtension();
         }
 
-        return $this->extension;
+        return $this->extension ?: null;
     }
 }

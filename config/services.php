@@ -1,10 +1,17 @@
 <?php
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Mati365\CKEditor5Symfony\ConfigParser;
+use Mati365\CKEditor5Symfony\Service\ConfigManager;
+use Mati365\CKEditor5Symfony\Twig\CKEditorTwigExtension;
+use Mati365\CKEditor5Symfony\Twig\Runtimes\CKEditorTwigWidget;
 
 return static function (ContainerConfigurator $container): void {
     $container
-      ->services()
-      ->set('ckeditor5.config', ConfigParser::class);
+        ->services()
+            ->defaults()
+                ->autowire()
+                ->autoconfigure()
+        ->set(ConfigManager::class)
+        ->set(CKEditorTwigExtension::class)
+        ->set(CKEditorTwigWidget::class);
 };
