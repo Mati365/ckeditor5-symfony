@@ -63,6 +63,8 @@ class CKEditorExtension extends Extension implements PrependExtensionInterface
                 ],
             ]);
         }
+
+        $container->prependExtensionConfig('ckeditor5', require __DIR__ . '/DefaultConfiguration.php');
     }
 
     /**
