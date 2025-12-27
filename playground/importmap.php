@@ -26,6 +26,6 @@ return [
         'version' => '3.2.2',
     ],
     '@mati365/ckeditor5-symfony' => [
-        'path' => './vendor/mati365/ckeditor5-symfony/npm_package/dist/index.mjs',
+        'path' => '@mati365/ckeditor5-symfony/index.mjs',
     ],
 ];
