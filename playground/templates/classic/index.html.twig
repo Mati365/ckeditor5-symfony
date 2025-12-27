@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Classic Editor - CKEditor 5 Playground{% endblock %}
+{% block javascripts %}
+    {{ cke5_assets(use_import_map: true) }}
+{% endblock %}
 
 {% block body %}
 <div class="mx-auto mt-12 px-4 max-w-2xl">

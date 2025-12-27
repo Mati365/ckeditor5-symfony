@@ -26,9 +26,9 @@ class CKEditorTwigWidget implements RuntimeExtensionInterface
         string $content,
         string $preset = 'default',
     ): string {
-        $preset = $this->configManager->resolvePresetOrThrow($preset);
+        $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset);
 
-        return $this->twig->render('@CKEditor5/widget.html.twig', [
+        return $this->twig->render('@CKEditor5/cke5_editor.html.twig', [
             'content' => $content,
         ]);
     }
