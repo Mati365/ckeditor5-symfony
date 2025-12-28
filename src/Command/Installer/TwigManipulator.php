@@ -9,8 +9,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class TwigManipulator
 {
-    private const SNIPPET_MARKER = 'ckeditor5_assets';
-
     public function __construct(
         private Filesystem $filesystem,
         private string $projectDir
@@ -26,10 +24,12 @@ class TwigManipulator
 
         $content = (string) file_get_contents($fullPath);
 
-        // 1. Remove old snippets (cleanup)
-        $content = $this->removeOldSnippet($content);
+        // If 'cke5_assets' is already present, do nothing
+        if (strpos($content, 'cke5_assets') !== false) {
+            return;
+        }
 
-        // 2. Insert new content in the best position
+        // Insert new content in the best position
         $newContent = $this->insertContentInBestPosition($content);
 
         if ($content !== $newContent) {
@@ -49,20 +49,6 @@ class TwigManipulator
             "    {{ cke5_assets(emit_import_map: false) }}",
             "{% endblock %}\n",
         ]);
-    }
-
-    private function removeOldSnippet(string $content): string
-    {
-        // Removes the block with surroundings (possible empty lines after removal)
-        $patternBlock = '/(\s*){% block ' . self::SNIPPET_MARKER . ' %}.*?{% endblock %}(\s*)/s';
-
-        // Check if there's anything to remove at all, to avoid unnecessarily breaking formatting
-        if (preg_match($patternBlock, $content)) {
-            $content = (string) preg_replace($patternBlock, '', $content);
-        }
-
-        // Removes the function itself if it was loose
-        return (string) preg_replace('/\s*{{ cke5_assets\(emit_import_map: false\) }}/', '', $content);
     }
 
     private function insertContentInBestPosition(string $content): string
