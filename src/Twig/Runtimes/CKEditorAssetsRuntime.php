@@ -12,7 +12,7 @@ use Mati365\CKEditor5Symfony\Cloud\CloudBundleBuilder;
 /**
  * CKEditor 5 Assets Twig Widget.
  */
-class CKEditorAssetsTwigWidget implements RuntimeExtensionInterface
+class CKEditorAssetsRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
         private Environment $twig,

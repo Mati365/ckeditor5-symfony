@@ -1,1 +1,17 @@
-<div>MIA MIA</div>
+<div
+  id="{{ id }}"
+  {% if class is not null %}class="{{ class }}"{% endif %}
+  {% if style is not null %}style="{{ style }}"{% endif %}
+  cke-preset="{{ preset|e('html_attr') }}"
+  cke-initial-value="{{ content|e('html_attr') }}"
+  cke-language="{{ language|e('html_attr') }}"
+  {% if watchdog %}cke-watchdog="true"{% endif %}
+  {% if contextId is not null %}cke-context-id="{{ contextId }}"{% endif %}
+  {% if editableHeight is not null %}cke-editable-height="{{ editableHeight }}"{% endif %}
+>
+  <div id="{{ id }}_editor"></div>
+
+  {% if name is not null %}
+    {{ cke5_hidden_input(name: name, id: id ~ '_input', required: required) }}
+  {% endif %}
+</div>

@@ -25,7 +25,12 @@
   "require": {
     "php": ">=8.3",
     "respect/validation": "^2.4",
-    "twig/twig": "^3.0"
+    "twig/twig": "^3.0",
+    "symfony/asset": "^6.0|^7.0|^8.0",
+    "symfony/http-foundation": "^6.0|^7.0|^8.0",
+    "symfony/http-kernel": "^6.0|^7.0|^8.0",
+    "symfony/form": "^6.0|^7.0|^8.0",
+    "symfony/dependency-injection": "^6.0|^7.0|^8.0"
   },
   "require-dev": {
     "psalm/plugin-symfony": "^5.2.8",

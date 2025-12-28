@@ -4,7 +4,7 @@ namespace Mati365\CKEditor5Symfony\Twig;
 
 use Twig\TwigFunction;
 use Twig\Extension\AbstractExtension;
-use Mati365\CKEditor5Symfony\Twig\Runtimes\{CKEditorTwigWidget, CKEditorAssetsTwigWidget};
+use Mati365\CKEditor5Symfony\Twig\Runtimes;
 
 /**
  * CKEditor 5 Twig Extension.
@@ -20,13 +20,19 @@ class CKEditorTwigExtension extends AbstractExtension
         return [
             new TwigFunction(
                 'cke5_editor',
-                [CKEditorTwigWidget::class, 'render'],
+                [Runtimes\CKEditorRuntime::class, 'render'],
                 ['is_safe' => ['html']]
             ),
 
             new TwigFunction(
                 'cke5_assets',
-                [CKEditorAssetsTwigWidget::class, 'render'],
+                [Runtimes\CKEditorAssetsRuntime::class, 'render'],
+                ['is_safe' => ['html']]
+            ),
+
+            new TwigFunction(
+                'cke5_hidden_input',
+                [Runtimes\CKEditorHiddenInputRuntime::class, 'render'],
                 ['is_safe' => ['html']]
             ),
         ];
