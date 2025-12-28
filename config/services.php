@@ -18,6 +18,7 @@ return static function (ContainerConfigurator $container): void {
         ->set(CKEditorTwigExtension::class)
         ->set(ConfigureImportmapCommand::class)
         ->set(Strategy\CloudInstallerStrategy::class)
+            ->bind('$projectDir', '%kernel.project_dir%')
         ->set(Strategy\NpmInstallerStrategy::class)
         ->set(Installer\NpmPackageInstaller::class)
             ->bind('$projectDir', '%kernel.project_dir%')

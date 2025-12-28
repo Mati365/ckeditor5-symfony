@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\{InputInterface, InputOption};
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\Process;
 
 #[AsCommand(
     name: 'ckeditor5:importmap:configure',
@@ -34,7 +35,8 @@ class ConfigureImportmapCommand extends Command
             ->addOption('editor-version', null, InputOption::VALUE_REQUIRED, 'CKEditor version', '47.3.0')
             ->addOption('premium', null, InputOption::VALUE_NONE, 'Include premium features')
             ->addOption('ckbox-version', null, InputOption::VALUE_OPTIONAL, 'CKBox version for cloud distribution')
-            ->addOption('translations', null, InputOption::VALUE_OPTIONAL, 'Comma-separated list of translations', 'en');
+            ->addOption('translations', null, InputOption::VALUE_OPTIONAL, 'Comma-separated list of translations', 'en')
+            ->addOption('skip-template-update', null, InputOption::VALUE_NONE, 'Skip updating the Twig template');
     }
 
     #[\Override]
@@ -65,9 +67,22 @@ class ConfigureImportmapCommand extends Command
             $importmap = $strategy->configure($input, $io, $importmap);
             $this->importmapManipulator->saveImportmap($importmapPath, $importmap);
 
-            // 5. Modifying Twig template to include assets
-            $io->note('Configuring base.html.twig...');
-            $this->twigManipulator->addAssetsToTemplate(); // Domyślnie szuka w templates/base.html.twig
+            // 5. Modifying Twig template to include assets (optional)
+            $skipTemplate = $input->getOption('skip-template-update');
+            if (!$skipTemplate) {
+                $io->note('Configuring base.html.twig...');
+                $this->twigManipulator->addAssetsToTemplate();
+            }
+
+            // 6. Compile asset map
+            $io->note('Compiling asset map...');
+            $process = new Process(['php', 'bin/console', 'asset-map:compile']);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                $io->error('Failed to compile asset map: ' . $process->getErrorOutput());
+                return Command::FAILURE;
+            }
 
             $io->success("CKEditor5 assets configured successfully via $distribution.");
 

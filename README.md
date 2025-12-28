@@ -49,6 +49,7 @@ Options:
       --premium                        Include premium features
       --ckbox-version[=CKBOX-VERSION]  CKBox version for cloud distribution
       --translations[=TRANSLATIONS]    Comma-separated list of translations [default: "en"]
+      --skip-template-update           Skip updating the Twig template
   -h, --help                           Display help for the given command. When no command is given display help for the list command
   -q, --quiet                          Do not output any message
   -V, --version                        Display this application version

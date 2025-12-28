@@ -31,6 +31,7 @@ class CKEditorRuntime implements RuntimeExtensionInterface
      * @param bool|null $required Whether the input is required
      * @param string|null $contextId Optional context ID for multiple editors
      * @param string|array|null $language Optional language configuration (string or array)
+     * @return string Rendered HTML
      */
     public function render(
         string $content = '',

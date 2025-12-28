@@ -22,6 +22,7 @@ class CKEditorHiddenInputRuntime implements RuntimeExtensionInterface
      * @param string|null $style Optional inline styles for the editor container
      * @param string|null $class Optional CSS class for the editor container
      * @param string|null $id Optional ID for the editor instance
+     * @return string Rendered HTML
      */
     public function render(
         ?string $name = null,

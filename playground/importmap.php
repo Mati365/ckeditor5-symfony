@@ -29,9 +29,9 @@ return [
         'path' => '@mati365/ckeditor5-symfony/index.mjs',
     ],
     'ckeditor5' => [
-        'path' => 'https://cdn.ckeditor.com/ckeditor5/47.3.0/ckeditor5.js',
+        'path' => './assets/vendor/ckeditor5-cloud/ckeditor5.mjs',
     ],
     'ckeditor5/translations/en.js' => [
-        'path' => 'https://cdn.ckeditor.com/ckeditor5/47.3.0/translations/en.js',
+        'path' => './assets/vendor/ckeditor5-cloud/ckeditor5/translations/en-js.mjs',
     ],
 ];

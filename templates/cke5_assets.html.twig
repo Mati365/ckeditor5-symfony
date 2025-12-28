@@ -1,5 +1,5 @@
 {# 1. Importmap for ESM assets #}
-{% if use_import_map and import_map is not empty %}
+{% if emit_import_map and import_map is not empty %}
     <script type="importmap" {% if nonce %}nonce="{{ nonce }}"{% endif %}>
     {
         "imports": {{ import_map|json_encode|raw }}
@@ -18,7 +18,7 @@
 {% endfor %}
 
 {# 4. Module preload for ESM assets #}
-{% if use_import_map %}
+{% if emit_import_map %}
     {% for asset in esm_assets %}
         <link rel="modulepreload" href="{{ asset.url }}" crossorigin="anonymous" {% if nonce %}nonce="{{ nonce }}"{% endif %}>
     {% endfor %}

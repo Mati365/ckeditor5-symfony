@@ -46,7 +46,7 @@ class TwigManipulator
     {
         return implode("\n", [
             "{% block ckeditor5_assets %}",
-            "    {{ cke5_assets() }}",
+            "    {{ cke5_assets(emit_import_map: false) }}",
             "{% endblock %}\n",
         ]);
     }
@@ -62,7 +62,7 @@ class TwigManipulator
         }
 
         // Removes the function itself if it was loose
-        return (string) preg_replace('/\s*{{ cke5_assets\(\) }}/', '', $content);
+        return (string) preg_replace('/\s*{{ cke5_assets\(emit_import_map: false\) }}/', '', $content);
     }
 
     private function insertContentInBestPosition(string $content): string

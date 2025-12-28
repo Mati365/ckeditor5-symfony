@@ -16,9 +16,9 @@ class NpmInstallerStrategy implements InstallerStrategyInterface
     #[\Override]
     public function configure(InputInterface $input, SymfonyStyle $io, array $importmap): array
     {
-        $version = $input->getOption('editor-version');
-        $isPremium = $input->getOption('premium');
-        $translations = array_map('trim', explode(',', $input->getOption('translations') ?? 'en'));
+        $version = (string) $input->getOption('editor-version');
+        $isPremium = (bool) $input->getOption('premium');
+        $translations = array_map('trim', explode(',', (string) ($input->getOption('translations') ?? 'en')));
 
         $io->info("Downloading ckeditor5@$version...");
         $this->npmInstaller->downloadAndExtract('ckeditor5', $version);

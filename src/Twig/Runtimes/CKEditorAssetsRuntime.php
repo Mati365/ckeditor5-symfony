@@ -23,11 +23,15 @@ class CKEditorAssetsRuntime implements RuntimeExtensionInterface
      * Render the CKEditor widget.
      *
      * @param string $preset The preset name to use (default: 'default')
+     * @param string|null $nonce Optional nonce for CSP
+     * @param bool $emitImportMap Whether to emit the import map script tag
+     * @param array $customImportMap Custom import map entries to merge
+     * @return string Rendered HTML
      */
     public function render(
         string $preset = 'default',
         ?string $nonce = null,
-        bool $useImportMap = false,
+        bool $emitImportMap = false,
         array $customImportMap = []
     ): string {
         $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset);
@@ -63,7 +67,7 @@ class CKEditorAssetsRuntime implements RuntimeExtensionInterface
             'esm_assets' => $esmAssets,
             'umd_assets' => $umdAssets,
             'import_map' => $finalImportMap,
-            'use_import_map' => $useImportMap,
+            'emit_import_map' => $emitImportMap,
             'nonce' => $nonce,
         ]);
     }
