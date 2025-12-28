@@ -50,6 +50,11 @@ class ConfigureImportmapCommand extends Command
             // 1. Retrieving current data from importmap.php
             $importmap = $this->importmapManipulator->getImportmapData($importmapPath);
 
+            // Remove all keys starting with 'ckeditor5'
+            $importmap = array_filter($importmap, function ($key) {
+                return !str_starts_with((string) $key, 'ckeditor5');
+            }, ARRAY_FILTER_USE_KEY);
+
             // 2. Base configuration of the PHP package (always needed for runtime)
             $importmap['@mati365/ckeditor5-symfony'] = [
                 'path' => '@mati365/ckeditor5-symfony/index.mjs',
