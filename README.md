@@ -15,7 +15,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 This package is currently under active development. It'll be ready for production use soon. Stay tuned!
 
-## Installation
+## Installation 🚀
 
 Install the package via Composer:
 
@@ -29,7 +29,7 @@ Then, configure the importmap by running the command:
 php bin/console ckeditor5:importmap:configure
 ```
 
-## Importmap configuration command
+## Installer Command 📦
 
 You can get help about the command and its options by running:
 
