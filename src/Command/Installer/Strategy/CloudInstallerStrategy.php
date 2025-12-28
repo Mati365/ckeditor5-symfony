@@ -27,7 +27,7 @@ class CloudInstallerStrategy implements InstallerStrategyInterface
         $bundle = CloudBundleBuilder::build($cloud);
 
         foreach ($bundle->js as $asset) {
-            $importmap[$asset->name] = ['url' => $asset->url];
+            $importmap[$asset->name] = ['path' => $asset->url];
         }
 
         return $importmap;

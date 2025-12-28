@@ -23,6 +23,8 @@ return static function (ContainerConfigurator $container): void {
             ->bind('$projectDir', '%kernel.project_dir%')
         ->set(Installer\ImportmapManipulator::class)
             ->bind('$projectDir', '%kernel.project_dir%')
+        ->set(Installer\TwigManipulator::class)
+            ->bind('$projectDir', '%kernel.project_dir%')
         ->set(Runtimes\CKEditorAssetsRuntime::class)
         ->set(Runtimes\CKEditorHiddenInputRuntime::class)
         ->set(Runtimes\CKEditorRuntime::class);

@@ -2,7 +2,7 @@
 
 namespace Mati365\CKEditor5Symfony\Command;
 
-use Mati365\CKEditor5Symfony\Command\Installer\ImportmapManipulator;
+use Mati365\CKEditor5Symfony\Command\Installer\{ImportmapManipulator, TwigManipulator};
 use Mati365\CKEditor5Symfony\Command\Installer\Strategy\{CloudInstallerStrategy, NpmInstallerStrategy};
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,6 +20,7 @@ class ConfigureImportmapCommand extends Command
         private ImportmapManipulator $importmapManipulator,
         private CloudInstallerStrategy $cloudStrategy,
         private NpmInstallerStrategy $npmStrategy,
+        private TwigManipulator $twigManipulator,
     ) {
         parent::__construct();
     }
@@ -59,10 +60,14 @@ class ConfigureImportmapCommand extends Command
                 default => throw new \InvalidArgumentException("Invalid distribution type: $distribution")
             };
 
-            $importmap = $strategy->configure($input, $io, $importmap);
-
             // 4. Saving the modified map
+            $io->info("Configuring CKEditor5 importmap...");
+            $importmap = $strategy->configure($input, $io, $importmap);
             $this->importmapManipulator->saveImportmap($importmapPath, $importmap);
+
+            // 5. Modifying Twig template to include assets
+            $io->note('Configuring base.html.twig...');
+            $this->twigManipulator->addAssetsToTemplate(); // Domyślnie szuka w templates/base.html.twig
 
             $io->success("CKEditor5 assets configured successfully via $distribution.");
 
