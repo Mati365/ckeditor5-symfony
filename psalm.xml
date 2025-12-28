@@ -9,23 +9,25 @@
     findUnusedCode="false"
 >
     <projectFiles>
-        <directory name="src" />
+        <directory name="src"/>
         <ignoreFiles>
-            <directory name="vendor" />
-            <directory name="playground" />
-            <directory name="npm_package" />
+            <directory name="vendor"/>
+            <directory name="playground"/>
+            <directory name="npm_package"/>
         </ignoreFiles>
     </projectFiles>
 
     <issueHandlers>
-        <LessSpecificReturnType errorLevel="info" />
-        <MoreSpecificReturnType errorLevel="info" />
-        <MissingReturnType errorLevel="info" />
-        <MissingPropertyType errorLevel="info" />
-        <InvalidDocblock errorLevel="info" />
-        <MissingConstructor errorLevel="info" />
-        <UndefinedConstant errorLevel="info" />
-        <PropertyNotSetInConstructor errorLevel="info" />
-        <MissingOverrideAttribute errorLevel="info" />
+        <LessSpecificReturnType errorLevel="info"/>
+        <MoreSpecificReturnType errorLevel="info"/>
+        <MissingReturnType errorLevel="info"/>
+        <MissingPropertyType errorLevel="info"/>
+        <InvalidDocblock errorLevel="info"/>
+        <MissingConstructor errorLevel="info"/>
+        <UndefinedConstant errorLevel="info"/>
+        <PropertyNotSetInConstructor errorLevel="info"/>
+        <MissingOverrideAttribute errorLevel="info"/>
     </issueHandlers>
+<plugins>
+    <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/></plugins>
 </psalm>

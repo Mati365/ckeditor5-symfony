@@ -28,4 +28,10 @@ return [
     '@mati365/ckeditor5-symfony' => [
         'path' => '@mati365/ckeditor5-symfony/index.mjs',
     ],
+    'ckeditor5' => [
+        'url' => 'https://cdn.ckeditor.com/ckeditor5/47.3.0/ckeditor5.js',
+    ],
+    'ckeditor5/translations/en.js' => [
+        'url' => 'https://cdn.ckeditor.com/ckeditor5/47.3.0/translations/en.js',
+    ],
 ];

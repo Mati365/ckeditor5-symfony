@@ -1,0 +1,76 @@
+<?php
+
+namespace Mati365\CKEditor5Symfony\Command;
+
+use Mati365\CKEditor5Symfony\Command\Installer\ImportmapManipulator;
+use Mati365\CKEditor5Symfony\Command\Installer\Strategy\{CloudInstallerStrategy, NpmInstallerStrategy};
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\{InputInterface, InputOption};
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+#[AsCommand(
+    name: 'ckeditor5:importmap:configure',
+    description: 'Configure CKEditor5 assets in importmap.php for cloud or NPM distribution',
+)]
+class ConfigureImportmapCommand extends Command
+{
+    public function __construct(
+        private ImportmapManipulator $importmapManipulator,
+        private CloudInstallerStrategy $cloudStrategy,
+        private NpmInstallerStrategy $npmStrategy,
+    ) {
+        parent::__construct();
+    }
+
+    #[\Override]
+    protected function configure(): void
+    {
+        $this
+            ->addOption('distribution', null, InputOption::VALUE_REQUIRED, 'Distribution type: cloud or npm', 'cloud')
+            ->addOption('importmap-path', null, InputOption::VALUE_REQUIRED, 'Path to importmap.php file', 'importmap.php')
+            ->addOption('editor-version', null, InputOption::VALUE_REQUIRED, 'CKEditor version', '47.3.0')
+            ->addOption('premium', null, InputOption::VALUE_NONE, 'Include premium features')
+            ->addOption('ckbox-version', null, InputOption::VALUE_OPTIONAL, 'CKBox version for cloud distribution')
+            ->addOption('translations', null, InputOption::VALUE_OPTIONAL, 'Comma-separated list of translations', 'en');
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $distribution = $input->getOption('distribution');
+        $importmapPath = $input->getOption('importmap-path');
+
+        try {
+            // 1. Retrieving current data from importmap.php
+            $importmap = $this->importmapManipulator->getImportmapData($importmapPath);
+
+            // 2. Base configuration of the PHP package (always needed for runtime)
+            $importmap['@mati365/ckeditor5-symfony'] = [
+                'path' => '@mati365/ckeditor5-symfony/index.mjs',
+            ];
+
+            // 3. Selection and execution of strategy
+            $strategy = match ($distribution) {
+                'cloud' => $this->cloudStrategy,
+                'npm'   => $this->npmStrategy,
+                default => throw new \InvalidArgumentException("Invalid distribution type: $distribution")
+            };
+
+            $importmap = $strategy->configure($input, $io, $importmap);
+
+            // 4. Saving the modified map
+            $this->importmapManipulator->saveImportmap($importmapPath, $importmap);
+
+            $io->success("CKEditor5 assets configured successfully via $distribution.");
+
+            return Command::SUCCESS;
+
+        } catch (\Exception $e) {
+            $io->error($e->getMessage());
+            return Command::FAILURE;
+        }
+    }
+}

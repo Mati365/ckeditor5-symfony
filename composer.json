@@ -29,6 +29,7 @@
     "symfony/asset": "^6.0|^7.0|^8.0",
     "symfony/http-foundation": "^6.0|^7.0|^8.0",
     "symfony/http-kernel": "^6.0|^7.0|^8.0",
+    "symfony/http-client": "^6.0|^7.0|^8.0",
     "symfony/form": "^6.0|^7.0|^8.0",
     "symfony/dependency-injection": "^6.0|^7.0|^8.0"
   },
