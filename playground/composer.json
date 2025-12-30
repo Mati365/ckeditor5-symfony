@@ -76,7 +76,8 @@
     "auto-scripts": {
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
-      "importmap:install": "symfony-cmd"
+      "importmap:install": "symfony-cmd",
+      "ckeditor5:importmap:install --distribution=npm --editor-version=47.3.0 --translations=en,pl --skip-template-update --skip-composer-update": "symfony-cmd"
     },
     "post-install-cmd": [
       "@auto-scripts"

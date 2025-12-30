@@ -21,14 +21,20 @@ class CloudInstallerStrategy implements InstallerStrategyInterface
     #[\Override]
     public function configure(InputInterface $input, SymfonyStyle $io, array $importmap): array
     {
-        /** @var string|null $ckboxVersion */
-        $ckboxVersion = $input->getOption('ckbox-version');
-        $translations = array_map('trim', explode(',', (string) ($input->getOption('translations') ?? 'en')));
+        $ckbox = null;
 
+        if ($input->getOption('ckbox-version') !== null) {
+            $ckbox = new CKBox(
+                version: (string) $input->getOption('ckbox-version'),
+                theme: $input->getOption('ckbox-theme')
+            );
+        }
+
+        $translations = array_map('trim', explode(',', $input->getOption('translations')));
         $cloud = new Cloud(
-            editorVersion: (string) $input->getOption('editor-version'),
-            premium: (bool) $input->getOption('premium'),
-            ckbox: isset($ckboxVersion) ? new CKBox(version: $ckboxVersion) : null,
+            editorVersion: $input->getOption('editor-version'),
+            premium: $input->getOption('premium'),
+            ckbox: $ckbox,
             translations: $translations
         );
 
@@ -54,6 +60,16 @@ class CloudInstallerStrategy implements InstallerStrategyInterface
             $importmap[$asset->name] = ['path' => './assets/vendor/ckeditor5-cloud/' . $fileName];
         }
 
+        // Save cloud configuration as JSON
+        $cloudJson = (string) json_encode($cloud, JSON_PRETTY_PRINT);
+        $this->filesystem->dumpFile($vendorDir . '/cloud.json', $cloudJson);
+
         return $importmap;
+    }
+
+    #[\Override]
+    public function supports(string $distribution): bool
+    {
+        return $distribution === 'cloud';
     }
 }

@@ -15,6 +15,9 @@ class ImportmapManipulator
         private string $projectDir
     ) {}
 
+    /**
+     * Loads the importmap data from the given path.
+     */
     public function getImportmapData(string $path): array
     {
         $fullPath = $this->projectDir . '/' . $path;
@@ -33,6 +36,9 @@ class ImportmapManipulator
         return $data;
     }
 
+    /**
+     * Saves the importmap data to the given path.
+     */
     public function saveImportmap(string $path, array $data): void
     {
         $fullPath = $this->projectDir . '/' . $path;

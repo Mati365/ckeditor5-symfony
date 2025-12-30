@@ -12,4 +12,10 @@ interface InstallerStrategyInterface
      * @return array Modified map
      */
     public function configure(InputInterface $input, SymfonyStyle $io, array $importmap): array;
+
+    /**
+     * @param string $distribution
+     * @return bool
+     */
+    public function supports(string $distribution): bool;
 }

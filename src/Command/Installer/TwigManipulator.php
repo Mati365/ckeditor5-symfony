@@ -5,7 +5,7 @@ namespace Mati365\CKEditor5Symfony\Command\Installer;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Manipulates Twig templates to include CKEditor5 assets.
+ * Generic manipulator for Twig templates to add or remove blocks.
  */
 class TwigManipulator
 {
@@ -14,7 +14,10 @@ class TwigManipulator
         private string $projectDir
     ) {}
 
-    public function addAssetsToTemplate(string $templatePath = 'templates/base.html.twig'): void
+    /**
+     * Adds a generic block to the template if it doesn't exist.
+     */
+    public function addBlock(string $templatePath, string $blockName, string $blockContent): void
     {
         $fullPath = $this->projectDir . '/' . $templatePath;
 
@@ -24,13 +27,17 @@ class TwigManipulator
 
         $content = (string) file_get_contents($fullPath);
 
-        // If 'cke5_assets' is already present, do nothing
-        if (strpos($content, 'cke5_assets') !== false) {
+        // Check if block is already present to avoid duplicates
+        // We search for the block definition: {% block NAME %}
+        if (preg_match(sprintf('/{%% block %s %%}/', preg_quote($blockName, '/')), $content)) {
             return;
         }
 
+        // Create the full snippet
+        $snippet = self::createBlockSnippet($blockName, $blockContent);
+
         // Insert new content in the best position
-        $newContent = $this->insertContentInBestPosition($content);
+        $newContent = self::insertContentInBestPosition($content, $snippet);
 
         if ($content !== $newContent) {
             $this->filesystem->dumpFile($fullPath, $newContent);
@@ -38,35 +45,55 @@ class TwigManipulator
     }
 
     /**
-     * Returns a clean snippet without external indentation.
-     * Internal indentation (for cke5_assets input) is fixed (4 spaces),
-     * but the entire block will be shifted dynamically later.
+     * Removes a block by its name.
      */
-    private function getRawSnippet(): string
+    public function removeBlock(string $templatePath, string $blockName): void
+    {
+        $fullPath = $this->projectDir . '/' . $templatePath;
+
+        if (!$this->filesystem->exists($fullPath)) {
+            return;
+        }
+
+        $content = (string) file_get_contents($fullPath);
+
+        // Regex to match {% block NAME %} ... {% endblock %}
+        // Handles multiline content and surrounding whitespace cleanup
+        $pattern = sprintf(
+            '/(\R+)?\s*{%% block %s %%}.*?{%% endblock %%}(\R+)?/s',
+            preg_quote($blockName, '/')
+        );
+
+        $newContent = preg_replace($pattern, '', $content);
+
+        if ($content !== $newContent && $newContent !== null) {
+            $this->filesystem->dumpFile($fullPath, $newContent);
+        }
+    }
+
+    /**
+     * Wraps content in block tags and applies internal indentation.
+     */
+    private static function createBlockSnippet(string $name, string $content): string
     {
         return implode("\n", [
-            "{% block ckeditor5_assets %}",
-            "    {{ cke5_assets(emit_import_map: false) }}",
-            "{% endblock %}\n",
+            sprintf("{%% block %s %%}", $name),
+            "    " . $content, // Default 4-space indent for inner content
+            "{% endblock %}",
         ]);
     }
 
-    private function insertContentInBestPosition(string $content): string
+    /**
+     * Inserts the snippet into the content in the best position.
+     */
+    private static function insertContentInBestPosition(string $content, string $snippet): string
     {
-        $snippet = $this->getRawSnippet();
-
         // --- STRATEGY 1: After the 'importmap' block ---
-        // We look for the beginning of the importmap block to get its indentation
         if (preg_match('/^([ \t]*){% block importmap %}/m', $content, $matches, PREG_OFFSET_CAPTURE)) {
-            $indentation = $matches[1][0]; // These are spaces/tabs before {% block ...
-
-            // We look for the end of this block (nearest endblock)
-            // Note: This is a simplification, assumes no nested blocks inside importmap
+            $indentation = $matches[1][0];
             if (preg_match('/{% endblock %}/', $content, $endMatches, PREG_OFFSET_CAPTURE, $matches[0][1])) {
                 $endBlockPos = $endMatches[0][1] + strlen($endMatches[0][0]);
-
-                // We insert: 2 newlines + indented snippet
-                $toInsert = "\n\n" . $this->indentSnippet($snippet, $indentation);
+                $toInsert = "\n\n" . self::indentSnippet($snippet, $indentation);
 
                 return substr_replace($content, $toInsert, $endBlockPos, 0);
             }
@@ -75,28 +102,21 @@ class TwigManipulator
         // --- STRATEGY 2: After the importmap() function (without block) ---
         if (preg_match('/^([ \t]*){{ importmap/m', $content, $matches, PREG_OFFSET_CAPTURE)) {
             $indentation = $matches[1][0];
-
-            // We find the end of this line/tag
             $endPos = strpos($content, '}}', $matches[0][1]);
             if ($endPos !== false) {
-                $endPos += 2; // we move past }}
+                $endPos += 2;
+                $toInsert = "\n\n" . self::indentSnippet($snippet, $indentation);
 
-                $toInsert = "\n\n" . $this->indentSnippet($snippet, $indentation);
                 return substr_replace($content, $toInsert, $endPos, 0);
             }
         }
 
         // --- STRATEGY 3: Before </head> ---
         if (preg_match('/^([ \t]*)<\/head>/m', $content, $matches, PREG_OFFSET_CAPTURE)) {
-            $indentation = $matches[1][0]; // We take the indentation of the </head> tag (usually correct for its children + 1 level, but here we'll take the same or +4 spaces)
+            $indentation = $matches[1][0] . '    ';
+            $insertPos = $matches[0][1];
+            $toInsert = self::indentSnippet($snippet, $indentation) . "\n";
 
-            // Optionally: Let's add one more indentation than </head> has, because we're inserting INSIDE head
-            $indentation .= '    ';
-
-            $insertPos = $matches[0][1]; // Beginning of the line with </head>
-
-            // We insert before </head>
-            $toInsert = $this->indentSnippet($snippet, $indentation) . "\n";
             return substr_replace($content, $toInsert, $insertPos, 0);
         }
 
@@ -105,9 +125,9 @@ class TwigManipulator
     }
 
     /**
-     * Adds the specified indentation to each line of the snippet
+     * Indents each line of the snippet with the given indentation.
      */
-    private function indentSnippet(string $snippet, string $indentation): string
+    private static function indentSnippet(string $snippet, string $indentation): string
     {
         $lines = explode("\n", $snippet);
         $indentedLines = array_map(function ($line) use ($indentation) {

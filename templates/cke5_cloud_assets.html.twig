@@ -7,7 +7,12 @@
     </script>
 {% endif %}
 
-{# 2. Stylesheets #}
+{# 2. Module preload for ESM assets #}
+{% for asset in esm_assets %}
+    <link rel="modulepreload" href="{{ asset.url }}" crossorigin="anonymous" {% if nonce %}nonce="{{ nonce }}"{% endif %}>
+{% endfor %}
+
+{# 3. Stylesheets #}
 {% for css_url in bundle.css %}
     <link rel="stylesheet" href="{{ css_url }}" crossorigin="anonymous" {% if nonce %}nonce="{{ nonce }}"{% endif %}>
 {% endfor %}
@@ -17,9 +22,3 @@
     <script src="{{ asset.url }}" {% if nonce %}nonce="{{ nonce }}"{% endif %}></script>
 {% endfor %}
 
-{# 4. Module preload for ESM assets #}
-{% if emit_import_map %}
-    {% for asset in esm_assets %}
-        <link rel="modulepreload" href="{{ asset.url }}" crossorigin="anonymous" {% if nonce %}nonce="{{ nonce }}"{% endif %}>
-    {% endfor %}
-{% endif %}

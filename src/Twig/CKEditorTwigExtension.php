@@ -25,8 +25,8 @@ class CKEditorTwigExtension extends AbstractExtension
             ),
 
             new TwigFunction(
-                'cke5_assets',
-                [Runtimes\CKEditorAssetsRuntime::class, 'render'],
+                'cke5_cloud_assets',
+                [Runtimes\CKEditorCloudAssetsRuntime::class, 'render'],
                 ['is_safe' => ['html']]
             ),
 

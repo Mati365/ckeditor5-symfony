@@ -17,6 +17,9 @@ class NpmPackageInstaller
         private string $projectDir
     ) {}
 
+    /**
+     * Downloads and extracts an NPM package to the assets/vendor directory.
+     */
     public function downloadAndExtract(string $package, string $version): void
     {
         $tarballUrl = "https://registry.npmjs.org/$package/-/$package-$version.tgz";
