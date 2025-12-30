@@ -23,11 +23,33 @@ Install the package via Composer:
 composer require mati365/ckeditor5-symfony
 ```
 
-Then, configure the importmap by running the command:
+Then, configure the Assets Mapper, templates and CSS files by running the command:
 
 ```bash
-php bin/console ckeditor5:importmap:install --distribution=cloud # or --distribution=npm
+php bin/console ckeditor5:assets-mapper:install --distribution=cloud # or --distribution=npm
 ```
+
+The CKEditor5 installer command will be added to your `composer.json` autoscripts section to ensure assets are properly mapped after each install.
+
+However, if you don't have an autoscripts section yet, you can manually add the following to your `composer.json`:
+
+```json
+{
+  "scripts": {
+    "auto-scripts": {
+      "php bin/console ckeditor5:assets-mapper:install --distribution=cloud": "symfony-cmd"
+    },
+    "post-update-cmd": [
+      "@auto-scripts"
+    ],
+    "post-install-cmd": [
+      "@auto-scripts"
+    ]
+  }
+}
+```
+
+Voila! CKEditor 5 is now ready to use in your Symfony application.
 
 ## Development ⚙️
 

@@ -9,14 +9,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Process\Process;
-use Mati365\CKEditor5Symfony\Command\Installer\{ComposerManipulator, CSSManipulator, ImportmapManipulator, TwigManipulator};
+use Mati365\CKEditor5Symfony\Command\Installer\{ComposerManipulator, ImportmapManipulator};
 use Mati365\CKEditor5Symfony\Command\Installer\Strategy\InstallerStrategyInterface;
 
 #[AsCommand(
-    name: 'ckeditor5:importmap:install',
+    name: 'ckeditor5:assets-mapper:install',
     description: 'Configure CKEditor5 assets in importmap.php, update base template, and download CKEditor to assets/vendor for cloud or NPM distribution',
 )]
-class InstallImportmapCommand extends Command
+class CKEditor5AssetsMapperInstallCommand extends Command
 {
     /**
      * @psalm-suppress UndefinedAttributeClass
@@ -24,9 +24,7 @@ class InstallImportmapCommand extends Command
      */
     public function __construct(
         private ImportmapManipulator $importmapManipulator,
-        private TwigManipulator $twigManipulator,
         private ComposerManipulator $composerManipulator,
-        private CSSManipulator $cssManipulator,
         #[TaggedIterator('mati365.ckeditor5.installer_strategy')]
         private iterable $strategies
     ) {
@@ -73,57 +71,15 @@ class InstallImportmapCommand extends Command
 
             // 3. Configure via Strategy
             $io->info("Configuring CKEditor5 importmap using '$distribution' strategy...");
-            $importmap = $strategy->configure($input, $io, $importmap);
+            $importmap = $strategy->configureImportmap($input, $io, $importmap);
 
             $this->importmapManipulator->saveImportmap($importmapPath, $importmap);
 
-            // 4. Update Twig
-            if (!$input->getOption('skip-template-update')) {
-                $templatePath = $input->getOption('template-path');
+            // 4. Update Twig and CSS
+            $strategy->updateTwig($input, $io);
+            $strategy->updateCss($input, $io);
 
-                $blockName = 'ckeditor5_assets';
-                $blockContent = '{{ cke5_cloud_assets(emit_import_map: false) }}';
-
-                // If cloud distribution, add the block; otherwise, remove it
-                if ($distribution === 'cloud') {
-                    $io->note("Adding '$blockName' block to template: $templatePath");
-                    $this->twigManipulator->addBlock(
-                        $templatePath,
-                        $blockName,
-                        $blockContent
-                    );
-                } else {
-                    $io->note("Removing '$blockName' block from template: $templatePath");
-                    $this->twigManipulator->removeBlock(
-                        $templatePath,
-                        $blockName
-                    );
-                }
-            }
-
-            // 5. Update CSS
-            if (!$input->getOption('skip-css-update')) {
-                $cssPath = $input->getOption('css-path');
-                $cssImports = [ '../vendor/ckeditor5/dist/ckeditor5.css' ];
-
-                if ($input->getOption('premium') || $distribution === 'cloud') {
-                    $cssImports[] = '../vendor/ckeditor5-premium-features/dist/ckeditor5-premium-features.css';
-                }
-
-                if ($distribution === 'npm') {
-                    foreach ($cssImports as $importUrl) {
-                        $io->note("Adding CSS import for '$importUrl'...");
-                        $this->cssManipulator->addImport($cssPath, $importUrl);
-                    }
-                } else {
-                    foreach ($cssImports as $importUrl) {
-                        $io->note("Ensuring CSS import for '$importUrl' is removed...");
-                        $this->cssManipulator->removeImport($cssPath, $importUrl);
-                    }
-                }
-            }
-
-            // 6.  Compile asset map
+            // 5.  Compile asset map
             $io->note('Compiling asset map...');
             $process = new Process([PHP_BINARY, 'bin/console', 'asset-map:compile']);
             $process->run();

@@ -4,7 +4,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
 use Mati365\CKEditor5Symfony\Twig\CKEditorTwigExtension;
 use Mati365\CKEditor5Symfony\Twig\Runtimes;
-use Mati365\CKEditor5Symfony\Command\{Installer, InstallImportmapCommand};
+use Mati365\CKEditor5Symfony\Command\{Installer, CKEditor5AssetsMapperInstallCommand};
 use Mati365\CKEditor5Symfony\Command\Installer\Strategy;
 use Mati365\CKEditor5Symfony\Cloud\CloudSingletonLoader;
 
@@ -16,7 +16,7 @@ return static function (ContainerConfigurator $container): void {
                 ->autoconfigure()
         ->set(ConfigManager::class)
         ->set(CKEditorTwigExtension::class)
-        ->set(InstallImportmapCommand::class)
+        ->set(CKEditor5AssetsMapperInstallCommand::class)
         ->set(Strategy\CloudInstallerStrategy::class)
             ->tag('mati365.ckeditor5.installer_strategy')
             ->bind('$projectDir', '%kernel.project_dir%')
