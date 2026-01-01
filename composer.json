@@ -27,6 +27,7 @@
     "respect/validation": "^2.4",
     "twig/twig": "^3.0",
     "symfony/asset": "^6.4|^7.0|^8.0",
+    "symfony/console": "^6.4|^7.0|^8.0",
     "symfony/http-foundation": "^6.4|^7.0|^8.0",
     "symfony/http-kernel": "^6.4|^7.0|^8.0",
     "symfony/http-client": "^6.4|^7.0|^8.0",

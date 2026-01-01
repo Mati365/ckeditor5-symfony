@@ -10,7 +10,7 @@ use Mati365\CKEditor5Symfony\Language\LanguageParser;
 /**
  * CKEditor 5 Twig Widget.
  */
-class CKEditorRuntime implements RuntimeExtensionInterface
+final class CKEditorRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
         private Environment $twig,

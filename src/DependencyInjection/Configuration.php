@@ -8,7 +8,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 /**
  * CKEditor 5 Symfony Configuration.
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     #[\Override]
     public function getConfigTreeBuilder(): TreeBuilder

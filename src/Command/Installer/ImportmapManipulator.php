@@ -8,7 +8,7 @@ use Symfony\Component\VarExporter\VarExporter;
 /**
  * Manages reading and writing the importmap configuration file.
  */
-class ImportmapManipulator
+final class ImportmapManipulator
 {
     public function __construct(
         private Filesystem $filesystem,

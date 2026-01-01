@@ -11,7 +11,7 @@ use Mati365\CKEditor5Symfony\Service\ConfigManager;
 /**
  * CKEditor 5 Symfony Extension.
  */
-class CKEditorExtension extends Extension implements PrependExtensionInterface
+final class CKEditorExtension extends Extension implements PrependExtensionInterface
 {
     #[\Override]
     public function getAlias(): string

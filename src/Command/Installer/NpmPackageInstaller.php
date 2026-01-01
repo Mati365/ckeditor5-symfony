@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * Handles downloading and extracting NPM packages.
  */
-class NpmPackageInstaller
+final class NpmPackageInstaller
 {
     public function __construct(
         private HttpClientInterface $httpClient,

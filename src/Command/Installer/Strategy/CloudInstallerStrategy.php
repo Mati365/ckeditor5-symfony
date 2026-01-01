@@ -12,7 +12,7 @@ use Mati365\CKEditor5Symfony\Command\Installer\{TwigManipulator, CSSManipulator}
 /**
  * Strategy for configuring CKEditor5 assets for cloud distribution.
  */
-class CloudInstallerStrategy implements InstallerStrategyInterface
+final class CloudInstallerStrategy implements InstallerStrategyInterface
 {
     public function __construct(
         private string $projectDir,
@@ -39,10 +39,13 @@ class CloudInstallerStrategy implements InstallerStrategyInterface
             );
         }
 
-        $translations = array_map('trim', explode(',', $input->getOption('translations')));
+        /** @psalm-suppress RedundantCast */
+        $translations = array_map('trim', explode(',', (string) $input->getOption('translations')));
+
+        /** @psalm-suppress RedundantCast */
         $cloud = new Cloud(
-            editorVersion: $input->getOption('editor-version'),
-            premium: $input->getOption('premium'),
+            editorVersion: (string) $input->getOption('editor-version'),
+            premium: (bool) $input->getOption('premium'),
             ckbox: $ckbox,
             translations: $translations
         );
@@ -83,7 +86,8 @@ class CloudInstallerStrategy implements InstallerStrategyInterface
             return;
         }
 
-        $templatePath = $input->getOption('template-path');
+        /** @psalm-suppress RedundantCast */
+        $templatePath = (string) $input->getOption('template-path');
         $blockName = 'ckeditor5_assets';
         $blockContent = '{{ cke5_cloud_assets(emit_import_map: false) }}';
 
@@ -102,7 +106,8 @@ class CloudInstallerStrategy implements InstallerStrategyInterface
             return;
         }
 
-        $cssPath = $input->getOption('css-path');
+        /** @psalm-suppress RedundantCast */
+        $cssPath = (string) $input->getOption('css-path');
         $cssImports = ['../vendor/ckeditor5/dist/ckeditor5.css'];
 
         if ($input->getOption('premium') || $input->getOption('distribution') === 'cloud') {

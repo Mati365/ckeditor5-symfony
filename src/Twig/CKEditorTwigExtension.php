@@ -9,7 +9,7 @@ use Mati365\CKEditor5Symfony\Twig\Runtimes;
 /**
  * CKEditor 5 Twig Extension.
  */
-class CKEditorTwigExtension extends AbstractExtension
+final class CKEditorTwigExtension extends AbstractExtension
 {
     /**
      * Returns a list of functions to add to the existing list.

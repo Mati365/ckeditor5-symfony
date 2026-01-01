@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Manipulates composer.json to add or remove commands to auto-scripts.
  */
-class ComposerManipulator
+final class ComposerManipulator
 {
     public function __construct(
         private Filesystem $filesystem,

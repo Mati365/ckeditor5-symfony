@@ -7,7 +7,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Manipulates CSS files to include or remove imports using string syntax.
  */
-class CSSManipulator
+final class CSSManipulator
 {
     /**
      * @param Filesystem $filesystem The Symfony filesystem component

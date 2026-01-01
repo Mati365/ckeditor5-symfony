@@ -8,7 +8,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 /**
  * CKEditor 5 Hidden Input Twig Widget.
  */
-class CKEditorHiddenInputRuntime implements RuntimeExtensionInterface
+final class CKEditorHiddenInputRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
         private Environment $twig,

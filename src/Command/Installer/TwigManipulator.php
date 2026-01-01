@@ -8,7 +8,7 @@ use Symfony\Component\Filesystem\Filesystem;
  * Generic manipulator for Twig templates to add or remove blocks.
  * Uses smart whitespace detection to avoid messy formatting.
  */
-class TwigManipulator
+final class TwigManipulator
 {
     public function __construct(
         private Filesystem $filesystem,

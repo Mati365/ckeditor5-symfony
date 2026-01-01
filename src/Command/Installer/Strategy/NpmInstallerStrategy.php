@@ -10,7 +10,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Strategy for configuring CKEditor5 assets for NPM distribution.
  */
-class NpmInstallerStrategy implements InstallerStrategyInterface
+final class NpmInstallerStrategy implements InstallerStrategyInterface
 {
     public function __construct(
         private NpmPackageInstaller $npmInstaller,
@@ -30,9 +30,14 @@ class NpmInstallerStrategy implements InstallerStrategyInterface
         $basePath = 'assets/vendor/ckeditor5';
         $premiumPath = 'assets/vendor/ckeditor5-premium-features';
 
-        $version = $input->getOption('editor-version');
-        $isPremium = $input->getOption('premium');
-        $translations = array_map('trim', explode(',', $input->getOption('translations')));
+        /** @psalm-suppress RedundantCast */
+        $version = (string) $input->getOption('editor-version');
+
+        /** @psalm-suppress RedundantCast */
+        $isPremium = (bool) $input->getOption('premium');
+
+        /** @psalm-suppress RedundantCast */
+        $translations = array_map('trim', explode(',', (string) $input->getOption('translations')));
 
         $io->info("Downloading ckeditor5@$version to $basePath...");
         $this->npmInstaller->downloadAndExtract('ckeditor5', $version);
@@ -68,7 +73,8 @@ class NpmInstallerStrategy implements InstallerStrategyInterface
             return;
         }
 
-        $templatePath = $input->getOption('template-path');
+        /** @psalm-suppress RedundantCast */
+        $templatePath = (string) $input->getOption('template-path');
         $blockName = 'ckeditor5_assets';
 
         $io->note("Removing '$blockName' block from template: $templatePath");
@@ -85,7 +91,8 @@ class NpmInstallerStrategy implements InstallerStrategyInterface
             return;
         }
 
-        $cssPath = $input->getOption('css-path');
+        /** @psalm-suppress RedundantCast */
+        $cssPath = (string) $input->getOption('css-path');
         $cssImports = ['../vendor/ckeditor5/dist/browser/ckeditor5.css'];
 
         if ($input->getOption('premium') || $input->getOption('distribution') === 'cloud') {

@@ -16,7 +16,7 @@ use Mati365\CKEditor5Symfony\Command\Installer\Strategy\InstallerStrategyInterfa
     name: 'ckeditor5:assets-mapper:install',
     description: 'Configure CKEditor5 assets in importmap.php, update base template, and download CKEditor to assets/vendor for cloud or NPM distribution',
 )]
-class CKEditor5AssetsMapperInstallCommand extends Command
+final class CKEditor5AssetsMapperInstallCommand extends Command
 {
     /**
      * @psalm-suppress UndefinedAttributeClass
