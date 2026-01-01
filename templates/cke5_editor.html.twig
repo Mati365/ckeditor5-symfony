@@ -1,17 +1,18 @@
 <cke5-editor
-  id="{{ id }}"
-  {% if class is not null %}class="{{ class }}"{% endif %}
-  {% if style is not null %}style="{{ style }}"{% endif %}
-  data-cke-preset="{{ preset|e('html_attr') }}"
-  data-cke-initial-value="{{ content|e('html_attr') }}"
-  data-cke-language="{{ language|e('html_attr') }}"
-  {% if watchdog %}data-cke-watchdog="true"{% endif %}
-  {% if contextId is not null %}data-cke-context-id="{{ contextId }}"{% endif %}
-  {% if editableHeight is not null %}data-cke-editable-height="{{ editableHeight }}"{% endif %}
+    {% if class is not null %}class="{{ class }}"{% endif %}
+    {% if style is not null %}style="{{ style }}"{% endif %}
+    data-cke-editor-id="{{ id }}"
+    data-cke-preset="{{ preset|e('html_attr') }}"
+    data-cke-initial-value="{{ content|e('html_attr') }}"
+    data-cke-language="{{ language|e('html_attr') }}"
+    {% if watchdog %}data-cke-watchdog="true"{% endif %}
+    {% if contextId is not null %}data-cke-context-id="{{ contextId }}"{% endif %}
+    {% if editableHeight is not null %}data-cke-editable-height="{{ editableHeight }}"{% endif %}
+    data-turbo-temporary
 >
-  <div id="{{ id }}_editor"></div>
+    <div id="{{ id }}_editor"></div>
 
-  {% if name is not null %}
-    {{ cke5_hidden_input(name: name, id: id ~ '_input', required: required) }}
-  {% endif %}
+    {% if name is not null %}
+        {{ cke5_hidden_input(name: name, id: id ~ '_input', required: required) }}
+    {% endif %}
 </cke5-editor>

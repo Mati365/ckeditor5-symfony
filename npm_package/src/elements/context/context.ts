@@ -3,7 +3,7 @@ import type { Context, ContextWatchdog } from 'ckeditor5';
 import type { EditorLanguage } from '../editor';
 import type { ContextConfig } from './typings';
 
-import { ClassHook } from '../../hooks/hook';
+import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
 import { isEmptyObject } from '../../shared';
 import {
   loadAllEditorTranslations,
@@ -15,7 +15,7 @@ import { ContextsRegistry } from './contexts-registry';
 /**
  * The Symfony hook that mounts CKEditor context instances.
  */
-export class ContextComponentElement extends ClassHook<Snapshot> {
+export class ContextComponentElement extends HTMLElement {
   /**
    * The promise that resolves to the context instance.
    */
@@ -24,10 +24,16 @@ export class ContextComponentElement extends ClassHook<Snapshot> {
   /**
    * Mounts the context component.
    */
-  override async mounted() {
-    const { contextId, language, context: contextConfig } = this.canonical;
-    const { customTranslations, watchdogConfig, config: { plugins, ...config } } = contextConfig;
+  async connectedCallback() {
+    const contextId = this.getAttribute('data-cke-context-id');
+    const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
+    const contextConfig = JSON.parse(this.getAttribute('data-cke-context') || '{}') as ContextConfig;
 
+    if (!contextId) {
+      throw new CKEditor5SymfonyError('Context ID is missing.');
+    }
+
+    const { customTranslations, watchdogConfig, config: { plugins, ...config } } = contextConfig;
     const { loadedPlugins, hasPremium } = await loadEditorPlugins(plugins ?? []);
 
     // Mix custom translations with loaded translations.
@@ -65,7 +71,7 @@ export class ContextComponentElement extends ClassHook<Snapshot> {
 
     const context = await this.contextPromise;
 
-    if (!this.isBeingDestroyed()) {
+    if (this.isConnected) {
       ContextsRegistry.the.register(contextId, context);
     }
   }
@@ -73,11 +79,11 @@ export class ContextComponentElement extends ClassHook<Snapshot> {
   /**
    * Destroys the context component. Unmounts root from the editor.
    */
-  override async destroyed() {
-    const { contextId } = this.canonical;
+  async disconnectedCallback() {
+    const contextId = this.getAttribute('data-cke-context-id');
 
     // Let's hide the element during destruction to prevent flickering.
-    this.element.style.display = 'none';
+    this.style.display = 'none';
 
     // Let's wait for the mounted promise to resolve before proceeding with destruction.
     try {
@@ -88,29 +94,9 @@ export class ContextComponentElement extends ClassHook<Snapshot> {
     finally {
       this.contextPromise = null;
 
-      if (ContextsRegistry.the.hasItem(contextId)) {
+      if (contextId && ContextsRegistry.the.hasItem(contextId)) {
         ContextsRegistry.the.unregister(contextId);
       }
     }
   }
 }
-
-/**
- * The snapshot type stored in the Symfony Context hook.
- */
-type Snapshot = {
-  /**
-   * The unique identifier for the context instance.
-   */
-  contextId: string;
-
-  /**
-   * The context configuration for the context instance.
-   */
-  context: ContextConfig;
-
-  /**
-   * The language of the context UI and content.
-   */
-  language: EditorLanguage;
-};

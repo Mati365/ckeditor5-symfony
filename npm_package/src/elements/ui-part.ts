@@ -1,10 +1,10 @@
+import { CKEditor5SymfonyError } from '../ckeditor5-symfony-error';
 import { EditorsRegistry } from './editor/editors-registry';
-import { ClassHook } from './hook';
 
 /**
  * UI Part hook for Symfony. It allows you to create UI parts for multi-root editors.
  */
-export class UIPartComponentElement extends ClassHook<Snapshot> {
+export class UIPartComponentElement extends HTMLElement {
   /**
    * The promise that resolves when the UI part is mounted.
    */
@@ -13,8 +13,13 @@ export class UIPartComponentElement extends ClassHook<Snapshot> {
   /**
    * Mounts the UI part component.
    */
-  override async mounted() {
-    const { editorId, name } = this.canonical;
+  async connectedCallback() {
+    const editorId = this.getAttribute('data-cke-editor-id');
+    const name = this.getAttribute('data-cke-name');
+
+    if (!editorId || !name) {
+      return;
+    }
 
     // If the editor is not registered yet, we will wait for it to be registered.
     this.mountedPromise = EditorsRegistry.the.execute(editorId, (editor) => {
@@ -24,32 +29,34 @@ export class UIPartComponentElement extends ClassHook<Snapshot> {
       const uiPart = (ui.view as any)[uiViewName!];
 
       if (!uiPart) {
-        console.error(`Unknown UI part name: "${name}". Supported names are "toolbar" and "menubar".`);
-        return;
+        throw new CKEditor5SymfonyError(`Unknown UI part name: "${name}". Supported names are "toolbar" and "menubar".`);
       }
 
-      this.element.appendChild(uiPart.element);
+      this.appendChild(uiPart.element);
     });
   }
 
   /**
    * Destroys the UI part component. Unmounts UI parts from the editor.
    */
-  override async destroyed() {
+  async disconnectedCallback() {
     // Let's hide the element during destruction to prevent flickering.
-    this.element.style.display = 'none';
+    this.style.display = 'none';
 
     // Let's wait for the mounted promise to resolve before proceeding with destruction.
     await this.mountedPromise;
     this.mountedPromise = null;
 
     // Unmount all UI parts from the editor.
-    this.element.innerHTML = '';
+    this.innerHTML = '';
   }
 }
 
 /**
  * Maps the UI part name to the corresponding view in the editor.
+ *
+ * @param name The name of the UI part.
+ * @returns The name of the view in the editor.
  */
 function mapUIPartView(name: string): string | null {
   switch (name) {
@@ -63,18 +70,3 @@ function mapUIPartView(name: string): string | null {
       return null;
   }
 }
-
-/**
- * A snapshot of the Symfony component's state relevant to the CKEditor5 UI part hook.
- */
-export type Snapshot = {
-  /**
-   * The ID of the editor instance this UI part belongs to.
-   */
-  editorId: string;
-
-  /**
-   * The name of the UI part (e.g., "toolbar", "menubar").
-   */
-  name: string;
-};

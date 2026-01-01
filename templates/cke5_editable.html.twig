@@ -1,0 +1,15 @@
+<cke5-editable
+    id="{{ id }}"
+    {% if class is not null %}class="{{ class }}"{% endif %}
+    {% if style is not null %}style="{{ style }}"{% endif %}
+    data-cke-editor-id="{{ editorId }}"
+    data-cke-root-name="{{ rootName }}"
+    data-cke-content="{{ content|e('html_attr') }}"
+    data-cke-save-debounce-ms="{{ saveDebounceMs }}"
+    data-turbo-temporary
+>
+    <div data-cke-editable-content></div>
+    {% if name is not null %}
+        {{ cke5_hidden_input(name: name, id: id ~ '_input', required: required) }}
+    {% endif %}
+</cke5-editable>

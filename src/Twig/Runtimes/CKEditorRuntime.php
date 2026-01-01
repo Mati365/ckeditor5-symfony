@@ -20,7 +20,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
     /**
      * Render the CKEditor widget.
      *
-     * @param string $content The initial content of the editor
+     * @param string|array $content The initial content of the editor
      * @param string $preset The preset name to use (default: 'default')
      * @param bool $watchdog Whether to enable the watchdog feature
      * @param string|null $name Optional name for the input field.
@@ -34,7 +34,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      * @return string Rendered HTML
      */
     public function render(
-        string $content = '',
+        string|array $content = '',
         string $preset = 'default',
         bool $watchdog = true,
         ?string $name = null,
@@ -50,13 +50,17 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
         $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset);
         $parsedLanguage = LanguageParser::parse($language);
 
+        if (is_string($content)) {
+            $content = ['main' => $content];
+        }
+
         return $this->twig->render('@CKEditor5/cke5_editor.html.twig', [
             'id' => $id,
             'class' => $class,
             'style' => $style,
             'name' => $name,
             'required' => $required,
-            'content' => $content,
+            'content' => json_encode($content),
             'editableHeight' => $editableHeight,
             'preset' => json_encode($resolvedPreset),
             'language' => json_encode($parsedLanguage),

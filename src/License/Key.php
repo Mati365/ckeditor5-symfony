@@ -8,7 +8,7 @@ namespace Mati365\CKEditor5Symfony\License;
  * This class parses JWT license tokens and extracts basic information
  * such as distribution channel and expiration date.
  */
-final readonly class Key
+final readonly class Key implements \JsonSerializable
 {
     /**
      * Creates a new license key instance.
@@ -22,6 +22,16 @@ final readonly class Key
         public ?DistributionChannel $distributionChannel = null,
         public ?int $expiresAt = null,
     ) {}
+
+    /**
+     * Dump only the raw license key when serialized to JSON. Prefer to not expose
+     * structure of the license key (although it is super easy to decode JWTs).
+     */
+    #[\Override]
+    public function jsonSerialize(): string
+    {
+        return $this->raw;
+    }
 
     /**
      * Creates a deep clone of the current Key instance.

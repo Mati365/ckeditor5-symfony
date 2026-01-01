@@ -5,7 +5,7 @@ namespace Mati365\CKEditor5Symfony\Twig\Runtimes;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
-use Mati365\CKEditor5Livewire\Exceptions\NoCloudConfig;
+use Mati365\CKEditor5Symfony\Exceptions\NoCloudConfig;
 use Mati365\CKEditor5Symfony\Cloud\Bundle\JSAssetType;
 use Mati365\CKEditor5Symfony\Cloud\{CloudBundleBuilder, CloudSingletonLoader};
 

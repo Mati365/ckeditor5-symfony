@@ -2,6 +2,7 @@ import type { PluginConstructor } from 'ckeditor5';
 
 import type { EditorPlugin } from '../typings';
 
+import { CKEditor5SymfonyError } from '../../../ckeditor5-symfony-error';
 import { CustomEditorPluginsRegistry } from '../custom-editor-plugins';
 
 /**
@@ -42,6 +43,7 @@ export async function loadEditorPlugins(plugins: EditorPlugin[]): Promise<Loaded
       }
       catch (error) {
         console.error(`Failed to load premium package: ${error}`);
+        throw new CKEditor5SymfonyError(`Plugin "${plugin}" not found in base package and failed to load premium package.`);
       }
     }
 

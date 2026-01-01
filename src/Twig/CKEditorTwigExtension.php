@@ -35,6 +35,24 @@ final class CKEditorTwigExtension extends AbstractExtension
                 [Runtimes\CKEditorHiddenInputRuntime::class, 'render'],
                 ['is_safe' => ['html']]
             ),
+
+            new TwigFunction(
+                'cke5_context',
+                [Runtimes\CKEditorContextRuntime::class, 'render'],
+                ['is_safe' => ['html']]
+            ),
+
+            new TwigFunction(
+                'cke5_editable',
+                [Runtimes\CKEditorEditableRuntime::class, 'render'],
+                ['is_safe' => ['html']]
+            ),
+
+            new TwigFunction(
+                'cke5_ui_part',
+                [Runtimes\CKEditorUIPartRuntime::class, 'render'],
+                ['is_safe' => ['html']]
+            ),
         ];
     }
 }

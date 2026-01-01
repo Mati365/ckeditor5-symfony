@@ -1,8 +1,8 @@
-<input
-    type="hidden"
-    name="{{ name }}"
+<cke5-ui-part
     id="{{ id }}"
     {% if class is not null %}class="{{ class }}"{% endif %}
     {% if style is not null %}style="{{ style }}"{% endif %}
-    {% if required %}required{% endif %}
->
+    data-cke-editor-id="{{ editorId }}"
+    data-cke-name="{{ name }}"
+    data-turbo-temporary
+></cke5-ui-part>

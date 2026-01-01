@@ -63,10 +63,13 @@ final class CloudInstallerStrategy implements InstallerStrategyInterface
             }
 
             $fileName = (string) preg_replace('/\.(js|mjs)$/', '-$1', $asset->name) . '.mjs';
-            $content = implode("\n", [
-                "export * from '{$asset->url}';",
-                "export { default } from '{$asset->url}';",
-            ]);
+            $lines = ["export * from '{$asset->url}';"];
+
+            if (str_contains($asset->url, 'translations')) {
+                $lines[] = "export { default } from '{$asset->url}';";
+            }
+
+            $content = implode("\n", $lines);
 
             $this->filesystem->dumpFile($vendorDir . '/' . $fileName, $content);
             $importmap[$asset->name] = ['path' => './assets/vendor/ckeditor5-cloud/' . $fileName];

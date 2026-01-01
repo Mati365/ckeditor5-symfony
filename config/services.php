@@ -36,5 +36,8 @@ return static function (ContainerConfigurator $container): void {
             ->args(['%kernel.project_dir%/assets/vendor/ckeditor5-cloud/cloud.json'])
         ->set(Runtimes\CKEditorCloudAssetsRuntime::class)
         ->set(Runtimes\CKEditorHiddenInputRuntime::class)
-        ->set(Runtimes\CKEditorRuntime::class);
+        ->set(Runtimes\CKEditorRuntime::class)
+        ->set(Runtimes\CKEditorContextRuntime::class)
+        ->set(Runtimes\CKEditorEditableRuntime::class)
+        ->set(Runtimes\CKEditorUIPartRuntime::class);
 };

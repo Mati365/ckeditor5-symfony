@@ -1,13 +1,13 @@
 import type { MultiRootEditor } from 'ckeditor5';
 
+import { CKEditor5SymfonyError } from '../ckeditor5-symfony-error';
 import { debounce } from '../shared';
 import { EditorsRegistry } from './editor/editors-registry';
-import { ClassHook } from './hook';
 
 /**
  * Editable hook for Symfony. It allows you to create editables for multi-root editors.
  */
-export class EditableComponentElement extends ClassHook<Snapshot> {
+export class EditableComponentElement extends HTMLElement {
   /**
    * The promise that resolves when the editable is mounted.
    */
@@ -16,12 +16,20 @@ export class EditableComponentElement extends ClassHook<Snapshot> {
   /**
    * Mounts the editable component.
    */
-  override mounted() {
-    const { editorId, rootName, content, saveDebounceMs } = this.canonical;
-    const input = this.element.querySelector<HTMLInputElement>('input');
+  connectedCallback() {
+    const editorId = this.getAttribute('data-cke-editor-id');
+    const rootName = this.getAttribute('data-cke-root-name');
+    const content = this.getAttribute('data-cke-content');
+    const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms') || '500', 10);
+
+    if (!editorId || !rootName) {
+      throw new CKEditor5SymfonyError('Editor ID or Root Name is missing.');
+      return;
+    }
 
     // If the editor is not registered yet, we will wait for it to be registered.
-    this.editorPromise = EditorsRegistry.the.execute(editorId, (editor: MultiRootEditor) => {
+    this.editorPromise = EditorsRegistry.the.execute(editorId, async (editor: MultiRootEditor) => {
+      const input = this.querySelector('input') as HTMLInputElement | null;
       const { ui, editing, model } = editor;
 
       if (model.document.getRoot(rootName)) {
@@ -47,7 +55,7 @@ export class EditableComponentElement extends ClassHook<Snapshot> {
         },
       });
 
-      const contentElement = this.element.querySelector('[data-cke-editable-content]') as HTMLElement | null;
+      const contentElement = this.querySelector('[data-cke-editable-content]') as HTMLElement | null;
       const editable = ui.view.createEditable(rootName, contentElement!);
 
       ui.addEditable(editable);
@@ -59,9 +67,10 @@ export class EditableComponentElement extends ClassHook<Snapshot> {
 
         if (input) {
           input.value = html;
+          input.dispatchEvent(new Event('input'));
         }
 
-        this.$wire.set('content', html);
+        this.dispatchEvent(new CustomEvent('change', { detail: { value: html } }));
       };
 
       editor.model.document.on('change:data', debounce(saveDebounceMs, sync));
@@ -72,35 +81,55 @@ export class EditableComponentElement extends ClassHook<Snapshot> {
   }
 
   /**
-   * Called when the component is updated by Symfony.
+   * Returns the list of attributes to observe.
    */
-  override async afterCommitSynced(): Promise<void> {
-    const editor = (await this.editorPromise)!;
-    const { content, rootName } = this.canonical;
-    const value = editor.getData({ rootName });
+  static get observedAttributes() {
+    return ['data-cke-content'];
+  }
 
-    if (value !== content) {
-      editor.setData({
-        [rootName]: content ?? '',
-      });
+  /**
+   * Called when an observed attribute has been added, removed, updated, or replaced.
+   *
+   * @param name The name of the attribute.
+   * @param oldValue The old value of the attribute.
+   * @param newValue The new value of the attribute.
+   */
+  async attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (name === 'data-cke-content' && oldValue !== newValue) {
+      const editorId = this.getAttribute('data-cke-editor-id');
+      const rootName = this.getAttribute('data-cke-root-name');
+
+      if (!editorId || !rootName) {
+        return;
+      }
+
+      if (this.editorPromise) {
+        const editor = await this.editorPromise;
+        const value = editor.getData({ rootName });
+        if (value !== newValue) {
+          editor.setData({
+            [rootName]: newValue ?? '',
+          });
+        }
+      }
     }
   }
 
   /**
    * Destroys the editable component. Unmounts root from the editor.
    */
-  override async destroyed() {
-    const { rootName } = this.canonical;
+  async disconnectedCallback() {
+    const rootName = this.getAttribute('data-cke-root-name');
 
     // Let's hide the element during destruction to prevent flickering.
-    this.element.style.display = 'none';
+    this.style.display = 'none';
 
     // Let's wait for the mounted promise to resolve before proceeding with destruction.
     const editor = await this.editorPromise;
     this.editorPromise = null;
 
     // Unmount root from the editor if editor is still registered.
-    if (editor && editor.state !== 'destroyed') {
+    if (editor && editor.state !== 'destroyed' && rootName) {
       const root = editor.model.document.getRoot(rootName);
 
       if (root && 'detachEditable' in editor) {
@@ -110,28 +139,3 @@ export class EditableComponentElement extends ClassHook<Snapshot> {
     }
   }
 }
-
-/**
- * A snapshot of the Symfony component's state relevant to the CKEditor5 editable hook.
- */
-export type Snapshot = {
-  /**
-   * The ID of the editor instance this editable belongs to.
-   */
-  editorId: string;
-
-  /**
-   * The name of the root element in the editor.
-   */
-  rootName: string;
-
-  /**
-   * The initial content value for the editable.
-   */
-  content: string | null;
-
-  /**
-   * The debounce time in milliseconds for saving changes.
-   */
-  saveDebounceMs: number;
-};

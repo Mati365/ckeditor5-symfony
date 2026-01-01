@@ -3,6 +3,7 @@ import type { Editor } from 'ckeditor5';
 import type { EditorId, EditorLanguage, EditorPreset, EditorType } from './typings';
 import type { EditorCreator } from './utils';
 
+import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
 import { isEmptyObject, waitFor } from '../../shared';
 import { ContextsRegistry } from '../context';
 import { EditorsRegistry } from './editors-registry';
@@ -26,17 +27,21 @@ import {
 /**
  * The Symfony hook that manages the lifecycle of CKEditor5 instances.
  */
-export class EditorComponentElement extends ClassHook<Snapshot> {
+export class EditorComponentElement extends HTMLElement {
   /**
    * The promise that resolves to the editor instance.
    */
   private editorPromise: Promise<Editor> | null = null;
 
   /**
-   * @inheritdoc
+   * Mounts the editor component.
    */
-  override async mounted(): Promise<void> {
-    const { editorId } = this.canonical;
+  async connectedCallback(): Promise<void> {
+    const editorId = this.getAttribute('data-cke-editor-id');
+
+    if (!editorId) {
+      throw new CKEditor5SymfonyError('Editor ID is missing.');
+    }
 
     EditorsRegistry.the.resetErrors(editorId);
 
@@ -47,7 +52,7 @@ export class EditorComponentElement extends ClassHook<Snapshot> {
 
       // Do not even try to broadcast about the registration of the editor
       // if hook was immediately destroyed.
-      if (!this.isBeingDestroyed()) {
+      if (this.isConnected) {
         EditorsRegistry.the.register(editorId, editor);
 
         editor.once('destroy', () => {
@@ -68,9 +73,9 @@ export class EditorComponentElement extends ClassHook<Snapshot> {
    * Destroys the editor instance when the component is destroyed.
    * This is important to prevent memory leaks and ensure that the editor is properly cleaned up.
    */
-  override async destroyed() {
+  async disconnectedCallback() {
     // Let's hide the element during destruction to prevent flickering.
-    this.element.style.display = 'none';
+    this.style.display = 'none';
 
     // Let's wait for the mounted promise to resolve before proceeding with destruction.
     try {
@@ -103,28 +108,17 @@ export class EditorComponentElement extends ClassHook<Snapshot> {
   }
 
   /**
-   * Updates the editor content when the component is updated after commit changes.
-   */
-  override async afterCommitSynced(): Promise<void> {
-    const editor = await this.editorPromise;
-
-    editor?.fire('afterCommitSynced');
-  }
-
-  /**
    * Creates the CKEditor instance.
    */
   private async createEditor() {
-    const {
-      preset,
-      editorId,
-      contextId,
-      editableHeight,
-      saveDebounceMs,
-      language,
-      watchdog,
-      content,
-    } = this.canonical;
+    const editorId = this.getAttribute('data-cke-editor-id')!;
+    const preset = JSON.parse(this.getAttribute('data-cke-preset') || '{}') as EditorPreset;
+    const contextId = this.getAttribute('data-cke-context-id');
+    const editableHeight = this.getAttribute('data-cke-editable-height') ? Number.parseInt(this.getAttribute('data-cke-editable-height')!, 10) : null;
+    const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms') || '500', 10);
+    const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
+    const watchdog = this.hasAttribute('data-cke-watchdog');
+    const content = JSON.parse(this.getAttribute('data-cke-initial-value') || '{}') as Record<string, string>;
 
     const {
       customTranslations,
@@ -296,48 +290,3 @@ function shouldWaitForRoots(
     && !(elements instanceof HTMLElement)
   );
 }
-
-/**
- * A snapshot of the Symfony component's state relevant to the CKEditor5 hook.
- */
-export type Snapshot = {
-  /**
-   * The unique identifier for the CKEditor5 instance.
-   */
-  editorId: string;
-
-  /**
-   * Whether to use a watchdog for the CKEditor5 instance.
-   */
-  watchdog: boolean;
-
-  /**
-   * The identifier of the CKEditor context.
-   */
-  contextId: string | null;
-
-  /**
-   * The debounce time in milliseconds for saving content changes.
-   */
-  saveDebounceMs: number;
-
-  /**
-   * The preset configuration for the CKEditor5 instance.
-   */
-  preset: EditorPreset;
-
-  /**
-   * The content of the editor, mapped by ID of root elements.
-   */
-  content: Record<string, string>;
-
-  /**
-   * The height of the editable area, if specified.
-   */
-  editableHeight: number | null;
-
-  /**
-   * The language of the editor UI and content.
-   */
-  language: EditorLanguage;
-};

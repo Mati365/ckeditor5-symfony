@@ -1,6 +1,6 @@
 <?php
 
-namespace Mati365\CKEditor5Livewire\Exceptions;
+namespace Mati365\CKEditor5Symfony\Exceptions;
 
 /**
  * Exception thrown when no cloud configuration is provided for CKEditor5.
