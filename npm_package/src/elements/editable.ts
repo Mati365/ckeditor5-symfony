@@ -1,7 +1,7 @@
 import type { MultiRootEditor } from 'ckeditor5';
 
 import { CKEditor5SymfonyError } from '../ckeditor5-symfony-error';
-import { debounce } from '../shared';
+import { debounce, waitForDOMReady } from '../shared';
 import { EditorsRegistry } from './editor/editors-registry';
 
 /**
@@ -16,7 +16,9 @@ export class EditableComponentElement extends HTMLElement {
   /**
    * Mounts the editable component.
    */
-  connectedCallback() {
+  async connectedCallback() {
+    await waitForDOMReady();
+
     const editorId = this.getAttribute('data-cke-editor-id');
     const rootName = this.getAttribute('data-cke-root-name');
     const content = this.getAttribute('data-cke-content');

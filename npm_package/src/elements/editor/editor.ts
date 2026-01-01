@@ -4,7 +4,7 @@ import type { EditorId, EditorLanguage, EditorPreset, EditorType } from './typin
 import type { EditorCreator } from './utils';
 
 import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
-import { isEmptyObject, waitFor } from '../../shared';
+import { isEmptyObject, waitFor, waitForDOMReady } from '../../shared';
 import { ContextsRegistry } from '../context';
 import { EditorsRegistry } from './editors-registry';
 import { createSyncEditorWithInputPlugin } from './plugins';
@@ -37,6 +37,8 @@ export class EditorComponentElement extends HTMLElement {
    * Mounts the editor component.
    */
   async connectedCallback(): Promise<void> {
+    await waitForDOMReady();
+
     const editorId = this.getAttribute('data-cke-editor-id');
 
     if (!editorId) {

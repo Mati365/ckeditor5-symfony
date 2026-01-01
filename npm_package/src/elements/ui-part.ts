@@ -1,4 +1,5 @@
 import { CKEditor5SymfonyError } from '../ckeditor5-symfony-error';
+import { waitForDOMReady } from '../shared';
 import { EditorsRegistry } from './editor/editors-registry';
 
 /**
@@ -14,6 +15,8 @@ export class UIPartComponentElement extends HTMLElement {
    * Mounts the UI part component.
    */
   async connectedCallback() {
+    await waitForDOMReady();
+
     const editorId = this.getAttribute('data-cke-editor-id');
     const name = this.getAttribute('data-cke-name');
 

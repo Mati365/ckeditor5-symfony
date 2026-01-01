@@ -4,7 +4,7 @@ import type { EditorLanguage } from '../editor';
 import type { ContextConfig } from './typings';
 
 import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
-import { isEmptyObject } from '../../shared';
+import { isEmptyObject, waitForDOMReady } from '../../shared';
 import {
   loadAllEditorTranslations,
   loadEditorPlugins,
@@ -25,6 +25,8 @@ export class ContextComponentElement extends HTMLElement {
    * Mounts the context component.
    */
   async connectedCallback() {
+    await waitForDOMReady();
+
     const contextId = this.getAttribute('data-cke-context-id');
     const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
     const contextConfig = JSON.parse(this.getAttribute('data-cke-context') || '{}') as ContextConfig;

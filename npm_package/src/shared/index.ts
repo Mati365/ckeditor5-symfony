@@ -11,3 +11,4 @@ export * from './shallow-equal';
 export * from './timeout';
 export * from './uid';
 export * from './wait-for';
+export * from './wait-for-dom-ready';
