@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Multiroot Editor - CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-5xl">
+    <div class="mb-4">
+        <a href="{{ path('app_index') }}" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm hover:underline">
+            &larr; Back to Home
+        </a>
+    </div>
+
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Multiroot Editor</h1>
+
+    <div class="gap-4 grid grid-cols-2">
+        <div>
+            <h2 class="mb-2 font-bold">Header</h2>
+            {{ cke5_editable(root_name: 'header', content: 'Header content', class: 'border border-gray-300 rounded-sm') }}
+        </div>
+
+        <div>
+            <h2 class="mb-2 font-bold">Content</h2>
+            {{ cke5_editable(root_name: 'content', content: 'Main content', class: 'border border-gray-300 rounded-sm') }}
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <h2 class="mb-2 font-bold">Footer</h2>
+        {{ cke5_editable(root_name: 'footer', content: 'Footer content', class: 'border border-gray-300 rounded-sm') }}
+    </div>
+
+    {{ cke5_editor(editor_type: 'multiroot') }}
+</div>
+{% endblock %}

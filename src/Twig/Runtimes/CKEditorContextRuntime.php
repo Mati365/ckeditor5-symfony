@@ -4,6 +4,8 @@ namespace Mati365\CKEditor5Symfony\Twig\Runtimes;
 
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
+use Mati365\CKEditor5Symfony\Language\LanguageParser;
+use Mati365\CKEditor5Symfony\Service\ConfigManager;
 
 /**
  * CKEditor 5 Context Twig Widget.
@@ -11,31 +13,31 @@ use Twig\Extension\RuntimeExtensionInterface;
 final class CKEditorContextRuntime implements RuntimeExtensionInterface
 {
     public function __construct(
-        private Environment $twig
+        private Environment $twig,
+        private ConfigManager $configManager
     ) {}
 
     /**
      * Render the CKEditor context widget.
      *
-     * @param string $contextId The unique identifier for the context instance.
-     * @param array $context The context configuration.
-     * @param string $language The language of the context UI and content.
+     * @param string|null $language The language code for the context (default: 'en').
+     * @param string|null $contextPreset The context preset name to use (default: 'default').
      * @param string|null $id Optional ID for the context instance.
      * @return string Rendered HTML
      */
     public function render(
-        string $contextId,
-        array $context,
-        string $language = 'en',
+        ?string $language = 'en',
+        ?string $contextPreset = null,
         ?string $id = null
     ): string {
         $id ??= 'cke5-context-' . uniqid();
+        $parsedLanguage = LanguageParser::parse($language);
+        $resolvedContext = $this->configManager->resolveContextOrThrow($contextPreset ?? 'default');
 
-        return $this->twig->render('cke5_context.html.twig', [
+        return $this->twig->render('@CKEditor5/cke5_context.html.twig', [
             'id' => $id,
-            'contextId' => $contextId,
-            'context' => $context,
-            'language' => $language,
+            'context' => json_encode($resolvedContext),
+            'language' => json_encode($parsedLanguage),
         ]);
     }
 }

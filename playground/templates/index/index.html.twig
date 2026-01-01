@@ -3,7 +3,7 @@
 {% block title %}CKEditor 5 Playground{% endblock %}
 
 {% block body %}
-<div class="mx-auto mt-12 px-4 max-w-2xl">
+<div class="mx-auto mt-12 px-4 max-w-5xl">
     <h1 class="mb-4 font-bold text-gray-800 text-2xl">CKEditor 5 Symfony Playground</h1>
     <p class="mb-4 text-gray-600">Welcome to the playground! This is a demo application for CKEditor 5 integration with Symfony.</p>
 
@@ -11,6 +11,26 @@
         <a href="{{ path('app_classic') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
             <h5 class="font-bold text-gray-900 text-lg tracking-tight">Classic Editor</h5>
             <p class="font-normal text-gray-700 text-sm">Check out the Classic Editor implementation.</p>
+        </a>
+        <a href="{{ path('app_inline') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
+            <h5 class="font-bold text-gray-900 text-lg tracking-tight">Inline Editor</h5>
+            <p class="font-normal text-gray-700 text-sm">Check out the Inline Editor implementation.</p>
+        </a>
+        <a href="{{ path('app_balloon') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
+            <h5 class="font-bold text-gray-900 text-lg tracking-tight">Balloon Editor</h5>
+            <p class="font-normal text-gray-700 text-sm">Check out the Balloon Editor implementation.</p>
+        </a>
+        <a href="{{ path('app_decoupled') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
+            <h5 class="font-bold text-gray-900 text-lg tracking-tight">Decoupled Editor</h5>
+            <p class="font-normal text-gray-700 text-sm">Check out the Decoupled Editor implementation.</p>
+        </a>
+        <a href="{{ path('app_multiroot') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
+            <h5 class="font-bold text-gray-900 text-lg tracking-tight">Multiroot Editor</h5>
+            <p class="font-normal text-gray-700 text-sm">Check out the Multiroot Editor implementation.</p>
+        </a>
+        <a href="{{ path('app_context') }}" class="block bg-white hover:bg-gray-50 p-3 border border-gray-200 rounded-lg transition">
+            <h5 class="font-bold text-gray-900 text-lg tracking-tight">Context Editor</h5>
+            <p class="font-normal text-gray-700 text-sm">Check out the Context Editor implementation.</p>
         </a>
     </div>
 </div>

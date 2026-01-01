@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Classic Editor - CKEditor 5 Playground{% endblock %}
+{% block title %}Balloon Editor - CKEditor 5 Playground{% endblock %}
 
 {% block body %}
 <div class="mx-auto mt-12 px-4 max-w-5xl">
@@ -10,8 +10,8 @@
         </a>
     </div>
 
-    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Classic Editor</h1>
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Balloon Editor</h1>
 
-    {{ cke5_editor('Hello World') }}
+    {{ cke5_editor('Hello Balloon World', editor_type: 'balloon', class: 'mt-6 border border-gray-300 rounded-sm') }}
 </div>
 {% endblock %}

@@ -48,6 +48,7 @@ export class EditorComponentElement extends HTMLElement {
     EditorsRegistry.the.resetErrors(editorId);
 
     try {
+      this.style.display = 'block';
       this.editorPromise = this.createEditor();
 
       const editor = await this.editorPromise;
@@ -120,7 +121,7 @@ export class EditorComponentElement extends HTMLElement {
     const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms') || '500', 10);
     const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
     const watchdog = this.hasAttribute('data-cke-watchdog');
-    const content = JSON.parse(this.getAttribute('data-cke-initial-value') || '{}') as Record<string, string>;
+    const content = JSON.parse(this.getAttribute('data-cke-content') || '{}') as Record<string, string>;
 
     const {
       customTranslations,
@@ -253,7 +254,7 @@ async function waitForAllRootsToBePresent(
   editorType: EditorType,
   requiredRoots: string[],
 ): Promise<Record<string, HTMLElement>> {
-  await waitFor(
+  return waitFor(
     () => {
       const elements = queryEditablesElements(editorId, editorType) as unknown as Record<string, HTMLElement>;
 
@@ -267,12 +268,10 @@ async function waitForAllRootsToBePresent(
         );
       }
 
-      return true;
+      return elements;
     },
     { timeOutAfter: 2000, retryAfter: 100 },
   );
-
-  return queryEditablesElements(editorId, editorType) as unknown as Record<string, HTMLElement>;
 }
 
 /**

@@ -4,28 +4,6 @@ import { filterObjectValues, mapObjectValues } from '../../../shared';
 import { isSingleEditingLikeEditor } from './is-single-editing-like-editor';
 
 /**
- * Queries all editable elements within a specific editor instance.
- *
- * @param editorId The ID of the editor to query.
- * @returns An object mapping editable names to their corresponding elements and initial values.
- */
-export function queryAllEditorEditables(editorId: EditorId) {
-  return Array
-    .from(document.querySelectorAll(`cke5-editable[data-cke-editor-id="${editorId}"]`))
-    .reduce<Record<string, EditableItem>>((acc, element) => {
-      const rootName = element.getAttribute('data-cke-root-name') || 'main';
-      const content = element.getAttribute('data-cke-initial-value');
-
-      acc[rootName] = {
-        element: element as HTMLElement,
-        content,
-      };
-
-      return acc;
-    }, Object.create({}));
-}
-
-/**
  * Gets the initial root elements for the editor based on its type.
  *
  * @param editorId The editor's ID.
@@ -92,6 +70,28 @@ function queryDecoupledMainEditableOrThrow(editorId: EditorId) {
   }
 
   return mainEditable;
+}
+
+/**
+ * Queries all editable elements within a specific editor instance.
+ *
+ * @param editorId The ID of the editor to query.
+ * @returns An object mapping editable names to their corresponding elements and initial values.
+ */
+function queryAllEditorEditables(editorId: EditorId) {
+  return Array
+    .from(document.querySelectorAll<HTMLElement>(`cke5-editable[data-cke-editor-id="${editorId}"]`))
+    .reduce<Record<string, EditableItem>>((acc, element) => {
+      const rootName = element.getAttribute('data-cke-root-name') || 'main';
+      const content = element.getAttribute('data-cke-content');
+
+      acc[rootName] = {
+        element: element.querySelector<HTMLElement>('[data-cke-editable-content]')!,
+        content,
+      };
+
+      return acc;
+    }, Object.create({}));
 }
 
 /**

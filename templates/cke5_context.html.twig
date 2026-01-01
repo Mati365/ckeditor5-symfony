@@ -1,7 +1,6 @@
 <cke5-context
-    id="{{ id }}"
-    data-cke-context-id="{{ contextId }}"
+    data-cke-context-id="{{ id }}"
     data-cke-language="{{ language|e('html_attr') }}"
-    data-cke-context="{{ context|json_encode|e('html_attr') }}"
+    data-cke-context="{{ context|e('html_attr') }}"
     data-turbo-temporary
 ></cke5-context>

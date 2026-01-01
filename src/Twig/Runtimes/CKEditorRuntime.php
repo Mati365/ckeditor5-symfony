@@ -6,6 +6,7 @@ use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
 use Mati365\CKEditor5Symfony\Language\LanguageParser;
+use Mati365\CKEditor5Symfony\Preset\EditorType;
 
 /**
  * CKEditor 5 Twig Widget.
@@ -20,7 +21,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
     /**
      * Render the CKEditor widget.
      *
-     * @param string|array $content The initial content of the editor
+     * @param string|array|null $content The initial content of the editor
      * @param string $preset The preset name to use (default: 'default')
      * @param bool $watchdog Whether to enable the watchdog feature
      * @param string|null $name Optional name for the input field.
@@ -31,24 +32,50 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      * @param bool|null $required Whether the input is required
      * @param string|null $contextId Optional context ID for multiple editors
      * @param string|array|null $language Optional language configuration (string or array)
+     * @param array|null $config Optional editor configuration overrides (shallow replace editor config)
+     * @param array|null $mergeConfig Optional editor configuration to merge (deep merge with editor config)
+     * @param array|null $customTranslations Optional custom translations dictionary
+     * @param string|null $editorType Optional editor type to use
      * @return string Rendered HTML
      */
     public function render(
-        string|array $content = '',
-        string $preset = 'default',
-        bool $watchdog = true,
+        string|array|null $content = null,
+        ?string $preset = null,
+        ?bool $watchdog = true,
         ?string $name = null,
         ?bool $required = null,
         ?int $editableHeight = null,
         ?string $class = null,
-        ?string $style = null,
+        ?string $style = 'display: block; width: 100%;',
         ?string $id = null,
         ?string $contextId = null,
         string|array|null $language = null,
+        ?array $config = null,
+        ?array $mergeConfig = null,
+        ?array $customTranslations = null,
+        ?string $editorType = null,
     ): string {
         $id ??= 'cke5-' . uniqid();
-        $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset);
+        $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset ?? 'default');
         $parsedLanguage = LanguageParser::parse($language);
+
+        if ($config !== null) {
+            $resolvedPreset = $resolvedPreset->ofConfig($config);
+        }
+
+        if ($mergeConfig !== null) {
+            $resolvedPreset = $resolvedPreset->ofMergedConfig($mergeConfig);
+        }
+
+        if ($customTranslations !== null) {
+            $resolvedPreset = $resolvedPreset->ofCustomTranslations($customTranslations);
+        }
+
+        if ($editorType !== null) {
+            $resolvedPreset = $resolvedPreset->ofEditorType(
+                EditorType::from($editorType)
+            );
+        }
 
         if (is_string($content)) {
             $content = ['main' => $content];

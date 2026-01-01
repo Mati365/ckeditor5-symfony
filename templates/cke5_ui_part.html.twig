@@ -2,7 +2,7 @@
     id="{{ id }}"
     {% if class is not null %}class="{{ class }}"{% endif %}
     {% if style is not null %}style="{{ style }}"{% endif %}
-    data-cke-editor-id="{{ editorId }}"
+    {% if editorId is not null %}data-cke-editor-id="{{ editorId }}"{% endif %}
     data-cke-name="{{ name }}"
     data-turbo-temporary
 ></cke5-ui-part>

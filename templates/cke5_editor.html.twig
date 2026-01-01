@@ -3,7 +3,7 @@
     {% if style is not null %}style="{{ style }}"{% endif %}
     data-cke-editor-id="{{ id }}"
     data-cke-preset="{{ preset|e('html_attr') }}"
-    data-cke-initial-value="{{ content|e('html_attr') }}"
+    data-cke-content="{{ content|e('html_attr') }}"
     data-cke-language="{{ language|e('html_attr') }}"
     {% if watchdog %}data-cke-watchdog="true"{% endif %}
     {% if contextId is not null %}data-cke-context-id="{{ contextId }}"{% endif %}

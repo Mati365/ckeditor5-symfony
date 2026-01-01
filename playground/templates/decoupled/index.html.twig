@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Decoupled Editor - CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-5xl">
+    <div class="mb-4">
+        <a href="{{ path('app_index') }}" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm hover:underline">
+            &larr; Back to Home
+        </a>
+    </div>
+
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Decoupled Editor</h1>
+
+    {{ cke5_editor(id: 'decoupled-editor', editor_type: 'decoupled') }}
+
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div class="bg-gray-50 p-2 border-gray-200 border-b">
+             {{ cke5_ui_part(name: 'toolbar') }}
+        </div>
+
+        {{ cke5_editable(content: 'Hello Decoupled World', inner_class: 'p-4 min-h-[300px]') }}
+    </div>
+</div>
+{% endblock %}

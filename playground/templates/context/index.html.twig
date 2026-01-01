@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Context Editor - CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-5xl">
+    <div class="mb-4">
+        <a href="{{ path('app_index') }}" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm hover:underline">
+            &larr; Back to Home
+        </a>
+    </div>
+
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Context (Multiple Editors)</h1>
+
+    {{ cke5_context(id: 'shared-context') }}
+
+    <div class="gap-6 grid grid-cols-1 md:grid-cols-2">
+        <div class="bg-white p-4 border border-gray-200 rounded-lg">
+            <h2 class="mb-2 font-bold">Editor 1</h2>
+            {{ cke5_editor(content: 'Editor 1 content', context_id: 'shared-context') }}
+        </div>
+
+        <div class="bg-white p-4 border border-gray-200 rounded-lg">
+            <h2 class="mb-2 font-bold">Editor 2</h2>
+            {{ cke5_editor(content: 'Editor 2 content', context_id: 'shared-context') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

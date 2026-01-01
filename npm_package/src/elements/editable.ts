@@ -3,6 +3,7 @@ import type { MultiRootEditor } from 'ckeditor5';
 import { CKEditor5SymfonyError } from '../ckeditor5-symfony-error';
 import { debounce, waitForDOMReady } from '../shared';
 import { EditorsRegistry } from './editor/editors-registry';
+import { queryAllEditorIds } from './editor/utils';
 
 /**
  * Editable hook for Symfony. It allows you to create editables for multi-root editors.
@@ -19,6 +20,10 @@ export class EditableComponentElement extends HTMLElement {
   async connectedCallback() {
     await waitForDOMReady();
 
+    if (!this.hasAttribute('data-cke-editor-id')) {
+      this.setAttribute('data-cke-editor-id', queryAllEditorIds()[0] ?? '');
+    }
+
     const editorId = this.getAttribute('data-cke-editor-id');
     const rootName = this.getAttribute('data-cke-root-name');
     const content = this.getAttribute('data-cke-content');
@@ -26,10 +31,10 @@ export class EditableComponentElement extends HTMLElement {
 
     if (!editorId || !rootName) {
       throw new CKEditor5SymfonyError('Editor ID or Root Name is missing.');
-      return;
     }
 
     // If the editor is not registered yet, we will wait for it to be registered.
+    this.style.display = 'block';
     this.editorPromise = EditorsRegistry.the.execute(editorId, async (editor: MultiRootEditor) => {
       const input = this.querySelector('input') as HTMLInputElement | null;
       const { ui, editing, model } = editor;
@@ -80,41 +85,6 @@ export class EditableComponentElement extends HTMLElement {
 
       return editor;
     });
-  }
-
-  /**
-   * Returns the list of attributes to observe.
-   */
-  static get observedAttributes() {
-    return ['data-cke-content'];
-  }
-
-  /**
-   * Called when an observed attribute has been added, removed, updated, or replaced.
-   *
-   * @param name The name of the attribute.
-   * @param oldValue The old value of the attribute.
-   * @param newValue The new value of the attribute.
-   */
-  async attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (name === 'data-cke-content' && oldValue !== newValue) {
-      const editorId = this.getAttribute('data-cke-editor-id');
-      const rootName = this.getAttribute('data-cke-root-name');
-
-      if (!editorId || !rootName) {
-        return;
-      }
-
-      if (this.editorPromise) {
-        const editor = await this.editorPromise;
-        const value = editor.getData({ rootName });
-        if (value !== newValue) {
-          editor.setData({
-            [rootName]: newValue ?? '',
-          });
-        }
-      }
-    }
   }
 
   /**
