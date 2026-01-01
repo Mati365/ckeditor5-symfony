@@ -35,6 +35,24 @@ php bin/console ckeditor5:assets-mapper:install # --distribution=cloud
 
 Voila! CKEditor 5 is now ready to use in your Symfony application.
 
+## Usage 📖
+
+The necessary JavaScript and CSS assets are automatically included in the page header via Symfony's Assets Mapper. If using the cloud distribution, also include the following in your template's head section:
+
+```twig
+{{ cke5_cloud_assets() }}
+```
+
+To use CKEditor 5 in your Twig templates, simply call the `cke5_editor()` function:
+
+```twig
+{{ cke5_editor('Your content here') }}
+```
+
+This will render a classic editor with the provided content.
+
+For more advanced usage, check the playground examples.
+
 ## Development ⚙️
 
 To start the development environment, run:
