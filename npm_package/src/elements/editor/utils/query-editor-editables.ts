@@ -1,0 +1,103 @@
+import type { EditorId, EditorType } from '../typings';
+
+import { filterObjectValues, mapObjectValues } from '../../../shared';
+import { isSingleEditingLikeEditor } from './is-single-editing-like-editor';
+
+/**
+ * Queries all editable elements within a specific editor instance.
+ *
+ * @param editorId The ID of the editor to query.
+ * @returns An object mapping editable names to their corresponding elements and initial values.
+ */
+export function queryAllEditorEditables(editorId: EditorId) {
+  return Array
+    .from(document.querySelectorAll(`cke5-editable[data-cke-editor-id="${editorId}"]`))
+    .reduce<Record<string, EditableItem>>((acc, element) => {
+      const rootName = element.getAttribute('data-cke-root-name') || 'main';
+      const content = element.getAttribute('data-cke-initial-value');
+
+      acc[rootName] = {
+        element: element as HTMLElement,
+        content,
+      };
+
+      return acc;
+    }, Object.create({}));
+}
+
+/**
+ * Gets the initial root elements for the editor based on its type.
+ *
+ * @param editorId The editor's ID.
+ * @param type The type of the editor.
+ * @returns The root element(s) for the editor.
+ */
+export function queryEditablesElements(editorId: EditorId, type: EditorType) {
+  // While the `decoupled` editor is a single editing-like editor, it has a different structure
+  // and requires special handling to get the main editable.
+  if (type === 'decoupled') {
+    const { element } = queryDecoupledMainEditableOrThrow(editorId);
+
+    return element;
+  }
+
+  if (isSingleEditingLikeEditor(type)) {
+    return document.getElementById(`${editorId}_editor`)!;
+  }
+
+  const editables = queryAllEditorEditables(editorId);
+
+  return mapObjectValues(editables, ({ element }) => element);
+}
+
+/**
+ * Gets the initial data for the roots of the editor. If the editor is a single editing-like editor,
+ * it retrieves the initial value from the element's attribute. Otherwise, it returns an object mapping
+ * editable names to their initial values.
+ *
+ * @param editorId The editor's ID.
+ * @param type The type of the editor.
+ * @returns The initial values for the editor's roots.
+ */
+export function queryEditablesSnapshotContent(editorId: EditorId, type: EditorType) {
+  // While the `decoupled` editor is a single editing-like editor, it has a different structure
+  // and requires special handling to get the main editable.
+  if (type === 'decoupled') {
+    const { content } = queryDecoupledMainEditableOrThrow(editorId);
+
+    // If initial value is not set, then pick it from the editor element.
+    if (typeof content === 'string') {
+      return {
+        main: content,
+      };
+    }
+  }
+
+  const editables = queryAllEditorEditables(editorId);
+  const values = mapObjectValues(editables, ({ content }) => content);
+
+  return filterObjectValues(values, value => typeof value === 'string') as Record<string, string>;
+}
+
+/**
+ * Queries the main editable for a decoupled editor and throws an error if not found.
+ *
+ * @param editorId The ID of the editor to query.
+ */
+function queryDecoupledMainEditableOrThrow(editorId: EditorId) {
+  const mainEditable = queryAllEditorEditables(editorId)['main'];
+
+  if (!mainEditable) {
+    throw new Error(`No "main" editable found for editor with ID "${editorId}".`);
+  }
+
+  return mainEditable;
+}
+
+/**
+ * Type representing an editable item within an editor.
+ */
+export type EditableItem = {
+  element: HTMLElement;
+  content: string | null;
+};

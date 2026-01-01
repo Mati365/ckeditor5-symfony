@@ -1,2 +1,3 @@
-// eslint-disable-next-line no-console
-console.info('xD');
+import { registerCustomElements } from './elements';
+
+registerCustomElements();
