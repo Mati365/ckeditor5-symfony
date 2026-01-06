@@ -32,6 +32,7 @@ final class CKEditorHiddenInputRuntime implements RuntimeExtensionInterface
         ?string $id = null
     ): string {
         $id ??= 'cke5-input-' . uniqid();
+        $style ??= self::getDefaultStyles();
 
         return $this->twig->render('@CKEditor5/cke5_hidden_input.html.twig', [
             'id' => $id,
@@ -40,5 +41,29 @@ final class CKEditorHiddenInputRuntime implements RuntimeExtensionInterface
             'name' => $name,
             'required' => $required,
         ]);
+    }
+
+    /**
+     * Get the inline styles for the hidden input.
+     *
+     * @return string
+     */
+    private static function getDefaultStyles(): string
+    {
+        $styles = [
+            'position: absolute',
+            'left: 50%',
+            'bottom: 0',
+            'display: flex',
+            'width: 1px',
+            'height: 1px',
+            'opacity: 0',
+            'pointer-events: none',
+            'margin: 0',
+            'padding: 0',
+            'border: none',
+        ];
+
+        return implode('; ', $styles) . ';';
     }
 }

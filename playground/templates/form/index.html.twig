@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Decoupled Editor - CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-5xl">
+    <div class="mb-4">
+        <a href="{{ path('app_index') }}" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm hover:underline">
+            &larr; Back to Home
+        </a>
+    </div>
+
+    <h1 class="mb-4 font-bold text-gray-800 text-2xl">Form integration</h1>
+
+    {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+        {{ form_row(form.content) }}
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 mt-6 px-4 py-2 rounded font-bold text-white">Submit</button>
+    {{ form_end(form) }}
+
+    {% if data %}
+        <div class="mt-5">
+            <h2>Submitted Data</h2>
+            <pre><code>{{ data|json_encode(constant('JSON_PRETTY_PRINT')) }}</code></pre>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -61,6 +61,9 @@ final class CKEditorExtension extends Extension implements PrependExtensionInter
                 'paths' => [
                     $templatesPath => 'CKEditor5',
                 ],
+                'form_themes' => [
+                    '@CKEditor5/cke5_form_type.html.twig',
+                ],
             ]);
         }
 

@@ -81,6 +81,8 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
             $content = ['main' => $content];
         }
 
+        $style = 'position: relative;' . ($style !== null ? ' ' . $style : '');
+
         return $this->twig->render('@CKEditor5/cke5_editor.html.twig', [
             'id' => $id,
             'class' => $class,

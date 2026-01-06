@@ -44,6 +44,7 @@ final class CKEditorEditableRuntime implements RuntimeExtensionInterface
         ?string $innerStyle = null,
     ): string {
         $id ??= 'cke5-editable-' . uniqid();
+        $style = 'position: relative;' . ($style !== null ? ' ' . $style : '');
 
         return $this->twig->render('@CKEditor5/cke5_editable.html.twig', [
             'id' => $id,

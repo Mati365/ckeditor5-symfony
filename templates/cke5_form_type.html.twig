@@ -1,0 +1,19 @@
+{% block ckeditor5_widget %}
+    {{ cke5_editor(
+        value,
+        preset,
+        watchdog,
+        full_name,
+        required,
+        editable_height,
+        attr.class|default(''),
+        attr.style|default('display: block; width: 100%;'),
+        id,
+        context_id,
+        language,
+        editor_config,
+        merge_config,
+        custom_translations,
+        editor_type
+    ) }}
+{% endblock %}
