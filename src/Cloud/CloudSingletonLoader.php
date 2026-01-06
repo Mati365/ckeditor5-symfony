@@ -21,6 +21,7 @@ final class CloudSingletonLoader implements CloudLoaderInterface
      *
      * @return Cloud|null The parsed Cloud instance or null if file does not exist.
      */
+    #[\Override]
     public function load(): ?Cloud
     {
         if ($this->cachedCloud !== null) {
