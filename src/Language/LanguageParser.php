@@ -22,9 +22,7 @@ final class LanguageParser
     public static function parse(string|array|null $input): Language
     {
         if (is_string($input)) {
-            $normalized = Language::normalizeLanguageCode($input);
-
-            return new Language($normalized, $normalized);
+            return new Language($input, $input);
         }
 
         // At this point, $input is an array
@@ -33,11 +31,11 @@ final class LanguageParser
 
         if (is_array($input)) {
             if (isset($input['ui']) && is_string($input['ui'])) {
-                $ui = Language::normalizeLanguageCode($input['ui']);
+                $ui = $input['ui'];
             }
 
             if (isset($input['content']) && is_string($input['content'])) {
-                $content = Language::normalizeLanguageCode($input['content']);
+                $content = $input['content'];
             }
         }
 

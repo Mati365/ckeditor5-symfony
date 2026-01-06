@@ -15,9 +15,12 @@ final class Language
      * @param string $content The content language code (e.g., 'en', 'pl').
      */
     public function __construct(
-        public readonly string $ui,
-        public readonly string $content,
-    ) {}
+        public string $ui,
+        public string $content,
+    ) {
+        $this->ui = self::normalizeLanguageCode($ui);
+        $this->content = self::normalizeLanguageCode($content);
+    }
 
     /**
      * Normalizes a language code to its primary language code supported by CKEditor.
