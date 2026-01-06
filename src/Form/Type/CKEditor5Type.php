@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @extends AbstractType<mixed>
  */
-class CKEditor5Type extends AbstractType
+final class CKEditor5Type extends AbstractType
 {
     #[\Override]
     public function buildView(FormView $view, FormInterface $form, array $options): void

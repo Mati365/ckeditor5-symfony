@@ -7,7 +7,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
 use Mati365\CKEditor5Symfony\Exceptions\NoCloudConfig;
 use Mati365\CKEditor5Symfony\Cloud\Bundle\JSAssetType;
-use Mati365\CKEditor5Symfony\Cloud\{CloudBundleBuilder, CloudSingletonLoader};
+use Mati365\CKEditor5Symfony\Cloud\{CloudBundleBuilder, CloudLoaderInterface};
 
 /**
  * CKEditor 5 Assets Twig Widget.
@@ -17,7 +17,7 @@ final class CKEditorCloudAssetsRuntime implements RuntimeExtensionInterface
     public function __construct(
         private Environment $twig,
         private ConfigManager $configManager,
-        private CloudSingletonLoader $cloudLoader,
+        private CloudLoaderInterface $cloudLoader,
     ) {}
 
     /**

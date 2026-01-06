@@ -7,6 +7,7 @@ use Mati365\CKEditor5Symfony\Twig\Runtimes;
 use Mati365\CKEditor5Symfony\Command\{Installer, CKEditor5AssetsMapperInstallCommand};
 use Mati365\CKEditor5Symfony\Command\Installer\Strategy;
 use Mati365\CKEditor5Symfony\Cloud\CloudSingletonLoader;
+use Mati365\CKEditor5Symfony\Cloud\CloudLoaderInterface;
 
 return static function (ContainerConfigurator $container): void {
     $container
@@ -34,6 +35,7 @@ return static function (ContainerConfigurator $container): void {
             ->bind('$projectDir', '%kernel.project_dir%')
         ->set(CloudSingletonLoader::class)
             ->args(['%kernel.project_dir%/assets/vendor/ckeditor5-cloud/cloud.json'])
+        ->alias(CloudLoaderInterface::class, CloudSingletonLoader::class)
         ->set(Runtimes\CKEditorCloudAssetsRuntime::class)
         ->set(Runtimes\CKEditorHiddenInputRuntime::class)
         ->set(Runtimes\CKEditorRuntime::class)

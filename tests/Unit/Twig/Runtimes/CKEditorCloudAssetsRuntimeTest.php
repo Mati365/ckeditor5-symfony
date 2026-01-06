@@ -4,7 +4,7 @@ namespace Mati365\CKEditor5Symfony\Tests\Unit\Twig\Runtimes;
 
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
-use Mati365\CKEditor5Symfony\Cloud\{Cloud, CloudSingletonLoader};
+use Mati365\CKEditor5Symfony\Cloud\{Cloud, CloudLoaderInterface};
 use Mati365\CKEditor5Symfony\Cloud\Bundle\JSAssetType;
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
 use Mati365\CKEditor5Symfony\Twig\Runtimes\CKEditorCloudAssetsRuntime;
@@ -24,7 +24,7 @@ class CKEditorCloudAssetsRuntimeTest extends TestCase
             ],
         ];
         $configManager = new ConfigManager($config);
-        $cloudLoader = $this->createMock(CloudSingletonLoader::class);
+        $cloudLoader = $this->createMock(CloudLoaderInterface::class);
         $cloudLoader->method('load')->willReturn(null);
 
         $runtime = new CKEditorCloudAssetsRuntime($twig, $configManager, $cloudLoader);
@@ -49,7 +49,7 @@ class CKEditorCloudAssetsRuntimeTest extends TestCase
             ],
         ];
         $configManager = new ConfigManager($config);
-        $mockLoader = $this->createMock(CloudSingletonLoader::class);
+        $mockLoader = $this->createMock(CloudLoaderInterface::class);
 
         // Scenario: Loader returns null, but preset has cloud config
         $mockLoader->method('load')->willReturn(null);
@@ -77,7 +77,7 @@ class CKEditorCloudAssetsRuntimeTest extends TestCase
     {
         $mockTwig = $this->createMock(Environment::class);
         $configManager = new ConfigManager([]);
-        $mockLoader = $this->createMock(CloudSingletonLoader::class);
+        $mockLoader = $this->createMock(CloudLoaderInterface::class);
 
         $cloud = new Cloud('42.0.0', true, ['fr']);
         $mockLoader->expects($this->once())->method('load')->willReturn($cloud);
@@ -105,7 +105,7 @@ class CKEditorCloudAssetsRuntimeTest extends TestCase
     {
         $mockTwig = $this->createMock(Environment::class);
         $configManager = new ConfigManager([]);
-        $mockLoader = $this->createMock(CloudSingletonLoader::class);
+        $mockLoader = $this->createMock(CloudLoaderInterface::class);
 
         $cloud = new Cloud('42.0.0', false, []);
         $mockLoader->method('load')->willReturn($cloud);
@@ -156,7 +156,7 @@ class CKEditorCloudAssetsRuntimeTest extends TestCase
     {
         $mockTwig = $this->createMock(Environment::class);
         $configManager = new ConfigManager([]);
-        $mockLoader = $this->createMock(CloudSingletonLoader::class);
+        $mockLoader = $this->createMock(CloudLoaderInterface::class);
 
         $cloud = new Cloud('42.0.0', false, []);
         $mockLoader->method('load')->willReturn($cloud);
@@ -200,7 +200,7 @@ class CKEditorCloudAssetsRuntimeTest extends TestCase
     {
         $mockTwig = $this->createMock(Environment::class);
         $configManager = new ConfigManager([]);
-        $mockLoader = $this->createMock(CloudSingletonLoader::class);
+        $mockLoader = $this->createMock(CloudLoaderInterface::class);
 
         $ckbox = new \Mati365\CKEditor5Symfony\Cloud\CKBox\CKBox('1.2.3', 'dark');
         $cloud = new Cloud('42.0.0', false, [], $ckbox);
