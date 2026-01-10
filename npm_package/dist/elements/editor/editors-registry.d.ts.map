@@ -1,0 +1,1 @@
+{"version":3,"file":"editors-registry.d.ts","sourceRoot":"","sources":["../../../../src/elements/editor/editors-registry.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,EAAE,MAAM,WAAW,CAAC;AAExC,OAAO,EAAE,aAAa,EAAE,MAAM,6BAA6B,CAAC;AAE5D;;GAEG;AACH,qBAAa,eAAgB,SAAQ,aAAa,CAAC,MAAM,CAAC;IACxD,MAAM,CAAC,QAAQ,CAAC,GAAG,kBAAyB;CAC7C"}

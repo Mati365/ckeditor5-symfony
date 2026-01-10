@@ -1,0 +1,12 @@
+export * from './create-editor-in-context';
+export * from './is-single-root-editor';
+export * from './load-editor-constructor';
+export * from './load-editor-plugins';
+export * from './load-editor-translations';
+export * from './normalize-custom-translations';
+export * from './query-all-editor-ids';
+export * from './query-editor-editables';
+export * from './resolve-editor-config-elements-references';
+export * from './set-editor-editable-height';
+export * from './wrap-with-watchdog';
+//# sourceMappingURL=index.d.ts.map

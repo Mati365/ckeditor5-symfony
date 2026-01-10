@@ -1,0 +1,1 @@
+{"version":3,"file":"contexts-registry.d.ts","sourceRoot":"","sources":["../../../../src/elements/context/contexts-registry.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,eAAe,EAAE,MAAM,WAAW,CAAC;AAE1D,OAAO,EAAE,aAAa,EAAE,MAAM,cAAc,CAAC;AAE7C;;GAEG;AACH,qBAAa,gBAAiB,SAAQ,aAAa,CAAC,eAAe,CAAC,OAAO,CAAC,CAAC;IAC3E,MAAM,CAAC,QAAQ,CAAC,GAAG,mBAA0B;CAC9C"}
