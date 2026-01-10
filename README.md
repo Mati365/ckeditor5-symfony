@@ -69,8 +69,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 2. **Enable the bundle:**
 
-   If you are not using Symfony Flex, you need to register the bundle in `config/bundles.php`:
-
    ```php
    // config/bundles.php
 
