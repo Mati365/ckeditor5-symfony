@@ -2,6 +2,8 @@ import type { PluginConstructor } from 'ckeditor5';
 
 import type { CanBePromise } from '../../types';
 
+import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
+
 type PluginReader = () => CanBePromise<PluginConstructor>;
 
 /**
@@ -30,7 +32,7 @@ export class CustomEditorPluginsRegistry {
    */
   register(name: string, reader: PluginReader): () => void {
     if (this.plugins.has(name)) {
-      throw new Error(`Plugin with name "${name}" is already registered.`);
+      throw new CKEditor5SymfonyError(`Plugin with name "${name}" is already registered.`);
     }
 
     this.plugins.set(name, reader);
@@ -46,7 +48,7 @@ export class CustomEditorPluginsRegistry {
    */
   unregister(name: string): void {
     if (!this.plugins.has(name)) {
-      throw new Error(`Plugin with name "${name}" is not registered.`);
+      throw new CKEditor5SymfonyError(`Plugin with name "${name}" is not registered.`);
     }
 
     this.plugins.delete(name);

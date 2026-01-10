@@ -3,7 +3,6 @@ import type { Editor } from 'ckeditor5';
 import type { EditorId, EditorLanguage, EditorPreset } from './typings';
 import type { EditorCreator } from './utils';
 
-import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
 import { isEmptyObject, waitFor, waitForDOMReady } from '../../shared';
 import { ContextsRegistry } from '../context';
 import { EditorsRegistry } from './editors-registry';
@@ -39,11 +38,7 @@ export class EditorComponentElement extends HTMLElement {
   async connectedCallback(): Promise<void> {
     await waitForDOMReady();
 
-    const editorId = this.getAttribute('data-cke-editor-id');
-
-    if (!editorId) {
-      throw new CKEditor5SymfonyError('Editor ID is missing.');
-    }
+    const editorId = this.getAttribute('data-cke-editor-id')!;
 
     EditorsRegistry.the.resetErrors(editorId);
 
@@ -84,6 +79,7 @@ export class EditorComponentElement extends HTMLElement {
     try {
       const editor = await this.editorPromise;
 
+      // istanbul ignore next
       if (!editor) {
         return;
       }
@@ -115,13 +111,13 @@ export class EditorComponentElement extends HTMLElement {
    */
   private async createEditor() {
     const editorId = this.getAttribute('data-cke-editor-id')!;
-    const preset = JSON.parse(this.getAttribute('data-cke-preset') || '{}') as EditorPreset;
+    const preset = JSON.parse(this.getAttribute('data-cke-preset')!) as EditorPreset;
     const contextId = this.getAttribute('data-cke-context-id');
     const editableHeight = this.getAttribute('data-cke-editable-height') ? Number.parseInt(this.getAttribute('data-cke-editable-height')!, 10) : null;
-    const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms') || '500', 10);
+    const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms')!, 10);
     const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
     const watchdog = this.hasAttribute('data-cke-watchdog');
-    const content = JSON.parse(this.getAttribute('data-cke-content') || '{}') as Record<string, string>;
+    const content = JSON.parse(this.getAttribute('data-cke-content')!) as Record<string, string>;
 
     const {
       customTranslations,

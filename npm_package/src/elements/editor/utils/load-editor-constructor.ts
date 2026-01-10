@@ -1,5 +1,7 @@
 import type { EditorType } from '../typings';
 
+import { CKEditor5SymfonyError } from '../../../ckeditor5-symfony-error';
+
 /**
  * Returns the constructor for the specified CKEditor5 editor type.
  *
@@ -20,7 +22,7 @@ export async function loadEditorConstructor(type: EditorType) {
   const EditorConstructor = editorMap[type];
 
   if (!EditorConstructor) {
-    throw new Error(`Unsupported editor type: ${type}`);
+    throw new CKEditor5SymfonyError(`Unsupported editor type: ${type}`);
   }
 
   return EditorConstructor;

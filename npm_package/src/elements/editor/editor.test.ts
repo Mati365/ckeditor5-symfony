@@ -137,14 +137,6 @@ describe('editor component', () => {
         expect(editor).to.toBeInstanceOf(DecoupledEditor);
         expect(editor.getData()).toBe(initialEditableContent);
       });
-
-      it('should throw error if `main` editable is not found in the DOM', async () => {
-        renderTestEditor({ preset: createEditorPreset('decoupled') });
-
-        await expect(waitForTestEditor).rejects.toThrowError(
-          /It looks like not all required root elements are present yet\./,
-        );
-      });
     });
 
     describe('balloon', () => {

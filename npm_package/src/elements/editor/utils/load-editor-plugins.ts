@@ -55,7 +55,7 @@ export async function loadEditorPlugins(plugins: EditorPlugin[]): Promise<Loaded
     }
 
     // Plugin not found in either package, throw an error.
-    throw new Error(`Plugin "${plugin}" not found in base or premium packages.`);
+    throw new CKEditor5SymfonyError(`Plugin "${plugin}" not found in base or premium packages.`);
   });
 
   return {
