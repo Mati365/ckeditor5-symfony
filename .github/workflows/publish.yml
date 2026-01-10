@@ -69,6 +69,7 @@ jobs:
       - name: Commit and push version bump
         run: |
           git add composer.json npm_package/package.json README.md
+          git add -f npm_package/dist
           git commit -m "build: bump versions to v${{ github.event.inputs.version }}"
           git push
 
