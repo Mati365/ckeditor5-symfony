@@ -42,6 +42,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
             ->addOption('translations', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of translations', 'en')
             ->addOption('template-path', null, InputOption::VALUE_REQUIRED, 'Path to base template file', 'templates/base.html.twig')
             ->addOption('js-path', null, InputOption::VALUE_REQUIRED, 'Path to main JS file', 'assets/app.js')
+            ->addOption('css-path', null, InputOption::VALUE_REQUIRED, 'Path to main CSS file', 'assets/styles/app.css')
             ->addOption('ckbox-version', null, InputOption::VALUE_OPTIONAL, 'CKBox version')
             ->addOption('ckbox-theme', null, InputOption::VALUE_OPTIONAL, 'CKBox theme (light or dark)')
             ->addOption('premium', null, InputOption::VALUE_NONE, 'Include premium features')
