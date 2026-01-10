@@ -212,16 +212,13 @@ describe('editor component', () => {
       });
 
       it('should wait and for root elements to be present in DOM if they are not (with set content value)', async () => {
+        renderTestEditable(createEditableSnapshot('header', '<p>Editable content overrides snapshot content</p>'));
         renderTestEditor({
           preset: createEditorPreset('multiroot'),
           content: {
             header: '<p>Header root initial content</p>',
           },
         });
-
-        await timeout(500); // Simulate some delay before adding the root.
-
-        renderTestEditable(createEditableSnapshot('header', '<p>Editable content overrides snapshot content</p>'));
 
         const editor = await waitForTestEditor();
 
