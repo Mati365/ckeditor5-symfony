@@ -1,28 +1,14 @@
-import type { EditorId, EditorType } from '../typings';
+import type { EditorId } from '../typings';
 
 import { filterObjectValues, mapObjectValues } from '../../../shared';
-import { isSingleEditingLikeEditor } from './is-single-editing-like-editor';
 
 /**
  * Gets the initial root elements for the editor based on its type.
  *
  * @param editorId The editor's ID.
- * @param type The type of the editor.
  * @returns The root element(s) for the editor.
  */
-export function queryEditablesElements(editorId: EditorId, type: EditorType) {
-  // While the `decoupled` editor is a single editing-like editor, it has a different structure
-  // and requires special handling to get the main editable.
-  if (type === 'decoupled') {
-    const { element } = queryDecoupledMainEditableOrThrow(editorId);
-
-    return element;
-  }
-
-  if (isSingleEditingLikeEditor(type)) {
-    return document.getElementById(`${editorId}_editor`)!;
-  }
-
+export function queryEditablesElements(editorId: EditorId) {
   const editables = queryAllEditorEditables(editorId);
 
   return mapObjectValues(editables, ({ element }) => element);
@@ -34,23 +20,9 @@ export function queryEditablesElements(editorId: EditorId, type: EditorType) {
  * editable names to their initial values.
  *
  * @param editorId The editor's ID.
- * @param type The type of the editor.
  * @returns The initial values for the editor's roots.
  */
-export function queryEditablesSnapshotContent(editorId: EditorId, type: EditorType) {
-  // While the `decoupled` editor is a single editing-like editor, it has a different structure
-  // and requires special handling to get the main editable.
-  if (type === 'decoupled') {
-    const { content } = queryDecoupledMainEditableOrThrow(editorId);
-
-    // If initial value is not set, then pick it from the editor element.
-    if (typeof content === 'string') {
-      return {
-        main: content,
-      };
-    }
-  }
-
+export function queryEditablesSnapshotContent(editorId: EditorId) {
   const editables = queryAllEditorEditables(editorId);
   const values = mapObjectValues(editables, ({ content }) => content);
 
@@ -58,40 +30,65 @@ export function queryEditablesSnapshotContent(editorId: EditorId, type: EditorTy
 }
 
 /**
- * Queries the main editable for a decoupled editor and throws an error if not found.
+ * Queries all editable elements within a specific editor instance. It picks
+ * initial values from actually rendered elements or from the editor container's.
  *
- * @param editorId The ID of the editor to query.
- */
-function queryDecoupledMainEditableOrThrow(editorId: EditorId) {
-  const mainEditable = queryAllEditorEditables(editorId)['main'];
-
-  if (!mainEditable) {
-    throw new Error(`No "main" editable found for editor with ID "${editorId}".`);
-  }
-
-  return mainEditable;
-}
-
-/**
- * Queries all editable elements within a specific editor instance.
+ * It may differ from the `initialData` used during editor creation, as it might
+ * not set all roots or set different values.
  *
  * @param editorId The ID of the editor to query.
  * @returns An object mapping editable names to their corresponding elements and initial values.
  */
 function queryAllEditorEditables(editorId: EditorId) {
-  return Array
-    .from(document.querySelectorAll<HTMLElement>(`cke5-editable[data-cke-editor-id="${editorId}"]`))
-    .reduce<Record<string, EditableItem>>((acc, element) => {
-      const rootName = element.getAttribute('data-cke-root-name') || 'main';
-      const content = element.getAttribute('data-cke-content');
+  const acc = (
+    Array
+      .from(document.querySelectorAll<HTMLElement>(`cke5-editable[data-cke-editor-id="${editorId}"]`))
+      .reduce<Record<string, EditableItem>>((acc, element) => {
+        const rootName = element.getAttribute('data-cke-root-name') || 'main';
+        const content = element.getAttribute('data-cke-content');
 
-      acc[rootName] = {
-        element: element.querySelector<HTMLElement>('[data-cke-editable-content]')!,
-        content,
-      };
+        acc[rootName] = {
+          element: element.querySelector<HTMLElement>('[data-cke-editable-content]')!,
+          content,
+        };
 
-      return acc;
-    }, Object.create({}));
+        return acc;
+      }, Object.create({}))
+  );
+
+  const editor = document.querySelector<HTMLElement>(`cke5-editor[data-cke-editor-id="${editorId}"]`);
+
+  if (!editor) {
+    return acc;
+  }
+
+  const currentMain = acc['main'];
+  const initialRootEditableValue = JSON.parse(editor.getAttribute('data-cke-content') || '{}');
+  const contentElement = document.querySelector<HTMLElement>(`#${editorId}_editor `);
+
+  // If found `main` editable, but it has no content, try to fill it from the editor container.
+  if (currentMain && initialRootEditableValue?.['main']) {
+    return {
+      ...acc,
+      main: {
+        ...currentMain,
+        content: currentMain.content || initialRootEditableValue['main'],
+      },
+    };
+  }
+
+  // If no `main` editable found, try to create it from the editor container.
+  if (contentElement) {
+    return {
+      ...acc,
+      main: {
+        element: contentElement,
+        content: initialRootEditableValue?.['main'] || null,
+      },
+    };
+  }
+
+  return acc;
 }
 
 /**

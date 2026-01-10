@@ -57,6 +57,12 @@ final class Preset
         return $clone;
     }
 
+    /**
+     * Creates a new Preset instance with merged configuration.
+     *
+     * @param array $config Configuration array to merge with the existing one.
+     * @return self A new Preset instance with the merged configuration.
+     */
     public function ofMergedConfig(array $config): self
     {
         $clone = $this->clone();

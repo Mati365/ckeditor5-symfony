@@ -82,6 +82,10 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
         }
 
         $style = 'position: relative;' . ($style !== null ? ' ' . $style : '');
+        $showInput = !in_array($resolvedPreset->editorType, [
+            EditorType::MULTIROOT,
+            EditorType::DECOUPLED,
+        ], true);
 
         return $this->twig->render('@CKEditor5/cke5_editor.html.twig', [
             'id' => $id,
@@ -95,6 +99,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
             'language' => json_encode($parsedLanguage),
             'watchdog' => $watchdog,
             'contextId' => $contextId,
+            'show_input' => $showInput,
         ]);
     }
 }

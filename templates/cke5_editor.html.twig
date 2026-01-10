@@ -10,7 +10,9 @@
     {% if editableHeight is not null %}data-cke-editable-height="{{ editableHeight }}"{% endif %}
     data-turbo-temporary
 >
-    <div id="{{ id }}_editor"></div>
+    {% if show_input %}
+        <div id="{{ id }}_editor"></div>
+    {% endif %}
 
     {% if name is not null %}
         {{ cke5_hidden_input(name: name, id: id ~ '_input', required: required) }}

@@ -15,6 +15,10 @@ const CUSTOM_ELEMENTS = {
  */
 export function registerCustomElements() {
   for (const [name, CustomElement] of Object.entries(CUSTOM_ELEMENTS)) {
+    if (window.customElements.get(name)) {
+      continue;
+    }
+
     window.customElements.define(name, CustomElement);
   }
 }

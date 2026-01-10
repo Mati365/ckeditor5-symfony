@@ -66,4 +66,22 @@ describe('waitForDOMReady', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     expect(spy).toHaveBeenCalled();
   });
+
+  it('should warn and resolve immediately for unexpected readyState', async () => {
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    Object.defineProperty(document, 'readyState', {
+      configurable: true,
+      get() { return 'unexpected'; },
+    });
+
+    const spy = vi.fn();
+    void waitForDOMReady().then(spy);
+
+    await timeout(0);
+    expect(consoleWarnSpy).toHaveBeenCalledWith('Unexpected document.readyState:', 'unexpected');
+    expect(spy).toHaveBeenCalled();
+
+    consoleWarnSpy.mockRestore();
+  });
 });

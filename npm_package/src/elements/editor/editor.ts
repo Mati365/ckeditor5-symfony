@@ -1,6 +1,6 @@
 import type { Editor } from 'ckeditor5';
 
-import type { EditorId, EditorLanguage, EditorPreset, EditorType } from './typings';
+import type { EditorId, EditorLanguage, EditorPreset } from './typings';
 import type { EditorCreator } from './utils';
 
 import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
@@ -10,7 +10,7 @@ import { EditorsRegistry } from './editors-registry';
 import { createSyncEditorWithInputPlugin } from './plugins';
 import {
   createEditorInContext,
-  isSingleEditingLikeEditor,
+  isSingleRootEditor,
   loadAllEditorTranslations,
   loadEditorConstructor,
   loadEditorPlugins,
@@ -154,7 +154,7 @@ export class EditorComponentElement extends HTMLElement {
 
     const { loadedPlugins, hasPremium } = await loadEditorPlugins(plugins);
 
-    if (isSingleEditingLikeEditor(editorType)) {
+    if (isSingleRootEditor(editorType)) {
       loadedPlugins.push(
         await createSyncEditorWithInputPlugin(saveDebounceMs),
       );
@@ -171,29 +171,38 @@ export class EditorComponentElement extends HTMLElement {
     // Let's query all elements, and create basic configuration.
     let initialData: string | Record<string, string> = {
       ...content,
-      ...queryEditablesSnapshotContent(editorId, editorType),
+      ...queryEditablesSnapshotContent(editorId),
     };
 
-    if (isSingleEditingLikeEditor(editorType)) {
+    if (isSingleRootEditor(editorType)) {
       initialData = initialData['main'] || '';
     }
 
     // Depending of the editor type, and parent lookup for nearest context or initialize it without it.
     const editor = await (async () => {
-      let sourceElementOrData = queryEditablesElements(editorId, editorType);
+      let sourceElementOrData: HTMLElement | Record<string, HTMLElement> = queryEditablesElements(editorId);
 
       // Handle special case when user specified `initialData` of several root elements, but editable components
       // are not yet present in the DOM. In other words - editor is initialized before attaching root elements.
-      if (shouldWaitForRoots(sourceElementOrData, editorType)) {
-        const requiredRoots = Object.keys(initialData as Record<string, string>);
+      if (!sourceElementOrData['main']) {
+        const requiredRoots = (
+          isSingleRootEditor(editorType)
+            ? ['main']
+            : Object.keys(initialData as Record<string, string>)
+        );
 
         if (!checkIfAllRootsArePresent(sourceElementOrData, requiredRoots)) {
-          sourceElementOrData = await waitForAllRootsToBePresent(editorId, editorType, requiredRoots);
+          sourceElementOrData = await waitForAllRootsToBePresent(editorId, requiredRoots);
           initialData = {
             ...content,
-            ...queryEditablesSnapshotContent(editorId, editorType),
+            ...queryEditablesSnapshotContent(editorId),
           };
         }
+      }
+
+      // If single root editor, unwrap the element from the object.
+      if (isSingleRootEditor(editorType) && 'main' in sourceElementOrData) {
+        sourceElementOrData = sourceElementOrData['main'];
       }
 
       // Construct parsed config.
@@ -222,7 +231,7 @@ export class EditorComponentElement extends HTMLElement {
       return result.editor;
     })();
 
-    if (isSingleEditingLikeEditor(editorType) && editableHeight) {
+    if (isSingleRootEditor(editorType) && editableHeight) {
       setEditorEditableHeight(editor, editableHeight);
     }
 
@@ -245,18 +254,16 @@ function checkIfAllRootsArePresent(elements: Record<string, HTMLElement>, requir
  * Waits for all required root elements to be present in the DOM.
  *
  * @param editorId The editor's ID.
- * @param editorType The type of the editor.
  * @param requiredRoots The list of required root IDs.
  * @returns A promise that resolves to the record of root elements.
  */
 async function waitForAllRootsToBePresent(
   editorId: EditorId,
-  editorType: EditorType,
   requiredRoots: string[],
 ): Promise<Record<string, HTMLElement>> {
   return waitFor(
     () => {
-      const elements = queryEditablesElements(editorId, editorType) as unknown as Record<string, HTMLElement>;
+      const elements = queryEditablesElements(editorId) as unknown as Record<string, HTMLElement>;
 
       if (!checkIfAllRootsArePresent(elements, requiredRoots)) {
         throw new Error(
@@ -271,23 +278,5 @@ async function waitForAllRootsToBePresent(
       return elements;
     },
     { timeOutAfter: 2000, retryAfter: 100 },
-  );
-}
-
-/**
- * Type guard to check if we should wait for multiple root elements.
- *
- * @param elements The elements retrieved for the editor.
- * @param editorType The type of the editor.
- * @returns True if we should wait for multiple root elements, false otherwise.
- */
-function shouldWaitForRoots(
-  elements: HTMLElement | Record<string, HTMLElement>,
-  editorType: EditorType,
-): elements is Record<string, HTMLElement> {
-  return (
-    !isSingleEditingLikeEditor(editorType)
-    && typeof elements === 'object'
-    && !(elements instanceof HTMLElement)
   );
 }

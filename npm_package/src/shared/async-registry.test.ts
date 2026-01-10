@@ -428,6 +428,16 @@ describe('async registry', () => {
 
       await expect(promise).rejects.toThrow('Failed to initialize');
     });
+
+    it('should reject with timeout error if item is not registered within timeout', async () => {
+      vi.useFakeTimers();
+      const promise = registry.waitFor('item1', 100);
+
+      vi.advanceTimersByTime(100);
+
+      await expect(promise).rejects.toThrow('Timeout waiting for item with ID "item1" to be registered.');
+      vi.useRealTimers();
+    });
   });
 
   describe('destroyAll', () => {

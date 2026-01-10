@@ -183,11 +183,46 @@ export class AsyncRegistry<T extends Destructible> {
    * If the item is not registered yet, it will wait for it to be registered.
    *
    * @param id The ID of the item.
+   * @param timeout Optional timeout in milliseconds.
    * @returns A promise that resolves with the item instance.
    */
-  waitFor<E extends T = T>(id: RegistryId | null): Promise<E> {
+  waitFor<E extends T = T>(id: RegistryId | null, timeout?: number): Promise<E> {
     return new Promise<E>((resolve, reject) => {
-      void this.execute(id, resolve as (value: E) => void, reject);
+      let exceedTimeout = false;
+      let timer: ReturnType<typeof setTimeout> | null = null;
+
+      void this.execute(
+        id,
+        (value: E) => {
+          if (exceedTimeout) {
+            return;
+          }
+
+          if (timer !== null) {
+            clearTimeout(timer!);
+          }
+
+          (resolve as (value: E) => void)(value);
+        },
+        (error: any) => {
+          if (exceedTimeout) {
+            return;
+          }
+
+          if (timer !== null) {
+            clearTimeout(timer!);
+          }
+
+          reject(error);
+        },
+      );
+
+      if (timeout) {
+        timer = setTimeout(() => {
+          exceedTimeout = true;
+          reject(new Error(`Timeout waiting for item with ID "${id}" to be registered.`));
+        }, timeout);
+      }
     });
   }
 
@@ -235,6 +270,16 @@ export class AsyncRegistry<T extends Destructible> {
    */
   unwatch(watcher: RegistryWatcher<T>): void {
     this.watchers.delete(watcher);
+  }
+
+  /**
+   * Resets the registry by clearing all items, errors, and pending callbacks.
+   */
+  reset(): void {
+    this.items.clear();
+    this.initializationErrors.clear();
+    this.pendingCallbacks.clear();
+    this.notifyWatchers();
   }
 
   /**
