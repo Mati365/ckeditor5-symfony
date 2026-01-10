@@ -226,7 +226,10 @@ describe('editor component', () => {
         const editor = await waitForTestEditor();
 
         expect(editor).toBeInstanceOf(MultiRootEditor);
-        expect(editor.getData({ rootName: 'header' })).toBe('<p>Editable content overrides snapshot content</p>');
+
+        await vi.waitFor(() => {
+          expect(editor.getData({ rootName: 'header' })).toBe('<p>Editable content overrides snapshot content</p>');
+        });
       });
 
       it('should not crash after setting content using `setData`', async () => {
