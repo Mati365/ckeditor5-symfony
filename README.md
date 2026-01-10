@@ -86,7 +86,8 @@ For more advanced usage, check the playground examples.
 The `ckeditor5:assets-mapper:install` command supports the following options:
 
 ```bash
-php bin/console ckeditor5:assets-mapper:install --help                                                                                                                                                17:07:42
+php bin/console ckeditor5:assets-mapper:install --help
+
 Description:
   Configure CKEditor5 assets in importmap.php, update base template, and download CKEditor to assets/vendor for cloud or NPM distribution
 
