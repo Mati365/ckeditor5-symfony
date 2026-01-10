@@ -6,6 +6,7 @@ import {
   DEFAULT_TEST_CONTEXT_ID,
   renderTestContext,
   renderTestEditor,
+  waitForDestroyAllEditors,
   waitForTestContext,
   waitForTestEditor,
 } from '~/test-utils';
@@ -22,10 +23,13 @@ describe('context component', () => {
     registerCustomElements();
   });
 
-  afterEach(() => {
-    CustomEditorPluginsRegistry.the.unregisterAll();
-    EditorsRegistry.the.reset();
-    ContextsRegistry.the.reset();
+  afterEach(async () => {
+    vi.useRealTimers();
+    vi.resetAllMocks();
+
+    document.body.innerHTML = '';
+
+    await waitForDestroyAllEditors();
   });
 
   describe('mount', () => {

@@ -5,10 +5,11 @@ import {
   createUIPartSnapshot,
   renderTestEditor,
   renderTestUIPart,
+  waitForDestroyAllEditors,
   waitForTestEditor,
 } from '~/test-utils';
 
-import { CustomEditorPluginsRegistry } from './editor/custom-editor-plugins';
+import { timeout } from '../shared';
 import { EditorsRegistry } from './editor/editors-registry';
 import { registerCustomElements } from './register-custom-elements';
 
@@ -19,10 +20,11 @@ describe('ui-part component', () => {
   });
 
   afterEach(async () => {
+    vi.useRealTimers();
+    vi.resetAllMocks();
+
+    await waitForDestroyAllEditors();
     document.body.innerHTML = '';
-    CustomEditorPluginsRegistry.the.unregisterAll();
-    EditorsRegistry.the.reset();
-    vi.restoreAllMocks();
   });
 
   describe('mounting ui part', () => {
@@ -85,6 +87,18 @@ describe('ui-part component', () => {
       });
 
       expect(toolbarElement).toBeTruthy();
+    });
+
+    it('should not mount UI part if element is disconnected before editor is ready', async () => {
+      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      el.remove();
+
+      appendMultirootEditor();
+
+      await waitForTestEditor();
+      await timeout(10);
+
+      expect(el.innerHTML).toBe('');
     });
   });
 

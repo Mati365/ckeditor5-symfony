@@ -12,7 +12,7 @@ export class EditableComponentElement extends HTMLElement {
   /**
    * The promise that resolves when the editable is mounted.
    */
-  private editorPromise: Promise<MultiRootEditor> | null = null;
+  private editorPromise: Promise<MultiRootEditor | null> | null = null;
 
   /**
    * Mounts the editable component.
@@ -37,6 +37,10 @@ export class EditableComponentElement extends HTMLElement {
     // If the editor is not registered yet, we will wait for it to be registered.
     this.style.display = 'block';
     this.editorPromise = EditorsRegistry.the.execute(editorId, async (editor: MultiRootEditor) => {
+      if (!this.isConnected) {
+        return null;
+      }
+
       const input = this.querySelector('input') as HTMLInputElement | null;
       const { ui, editing, model } = editor;
 
@@ -106,7 +110,14 @@ export class EditableComponentElement extends HTMLElement {
       const root = editor.model.document.getRoot(rootName);
 
       if (root && 'detachEditable' in editor) {
-        editor.detachEditable(root);
+        try {
+          editor.detachEditable(root);
+        }
+        catch (err) {
+          // Ignore errors when detaching editable.
+          console.error('Unable unmount editable from root:', err);
+        }
+
         editor.detachRoot(rootName, false);
       }
     }

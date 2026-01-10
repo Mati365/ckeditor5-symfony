@@ -19,27 +19,28 @@ import {
   isEditorShown,
   renderTestEditable,
   renderTestEditor,
+  waitForDestroyAllEditors,
   waitForTestEditor,
 } from '~/test-utils';
 
 import { timeout } from '../../shared/timeout';
 import { registerCustomElements } from '../register-custom-elements';
 import { CustomEditorPluginsRegistry } from './custom-editor-plugins';
-import { EditorsRegistry } from './editors-registry';
 import { unwrapEditorWatchdog } from './utils';
 
 describe('editor component', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     document.body.innerHTML = '';
     registerCustomElements();
   });
 
   afterEach(async () => {
     vi.useRealTimers();
+    vi.resetAllMocks();
+
     document.body.innerHTML = '';
 
-    CustomEditorPluginsRegistry.the.unregisterAll();
-    EditorsRegistry.the.reset();
+    await waitForDestroyAllEditors();
   });
 
   it('should save the editor instance in the registry with provided editorId', async () => {
@@ -212,13 +213,16 @@ describe('editor component', () => {
       });
 
       it('should wait and for root elements to be present in DOM if they are not (with set content value)', async () => {
-        renderTestEditable(createEditableSnapshot('header', '<p>Editable content overrides snapshot content</p>'));
         renderTestEditor({
           preset: createEditorPreset('multiroot'),
           content: {
             header: '<p>Header root initial content</p>',
           },
         });
+
+        renderTestEditable(
+          createEditableSnapshot('header', '<p>Editable content overrides snapshot content</p>'),
+        );
 
         const editor = await waitForTestEditor();
 
@@ -241,6 +245,23 @@ describe('editor component', () => {
         expect(() => {
           editor.setData('<p>New content</p>');
         }).not.toThrow();
+      });
+
+      it('should update root data if root already exists but editable has different content', async () => {
+        renderTestEditor({
+          preset: createEditorPreset('multiroot'),
+          content: {},
+        });
+
+        const editor = await waitForTestEditor<MultiRootEditor>();
+
+        editor.addRoot('existingRoot', { data: '<p>Old content</p>' });
+
+        renderTestEditable(createEditableSnapshot('existingRoot', '<p>New content</p>'));
+
+        await vi.waitFor(() => {
+          expect(editor.getData({ rootName: 'existingRoot' })).toBe('<p>New content</p>');
+        });
       });
     });
   });

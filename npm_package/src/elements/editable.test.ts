@@ -6,10 +6,11 @@ import {
   createEditorPreset,
   renderTestEditable,
   renderTestEditor,
+  waitForDestroyAllEditors,
   waitForTestEditor,
 } from '~/test-utils';
 
-import { EditorsRegistry } from './editor/editors-registry';
+import { timeout } from '../shared';
 import { registerCustomElements } from './register-custom-elements';
 
 describe('editable component', () => {
@@ -22,8 +23,9 @@ describe('editable component', () => {
     vi.useRealTimers();
     vi.resetAllMocks();
 
+    await waitForDestroyAllEditors();
+
     document.body.innerHTML = '';
-    EditorsRegistry.the.reset();
   });
 
   describe('mounting editable', () => {
@@ -154,6 +156,25 @@ describe('editable component', () => {
       await vi.waitFor(() => {
         expect(editable.getAttribute('data-cke-editor-id')).toBe('test-editor');
       });
+    });
+
+    it('should not initialize editable if element is disconnected before editor is ready', async () => {
+      const el = renderTestEditable({
+        rootName: 'foo',
+        content: '<p>Foo</p>',
+      });
+      el.remove();
+
+      renderTestEditor({
+        preset: createEditorPreset('multiroot'),
+        content: {},
+      });
+
+      const editor = await waitForTestEditor<MultiRootEditor>();
+
+      await timeout(10);
+
+      expect(editor.model.document.getRoot('foo')).toBe(null);
     });
   });
 

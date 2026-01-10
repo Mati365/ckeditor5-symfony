@@ -29,6 +29,10 @@ export class UIPartComponentElement extends HTMLElement {
     // If the editor is not registered yet, we will wait for it to be registered.
     this.style.display = 'block';
     this.mountedPromise = EditorsRegistry.the.execute(editorId, (editor) => {
+      if (!this.isConnected) {
+        return;
+      }
+
       const { ui } = editor;
 
       const uiViewName = mapUIPartView(name);
