@@ -623,6 +623,7 @@ Options:
       --editor-version=EDITOR-VERSION  CKEditor version [default: "47.3.0"]
       --translations=TRANSLATIONS      Comma-separated list of translations [default: "en"]
       --template-path=TEMPLATE-PATH    Path to base template file [default: "templates/base.html.twig"]
+      --js-path=JS-PATH                Path to main JS file [default: "assets/app.js"]
       --css-path=CSS-PATH              Path to main CSS file [default: "assets/styles/app.css"]
       --ckbox-version[=CKBOX-VERSION]  CKBox version
       --ckbox-theme[=CKBOX-THEME]      CKBox theme (light or dark)
@@ -630,12 +631,14 @@ Options:
       --skip-template-update           Skip updating the Twig template
       --skip-composer-update           Skip updating composer.json
       --skip-css-update                Skip updating CSS imports
+      --skip-js-update                 Skip updating Jng composer.json
   -h, --help                           Display help for the given command. When no command is given display help for the list command
-  -q, --quiet                          Do not output any message
+      --silent                         Do not output any message
+  -q, --quiet                          Only errors are displayed. All other output is suppressed
   -V, --version                        Display this application version
       --ansi|--no-ansi                 Force (or disable --no-ansi) ANSI output
   -n, --no-interaction                 Do not ask any interactive question
-  -e, --env=ENV                        The Environment name. [default: "1"]
+  -e, --env=ENV                        The Environment name. [default: "dev"]
       --no-debug                       Switch off debug mode.
       --profile                        Enables profiling (requires debug).
   -v|vv|vvv, --verbose                 Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
