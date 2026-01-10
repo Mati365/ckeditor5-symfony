@@ -9,6 +9,8 @@ use Mati365\CKEditor5Symfony\Command\Installer\Strategy;
 use Mati365\CKEditor5Symfony\Cloud\CloudSingletonLoader;
 use Mati365\CKEditor5Symfony\Cloud\CloudLoaderInterface;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
+
 return static function (ContainerConfigurator $container): void {
     $container
         ->services()
@@ -18,6 +20,7 @@ return static function (ContainerConfigurator $container): void {
         ->set(ConfigManager::class)
         ->set(CKEditorTwigExtension::class)
         ->set(CKEditor5AssetsMapperInstallCommand::class)
+            ->arg('$strategies', tagged_iterator('mati365.ckeditor5.installer_strategy'))
         ->set(Strategy\CloudInstallerStrategy::class)
             ->tag('mati365.ckeditor5.installer_strategy')
             ->bind('$projectDir', '%kernel.project_dir%')
