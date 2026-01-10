@@ -438,6 +438,75 @@ describe('async registry', () => {
       await expect(promise).rejects.toThrow('Timeout waiting for item with ID "item1" to be registered.');
       vi.useRealTimers();
     });
+
+    it('should cleanup timer when item is registered before timeout', async () => {
+      vi.useFakeTimers();
+      const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+      const promise = registry.waitFor('item1', 100);
+
+      const item = createMockItem('item1');
+      registry.register('item1', item);
+
+      await promise;
+
+      expect(clearTimeoutSpy).toHaveBeenCalled();
+      vi.useRealTimers();
+    });
+
+    it('should cleanup timer when error occurs before timeout', async () => {
+      vi.useFakeTimers();
+      const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+      const promise = registry.waitFor('item1', 100);
+
+      registry.error('item1', new Error('fail'));
+
+      await expect(promise).rejects.toThrow('fail');
+
+      expect(clearTimeoutSpy).toHaveBeenCalled();
+      vi.useRealTimers();
+    });
+
+    it('should not try to clear timer if timeout exceeded before item registration', async () => {
+      vi.useFakeTimers();
+      const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+      const promise = registry.waitFor('item1', 100);
+
+      // Trigger timeout
+      vi.advanceTimersByTime(100);
+
+      await expect(promise).rejects.toThrow('Timeout');
+
+      // Clear spy to reset calls made by internal mechanisms
+      clearTimeoutSpy.mockClear();
+
+      // Now register item - verify logic in success callback
+      const item = createMockItem('item1');
+      registry.register('item1', item);
+
+      expect(clearTimeoutSpy).not.toHaveBeenCalled();
+
+      vi.useRealTimers();
+    });
+
+    it('should not try to clear timer if timeout exceeded before error registration', async () => {
+      vi.useFakeTimers();
+      const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
+      const promise = registry.waitFor('item1', 100);
+
+      // Trigger timeout
+      vi.advanceTimersByTime(100);
+
+      await expect(promise).rejects.toThrow('Timeout');
+
+      clearTimeoutSpy.mockClear();
+
+      // Now register error - verify logic in error callback
+      registry.error('item1', new Error('late fail'));
+
+      expect(clearTimeoutSpy).not.toHaveBeenCalled();
+
+      vi.useRealTimers();
+    });
   });
 
   describe('destroyAll', () => {
