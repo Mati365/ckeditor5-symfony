@@ -18,25 +18,78 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   <img src="docs/intro-classic-editor.png" alt="CKEditor 5 Classic Editor in Symfony (PHP) application">
 </p>
 
-## Under construction 🚧
+## Table of Contents
 
-This package is currently under active development. It'll be ready for production use soon. Stay tuned!
+- [ckeditor5-symfony](#ckeditor5-symfony)
+  - [Table of Contents](#table-of-contents)
+  - [Installation 🚀](#installation-)
+    - [🏠 Self-hosted](#-self-hosted)
+    - [📡 CDN Distribution](#-cdn-distribution)
+  - [Usage 📖](#usage-)
+  - [Installer command options ⚙️](#installer-command-options-️)
+  - [Development ⚙️](#development-️)
+    - [Running Tests 🧪](#running-tests-)
+  - [Psst... 👀](#psst-)
+  - [Trademarks 📜](#trademarks-)
+  - [License 📜](#license-)
 
 ## Installation 🚀
 
-Install the package via Composer:
+Choose between two installation methods based on your needs. Both approaches provide the same functionality but differ in how CKEditor 5 assets are loaded and managed.
 
-```bash
-composer require mati365/ckeditor5-symfony
-```
+### 🏠 Self-hosted
 
-Then, configure the Assets Mapper, templates and CSS files by running the command:
+Bundle CKEditor 5 with your application for full control over assets, custom builds, and offline support. This method is recommended for advanced users or production applications with specific requirements. It does not require NPM or node.js in your project.
 
-```bash
-php bin/console ckeditor5:assets-mapper:install # --distribution=cloud
-```
+**Complete setup:**
 
-Voila! CKEditor 5 is now ready to use in your Symfony application.
+1. **Add PHP dependency** to your `composer.json`:
+
+   ```bash
+   composer require mati365/ckeditor5-symfony
+   ```
+
+2. **Execute installation command**
+
+   ```bash
+   php bin/console ckeditor5:assets-mapper:install # --premium
+   ```
+
+   > The `--premium` flag is optional and enables the installation of CKEditor 5 Premium (requires a valid license).
+
+  For more options, see the [installer command options](#installer-command-options) section below.
+
+### 📡 CDN Distribution
+
+If you use the cloud distribution of CKEditor 5 which uses CKSource's CDN to load assets, this method is quick and easy to set up. It is suitable for development environments or projects where you want to minimize asset management overhead.
+
+**Complete setup:**
+
+1. **Add PHP dependency** to your `composer.json`:
+
+   ```bash
+   composer require mati365/ckeditor5-symfony
+   ```
+
+2. **Execute installation command**
+
+   ```bash
+   php bin/console ckeditor5:assets-mapper:install --distribution=cloud # --premium
+   ```
+
+   > The `--premium` flag is optional and enables the installation of CKEditor 5 Premium (requires a valid license).
+
+   For more options, see the [installer command options](#installer-command-options) section below.
+
+3. **Configure you CKEditor 5 License Key**
+
+   Set `.env` variable:
+
+   ```bash
+   CKE5_LICENSE_KEY="your-license-key-here"
+   ```
+
+That's it! 🎉
 
 ## Usage 📖
 
@@ -55,6 +108,42 @@ To use CKEditor 5 in your Twig templates, simply call the `cke5_editor()` functi
 This will render a classic editor with the provided content.
 
 For more advanced usage, check the playground examples.
+
+## Installer command options ⚙️
+
+The `ckeditor5:assets-mapper:install` command supports the following options:
+
+```bash
+php bin/console ckeditor5:assets-mapper:install --help                                                                                                                                                17:07:42
+Description:
+  Configure CKEditor5 assets in importmap.php, update base template, and download CKEditor to assets/vendor for cloud or NPM distribution
+
+Usage:
+  ckeditor5:assets-mapper:install [options]
+
+Options:
+      --distribution=DISTRIBUTION      Distribution type: cloud or npm [default: "npm"]
+      --importmap-path=IMPORTMAP-PATH  Path to importmap.php file [default: "importmap.php"]
+      --editor-version=EDITOR-VERSION  CKEditor version [default: "47.3.0"]
+      --translations=TRANSLATIONS      Comma-separated list of translations [default: "en"]
+      --template-path=TEMPLATE-PATH    Path to base template file [default: "templates/base.html.twig"]
+      --css-path=CSS-PATH              Path to main CSS file [default: "assets/styles/app.css"]
+      --ckbox-version[=CKBOX-VERSION]  CKBox version
+      --ckbox-theme[=CKBOX-THEME]      CKBox theme (light or dark)
+      --premium                        Include premium features
+      --skip-template-update           Skip updating the Twig template
+      --skip-composer-update           Skip updating composer.json
+      --skip-css-update                Skip updating CSS imports
+  -h, --help                           Display help for the given command. When no command is given display help for the list command
+  -q, --quiet                          Do not output any message
+  -V, --version                        Display this application version
+      --ansi|--no-ansi                 Force (or disable --no-ansi) ANSI output
+  -n, --no-interaction                 Do not ask any interactive question
+  -e, --env=ENV                        The Environment name. [default: "1"]
+      --no-debug                       Switch off debug mode.
+      --profile                        Enables profiling (requires debug).
+  -v|vv|vvv, --verbose                 Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+```
 
 ## Development ⚙️
 
