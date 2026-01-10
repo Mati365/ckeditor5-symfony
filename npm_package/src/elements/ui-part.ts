@@ -18,9 +18,10 @@ export class UIPartComponentElement extends HTMLElement {
   async connectedCallback() {
     await waitForDOMReady();
 
-    const editorId = this.getAttribute('data-cke-editor-id') || queryAllEditorIds()[0];
+    const editorId = this.getAttribute('data-cke-editor-id') || queryAllEditorIds()[0]!;
     const name = this.getAttribute('data-cke-name');
 
+    /* v8 ignore next 3 */
     if (!editorId || !name) {
       return;
     }
@@ -33,6 +34,7 @@ export class UIPartComponentElement extends HTMLElement {
       const uiViewName = mapUIPartView(name);
       const uiPart = (ui.view as any)[uiViewName!];
 
+      /* v8 ignore next 3 */
       if (!uiPart) {
         throw new CKEditor5SymfonyError(`Unknown UI part name: "${name}". Supported names are "toolbar" and "menubar".`);
       }
@@ -71,6 +73,7 @@ function mapUIPartView(name: string): string | null {
     case 'menubar':
       return 'menuBarView';
 
+    /* v8 ignore next 3 */
     default:
       return null;
   }

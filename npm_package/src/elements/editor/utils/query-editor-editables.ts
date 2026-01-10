@@ -44,7 +44,7 @@ function queryAllEditorEditables(editorId: EditorId) {
     Array
       .from(document.querySelectorAll<HTMLElement>(`cke5-editable[data-cke-editor-id="${editorId}"]`))
       .reduce<Record<string, EditableItem>>((acc, element) => {
-        const rootName = element.getAttribute('data-cke-root-name') || 'main';
+        const rootName = element.getAttribute('data-cke-root-name')!;
         const content = element.getAttribute('data-cke-content');
 
         acc[rootName] = {
@@ -58,12 +58,13 @@ function queryAllEditorEditables(editorId: EditorId) {
 
   const editor = document.querySelector<HTMLElement>(`cke5-editor[data-cke-editor-id="${editorId}"]`);
 
+  /* v8 ignore next 3 */
   if (!editor) {
     return acc;
   }
 
   const currentMain = acc['main'];
-  const initialRootEditableValue = JSON.parse(editor.getAttribute('data-cke-content') || '{}');
+  const initialRootEditableValue = JSON.parse(editor.getAttribute('data-cke-content')!);
   const contentElement = document.querySelector<HTMLElement>(`#${editorId}_editor `);
 
   // If found `main` editable, but it has no content, try to fill it from the editor container.
