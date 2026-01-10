@@ -34,7 +34,4 @@ return [
     'ckeditor5/translations/en.js' => [
         'path' => './assets/vendor/ckeditor5/dist/translations/en.js',
     ],
-    'ckeditor5/translations/pl.js' => [
-        'path' => './assets/vendor/ckeditor5/dist/translations/pl.js',
-    ],
 ];

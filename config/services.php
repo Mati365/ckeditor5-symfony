@@ -36,6 +36,8 @@ return static function (ContainerConfigurator $container): void {
             ->bind('$projectDir', '%kernel.project_dir%')
         ->set(Installer\CSSManipulator::class)
             ->bind('$projectDir', '%kernel.project_dir%')
+        ->set(Installer\JSManipulator::class)
+            ->bind('$projectDir', '%kernel.project_dir%')
         ->set(CloudSingletonLoader::class)
             ->args(['%kernel.project_dir%/assets/vendor/ckeditor5-cloud/cloud.json'])
         ->alias(CloudLoaderInterface::class, CloudSingletonLoader::class)

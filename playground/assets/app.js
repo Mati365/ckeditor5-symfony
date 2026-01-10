@@ -1,3 +1,4 @@
+import '@mati365/ckeditor5-symfony';
 import './bootstrap.js';
 import './styles/app.css';
 

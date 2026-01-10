@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 use Symfony\Component\Process\Process;
-use Mati365\CKEditor5Symfony\Command\Installer\{ComposerManipulator, ImportmapManipulator};
+use Mati365\CKEditor5Symfony\Command\Installer\{ComposerManipulator, ImportmapManipulator, JSManipulator};
 use Mati365\CKEditor5Symfony\Command\Installer\Strategy\InstallerStrategyInterface;
 
 #[AsCommand(
@@ -25,6 +25,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
     public function __construct(
         private ImportmapManipulator $importmapManipulator,
         private ComposerManipulator $composerManipulator,
+        private JSManipulator $jsManipulator,
         #[TaggedIterator('mati365.ckeditor5.installer_strategy')]
         private iterable $strategies
     ) {
@@ -40,12 +41,14 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
             ->addOption('editor-version', null, InputOption::VALUE_REQUIRED, 'CKEditor version', '47.3.0')
             ->addOption('translations', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of translations', 'en')
             ->addOption('template-path', null, InputOption::VALUE_REQUIRED, 'Path to base template file', 'templates/base.html.twig')
-            ->addOption('css-path', null, InputOption::VALUE_REQUIRED, 'Path to main CSS file', 'assets/styles/app.css')
+            ->addOption('js-path', null, InputOption::VALUE_REQUIRED, 'Path to main JS file', 'assets/app.js')
             ->addOption('ckbox-version', null, InputOption::VALUE_OPTIONAL, 'CKBox version')
             ->addOption('ckbox-theme', null, InputOption::VALUE_OPTIONAL, 'CKBox theme (light or dark)')
             ->addOption('premium', null, InputOption::VALUE_NONE, 'Include premium features')
             ->addOption('skip-template-update', null, InputOption::VALUE_NONE, 'Skip updating the Twig template')
             ->addOption('skip-composer-update', null, InputOption::VALUE_NONE, 'Skip updating composer.json')
+            ->addOption('skip-css-update', null, InputOption::VALUE_NONE, 'Skip updating CSS imports')
+            ->addOption('skip-js-update', null, InputOption::VALUE_NONE, 'Skip updating Jng composer.json')
             ->addOption('skip-css-update', null, InputOption::VALUE_NONE, 'Skip updating CSS imports');
     }
 
@@ -77,7 +80,12 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
 
             // 4. Update Twig and CSS
             $strategy->updateTwig($input, $io);
-            $strategy->updateCss($input, $io);
+
+            if (!$input->getOption('skip-js-update')) {
+                $jsPath = $input->getOption('js-path');
+                $io->note("Adding import to JS file: $jsPath");
+                $this->jsManipulator->addImport($jsPath, '@mati365/ckeditor5-symfony');
+            }
 
             // 5.  Compile asset map
             $io->note('Compiling asset map...');
@@ -89,7 +97,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
                 return Command::FAILURE;
             }
 
-            // 7. Update composer.json
+            // 6. Update composer.json
             if (!$input->getOption('skip-composer-update')) {
                 $io->note("Updating composer.json auto-scripts...");
                 $command = self::reconstructCommand($input);
@@ -156,6 +164,8 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
         // Always add these for the auto-script version to prevent recursion/loops
         $options['--skip-template-update'] = null;
         $options['--skip-composer-update'] = null;
+        $options['--skip-css-update'] = null;
+        $options['--skip-js-update'] = null;
 
         // Build string
         $parts = [$command];
