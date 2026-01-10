@@ -93,7 +93,10 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 ## Usage 📖
 
-The necessary JavaScript and CSS assets are automatically included in the page header via Symfony's Assets Mapper. If using the cloud distribution, also include the following in your template's head section:
+The necessary JavaScript and CSS assets are automatically included in the page header via Symfony's Assets Mapper.
+
+> [!IMPORTANT]
+> The `cke5_cloud_assets()` helper should be used **only** when the Symfony AssetMapper is not available or not used. It emits its own importmap configuration.
 
 ```twig
 {{ cke5_cloud_assets() }}
@@ -118,7 +121,7 @@ Get started with the most common usage patterns. These examples show how to rend
 Create a basic editor with default toolbar and features.
 
 ```twig
-{# CDN only: Load assets in <head> #}
+{# Only if AssetMapper is not used #}
 {{ cke5_cloud_assets() }}
 
 {# Render editor with initial content #}
@@ -156,7 +159,7 @@ Traditional WYSIWYG editor with a fixed toolbar above the editing area. Best for
 ![CKEditor 5 Classic Editor in Symfony application](docs/classic-editor-with-toolbar.png)
 
 ```twig
-{# CDN assets in <head> #}
+{# Only if AssetMapper is not used #}
 {{ cke5_cloud_assets() }}
 
 {# Classic editor in <body> #}
@@ -174,7 +177,7 @@ Advanced editor supporting multiple independent editable areas within a single e
 ![CKEditor 5 Multiroot Editor in Symfony application](docs/multiroot-editor.png)
 
 ```twig
-{# CDN assets in <head> #}
+{# Only if AssetMapper is not used #}
 {{ cke5_cloud_assets() }}
 
 {# Editor container #}
@@ -203,7 +206,7 @@ Minimalist editor that appears directly within content when clicked. Ideal for i
 ![CKEditor 5 Inline Editor in Symfony application](docs/inline-editor.png)
 
 ```twig
-{# CDN assets in <head> #}
+{# Only if AssetMapper is not used #}
 {{ cke5_cloud_assets() }}
 
 {# Inline editor #}
@@ -223,7 +226,7 @@ Flexible editor where toolbar and editing area are completely separated. Provide
 ![CKEditor 5 Decoupled Editor in Symfony application](docs/decoupled-editor.png)
 
 ```twig
-{# CDN assets in <head> #}
+{# Only if AssetMapper is not used #}
 {{ cke5_cloud_assets() }}
 
 {# Decoupled editor container #}
@@ -406,7 +409,7 @@ Support multiple languages in the editor UI and content. Learn how to load trans
 Depending on your setup, you can preload translations via CDN.
 
 ```twig
-{# CDN only: Load specific translations #}
+{# Only if AssetMapper is not used: Load specific translations #}
 {{ cke5_cloud_assets(translations: ['pl', 'de', 'fr']) }}
 
 {{ cke5_editor(
