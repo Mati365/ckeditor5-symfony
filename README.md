@@ -23,8 +23,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 - [ckeditor5-symfony](#ckeditor5-symfony)
   - [Table of Contents](#table-of-contents)
   - [Installation 🚀](#installation-)
-    - [🏠 Self-hosted](#-self-hosted)
-    - [📡 CDN Distribution](#-cdn-distribution)
   - [Usage 📖](#usage-)
   - [Installer command options ⚙️](#installer-command-options-️)
   - [Development ⚙️](#development-️)
@@ -35,61 +33,35 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 ## Installation 🚀
 
-Choose between two installation methods based on your needs. Both approaches provide the same functionality but differ in how CKEditor 5 assets are loaded and managed.
-
-### 🏠 Self-hosted
-
-Bundle CKEditor 5 with your application for full control over assets, custom builds, and offline support. This method is recommended for advanced users or production applications with specific requirements. It does not require NPM or node.js in your project.
-
-**Complete setup:**
-
-1. **Add PHP dependency** to your `composer.json`:
+1. **Install the package:**
 
    ```bash
    composer require mati365/ckeditor5-symfony
    ```
 
-2. **Execute installation command**
+2. **Run the installer:**
+
+   Choose the distribution method that best fits your needs:
+
+   **🏠 Self-hosted (Recommended)**
+   Bundles assets locally. No Node.js required.
 
    ```bash
-   php bin/console ckeditor5:assets-mapper:install # --premium
+   php bin/console ckeditor5:assets-mapper:install
    ```
 
-   > The `--premium` flag is optional and enables the installation of CKEditor 5 Premium (requires a valid license).
-
-  For more options, see the [installer command options](#installer-command-options) section below.
-
-### 📡 CDN Distribution
-
-If you use the cloud distribution of CKEditor 5 which uses CKSource's CDN to load assets, this method is quick and easy to set up. It is suitable for development environments or projects where you want to minimize asset management overhead.
-
-**Complete setup:**
-
-1. **Add PHP dependency** to your `composer.json`:
+   **📡 CDN Distribution**
+   Loads assets from CKSource CDN.
 
    ```bash
-   composer require mati365/ckeditor5-symfony
+   php bin/console ckeditor5:assets-mapper:install --distribution=cloud
    ```
 
-2. **Execute installation command**
+   *For CDN, add `CKEDITOR5_LICENSE_KEY="your-key"` to your `.env` file.*
 
-   ```bash
-   php bin/console ckeditor5:assets-mapper:install --distribution=cloud # --premium
-   ```
+   > 💡 **Tip:** Add `--premium` to either command to install premium features (requires a valid license).
 
-   > The `--premium` flag is optional and enables the installation of CKEditor 5 Premium (requires a valid license).
-
-   For more options, see the [installer command options](#installer-command-options) section below.
-
-3. **Configure you CKEditor 5 License Key**
-
-   Set `.env` variable:
-
-   ```bash
-   CKE5_LICENSE_KEY="your-license-key-here"
-   ```
-
-That's it! 🎉
+   For more options, see [Installer command options](#installer-command-options-️).
 
 ## Usage 📖
 
