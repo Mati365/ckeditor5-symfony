@@ -137,6 +137,19 @@ describe('editor component', () => {
         expect(editor).to.toBeInstanceOf(DecoupledEditor);
         expect(editor.getData()).toBe(initialEditableContent);
       });
+
+      it('should wait for root element to be present in DOM if it is not', async () => {
+        renderTestEditor({ preset: createEditorPreset('decoupled') });
+
+        await timeout(200);
+
+        renderTestEditable(createEditableSnapshot('main', null));
+
+        const editor = await waitForTestEditor();
+
+        expect(editor).to.toBeInstanceOf(DecoupledEditor);
+        expect(isEditorShown()).toBe(true);
+      });
     });
 
     describe('balloon', () => {

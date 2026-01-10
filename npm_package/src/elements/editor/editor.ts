@@ -59,6 +59,7 @@ export class EditorComponentElement extends HTMLElement {
           }
         });
       }
+      /* v8 ignore next 6 */
     }
     catch (error: any) {
       console.error(`Error initializing CKEditor5 instance with ID "${editorId}":`, error);
@@ -79,7 +80,7 @@ export class EditorComponentElement extends HTMLElement {
     try {
       const editor = await this.editorPromise;
 
-      // istanbul ignore next
+      /* v8 ignore next 3 */
       if (!editor) {
         return;
       }
