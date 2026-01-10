@@ -21,14 +21,15 @@ export class EditableComponentElement extends HTMLElement {
     await waitForDOMReady();
 
     if (!this.hasAttribute('data-cke-editor-id')) {
-      this.setAttribute('data-cke-editor-id', queryAllEditorIds()[0] ?? '');
+      this.setAttribute('data-cke-editor-id', queryAllEditorIds()[0]!);
     }
 
     const editorId = this.getAttribute('data-cke-editor-id');
     const rootName = this.getAttribute('data-cke-root-name');
     const content = this.getAttribute('data-cke-content');
-    const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms') || '500', 10);
+    const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms')!, 10);
 
+    /* v8 ignore next 3 */
     if (!editorId || !rootName) {
       throw new CKEditor5SymfonyError('Editor ID or Root Name is missing.');
     }

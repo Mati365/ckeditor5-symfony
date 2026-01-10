@@ -6,7 +6,10 @@ import { createEditableSnapshot } from './create-editable-snapshot';
 /**
  * Renders the editable component in the DOM.
  */
-export function renderTestEditable(snapshot: Partial<EditableSnapshot> = {}): HTMLElement {
+export function renderTestEditable(
+  snapshot: Partial<EditableSnapshot> = {},
+  options: { withInput?: boolean; } = {},
+): HTMLElement {
   const fullSnapshot: EditableSnapshot = {
     ...createEditableSnapshot(),
     ...snapshot,
@@ -15,12 +18,19 @@ export function renderTestEditable(snapshot: Partial<EditableSnapshot> = {}): HT
   const element = html.tag(
     'cke5-editable',
     {
-      'data-cke-editor-id': fullSnapshot.editorId,
+      ...fullSnapshot.editorId && {
+        'data-cke-editor-id': fullSnapshot.editorId,
+      },
       'data-cke-root-name': fullSnapshot.rootName,
       'data-cke-content': fullSnapshot.content,
       'data-cke-save-debounce-ms': fullSnapshot.saveDebounceMs,
     },
-    html.div({ 'data-cke-editable-content': '' }),
+    ...[
+      html.div({ 'data-cke-editable-content': '' }),
+      ...options.withInput
+        ? [html.input({ type: 'text' })]
+        : [],
+    ],
   );
 
   const wrapper = html.div({}, element);
