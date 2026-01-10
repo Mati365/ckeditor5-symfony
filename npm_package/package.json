@@ -2,6 +2,9 @@
   "name": "ckeditor5-symfony",
   "version": "1.0.0",
   "description": "CKEditor 5 integration for Symfony",
+  "repository": {
+    "url": "https://github.com/Mati365/ckeditor5-symfony"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
