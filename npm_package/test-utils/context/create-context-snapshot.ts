@@ -35,7 +35,7 @@ export function createContextSnapshot(
 /**
  * A snapshot of the Livewire component's state relevant to the CKEditor5 context hook.
  */
-type Snapshot = {
+export type Snapshot = {
   /**
    * The unique identifier for the context instance.
    */

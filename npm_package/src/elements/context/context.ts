@@ -3,7 +3,6 @@ import type { Context, ContextWatchdog } from 'ckeditor5';
 import type { EditorLanguage } from '../editor';
 import type { ContextConfig } from './typings';
 
-import { CKEditor5SymfonyError } from '../../ckeditor5-symfony-error';
 import { isEmptyObject, waitForDOMReady } from '../../shared';
 import {
   loadAllEditorTranslations,
@@ -27,13 +26,9 @@ export class ContextComponentElement extends HTMLElement {
   async connectedCallback() {
     await waitForDOMReady();
 
-    const contextId = this.getAttribute('data-cke-context-id');
+    const contextId = this.getAttribute('data-cke-context-id')!;
     const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
-    const contextConfig = JSON.parse(this.getAttribute('data-cke-context') || '{}') as ContextConfig;
-
-    if (!contextId) {
-      throw new CKEditor5SymfonyError('Context ID is missing.');
-    }
+    const contextConfig = JSON.parse(this.getAttribute('data-cke-context')!) as ContextConfig;
 
     const { customTranslations, watchdogConfig, config: { plugins, ...config } } = contextConfig;
     const { loadedPlugins, hasPremium } = await loadEditorPlugins(plugins ?? []);
