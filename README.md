@@ -67,7 +67,20 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    composer require mati365/ckeditor5-symfony
    ```
 
-2. **Run the installer:**
+2. **Enable the bundle:**
+
+   If you are not using Symfony Flex, you need to register the bundle in `config/bundles.php`:
+
+   ```php
+   // config/bundles.php
+
+   return [
+       // ...
+       Mati365\CKEditor5Symfony\CKEditorBundle::class => ['all' => true],
+   ];
+   ```
+
+3. **Run the installer:**
 
    Choose the distribution method that best fits your needs:
 
