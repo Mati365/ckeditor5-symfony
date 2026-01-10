@@ -78,8 +78,9 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
 
             $this->importmapManipulator->saveImportmap($importmapPath, $importmap);
 
-            // 4. Update Twig and CSS
+            // 4. Update Twig, JS and CSS
             $strategy->updateTwig($input, $io);
+            $strategy->updateCss($input, $io);
 
             if (!$input->getOption('skip-js-update')) {
                 $jsPath = $input->getOption('js-path');
