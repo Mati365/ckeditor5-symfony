@@ -284,8 +284,8 @@ ckeditor5:
         toolbar: [bold, italic, link]
         plugins: [Bold, Italic, Link, Essentials, Paragraph]
 
-      # Only if don't use AssetsMapper and using cloud distribution. Otherwise, this section is ignored,
-      # as it's automatically configured during `ckeditor5:assets-mapper:install` command.
+      # Only if don't use AssetsMapper and using cloud distribution. Otherwise, this section is
+      # automatically configured during `ckeditor5:assets-mapper:install` command.
       cloud:
         version: 46.0.0
         premium: true
