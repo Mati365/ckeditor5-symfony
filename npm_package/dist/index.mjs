@@ -1090,11 +1090,11 @@ function lt() {
 lt();
 export {
   h as CKEditor5SymfonyError,
-  rt as ContextComponentElement,
   y as ContextsRegistry,
+  S as CustomEditorPluginsRegistry,
   it as EditableComponentElement,
   nt as EditorComponentElement,
-  ot as UIPartComponentElement,
-  lt as registerCustomElements
+  d as EditorsRegistry,
+  ot as UIPartComponentElement
 };
 //# sourceMappingURL=index.mjs.map
