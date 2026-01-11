@@ -1,0 +1,38 @@
+ckeditor5:
+  presets:
+    minimal:
+      editorType: classic
+      config:
+        toolbar: [bold, italic, link]
+        plugins: [Bold, Italic, Link, Essentials, Paragraph]
+
+    full:
+      editorType: classic
+      config:
+        toolbar:
+          - heading
+          - '|'
+          - bold
+          - italic
+          - underline
+          - '|'
+          - link
+          - insertImage
+          - insertTable
+          - '|'
+          - bulletedList
+          - numberedList
+          - blockQuote
+        plugins:
+          - Heading
+          - Bold
+          - Italic
+          - Underline
+          - Link
+          - ImageBlock
+          - ImageUpload
+          - Table
+          - List
+          - BlockQuote
+          - Essentials
+          - Paragraph
