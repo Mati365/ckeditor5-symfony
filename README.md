@@ -226,15 +226,15 @@ Flexible editor where toolbar and editing area are completely separated. Provide
 {{ cke5_editor(id: 'decoupled-editor', editorType: 'decoupled') }}
 
 <div class="editor-container">
-    {# Toolbar can be placed anywhere #}
-    {{ cke5_ui_part('toolbar') }}
+  {# Toolbar can be placed anywhere #}
+  {{ cke5_ui_part('toolbar') }}
 
-    {# Editable area with custom styling #}
-    {{ cke5_editable(
-        content: '<p>Initial content here</p>',
-        class: 'border p-4 rounded',
-        editableHeight: 300
-    ) }}
+  {# Editable area with custom styling #}
+  {{ cke5_editable(
+    content: '<p>Initial content here</p>',
+    class: 'border p-4 rounded',
+    editableHeight: 300
+  ) }}
 </div>
 ```
 
@@ -251,9 +251,9 @@ use Mati365\CKEditor5Symfony\Form\Type\CKEditor5Type;
 // ...
 
 $builder->add('content', CKEditor5Type::class, [
-    'label' => 'Article Content',
-    'required' => true,
-    'attr' => ['row_attr' => ['class' => 'text-editor']],
+  'label' => 'Article Content',
+  'required' => true,
+  'attr' => ['row_attr' => ['class' => 'text-editor']],
 ]);
 ```
 
@@ -451,9 +451,9 @@ You can also configure translations globally in your configuration file. This is
 
 ckeditor5:
   presets:
-  default:
-    cloud:
-    translations: [pl, de, fr]
+    default:
+      cloud:
+      translations: [pl, de, fr]
 ```
 
 **Note:** For self-hosted setups, translations are handled by your bundler automatically.
