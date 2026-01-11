@@ -331,6 +331,8 @@ In template:
 {{ cke5_editor(content: '<p>Simple editor</p>', preset: 'minimal') }}
 ```
 
+The default one is specified here [src/DependencyInjection/DefaultConfiguration.php](src/DependencyInjection/DefaultConfiguration.php).
+
 ### Dynamic configuration 🎯
 
 You can also override configuration at runtime by passing `config` or `mergeConfig` arguments to the editor function. This is useful if you want to change the editor configuration based on user input or other conditions.
@@ -359,7 +361,8 @@ CKEditor 5 requires a license key when using the official CDN or premium feature
    ```yaml
    ckeditor5:
      presets:
-       default:
+       custom:
+         # ...
          licenseKey: your-license-key-here
    ```
 
@@ -451,9 +454,9 @@ You can also configure translations globally in your configuration file. This is
 
 ckeditor5:
   presets:
-    default:
+    custom:
       cloud:
-      translations: [pl, de, fr]
+        translations: [pl, de, fr]
 ```
 
 **Note:** For self-hosted setups, translations are handled by your bundler automatically.
@@ -467,7 +470,8 @@ You can also provide custom translations for the editor. This is useful if you w
 
 ckeditor5:
   presets:
-    default:
+    custom:
+      # ...
       customTranslations:
         en:
           Bold: Custom Bold
@@ -507,7 +511,7 @@ In order to use the plugin you need to extend your config in `config/packages/ck
 ```yaml
 ckeditor5:
   presets:
-    default:
+    custom:
       config:
         plugins: [MyCustomPlugin, Essentials, Paragraph]
         # ... other config options
