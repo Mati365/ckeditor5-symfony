@@ -44,7 +44,11 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
       - [Example 📄](#example-)
   - [Localization 🌍](#localization-)
     - [CDN Translation Loading 🌐](#cdn-translation-loading-)
+      - [AssetsMapper local translations assignment 📦](#assetsmapper-local-translations-assignment-)
+      - [Global CDN translation loading ☁️](#global-cdn-translation-loading-️)
     - [Global Translation Config 🛠️](#global-translation-config-️)
+      - [AssetsMapper translations installation 📥](#assetsmapper-translations-installation-)
+      - [Direct CDN translations configuration ⚙️](#direct-cdn-translations-configuration-️)
     - [Custom translations 🌐](#custom-translations-)
   - [Custom plugins 🧩](#custom-plugins-)
   - [Context 🤝](#context-)
@@ -73,8 +77,8 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    // config/bundles.php
 
    return [
-       // ...
-       Mati365\CKEditor5Symfony\CKEditorBundle::class => ['all' => true],
+     // ...
+     Mati365\CKEditor5Symfony\CKEditorBundle::class => ['all' => true],
    ];
    ```
 
@@ -104,23 +108,19 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 ## Usage 📖
 
-The necessary JavaScript and CSS assets are automatically included in the page header via Symfony's Assets Mapper.
-
-> [!IMPORTANT]
-> The `cke5_cloud_assets()` helper should be used **only** when the Symfony AssetMapper is not available or not used. It emits its own importmap configuration.
-
-```twig
-{{ cke5_cloud_assets() }}
-```
-
 To use CKEditor 5 in your Twig templates, simply call the `cke5_editor()` function:
 
 ```twig
 {{ cke5_editor('Your content here') }}
 ```
 
-This will render a classic editor with the provided content.
+If you don't use `AssetsMapper`, and your distribution is set to `cloud`, make sure to include the assets using `cke5_cloud_assets()` in your `<head>` section.
 
+```twig
+{{ cke5_cloud_assets() }}
+```
+
+This will render a classic editor with the provided content.
 For more advanced usage, check the playground examples.
 
 ## Basic Usage 🏁
@@ -132,14 +132,10 @@ Get started with the most common usage patterns. These examples show how to rend
 Create a basic editor with default toolbar and features.
 
 ```twig
-{# Only if AssetMapper is not used #}
-{{ cke5_cloud_assets() }}
-
-{# Render editor with initial content #}
 {{ cke5_editor(
-    content: '<p>Initial content</p>',
-    editorType: 'classic',
-    editableHeight: 300
+  content: '<p>Initial content</p>',
+  editorType: 'classic',
+  editableHeight: 300
 ) }}
 ```
 
@@ -153,9 +149,9 @@ The watchdog is enabled by default. To disable it, set the `watchdog` argument t
 
 ```twig
 {{ cke5_editor(
-    content: '<p>Initial content</p>',
-    editorType: 'classic',
-    watchdog: false
+  content: '<p>Initial content</p>',
+  editorType: 'classic',
+  watchdog: false
 ) }}
 ```
 
@@ -170,14 +166,10 @@ Traditional WYSIWYG editor with a fixed toolbar above the editing area. Best for
 ![CKEditor 5 Classic Editor in Symfony application](docs/classic-editor-with-toolbar.png)
 
 ```twig
-{# Only if AssetMapper is not used #}
-{{ cke5_cloud_assets() }}
-
-{# Classic editor in <body> #}
 {{ cke5_editor(
-    content: '<p>Initial content here</p>',
-    editorType: 'classic',
-    editableHeight: 300
+  content: '<p>Initial content here</p>',
+  editorType: 'classic',
+  editableHeight: 300
 ) }}
 ```
 
@@ -188,9 +180,6 @@ Advanced editor supporting multiple independent editable areas within a single e
 ![CKEditor 5 Multiroot Editor in Symfony application](docs/multiroot-editor.png)
 
 ```twig
-{# Only if AssetMapper is not used #}
-{{ cke5_cloud_assets() }}
-
 {# Editor container #}
 {{ cke5_editor(editorType: 'multiroot') }}
 
@@ -199,14 +188,14 @@ Advanced editor supporting multiple independent editable areas within a single e
 
 {# Multiple editable areas #}
 <div class="row">
-    <div class="col">
-        <h2>Header</h2>
-        {{ cke5_editable(rootName: 'header', content: 'Header content', class: 'border') }}
-    </div>
-    <div class="col">
-        <h2>Content</h2>
-        {{ cke5_editable(rootName: 'content', content: 'Main content', class: 'border') }}
-    </div>
+  <div class="col">
+    <h2>Header</h2>
+    {{ cke5_editable(rootName: 'header', content: 'Header content', class: 'border') }}
+  </div>
+  <div class="col">
+    <h2>Content</h2>
+    {{ cke5_editable(rootName: 'content', content: 'Main content', class: 'border') }}
+  </div>
 </div>
 ```
 
@@ -217,14 +206,10 @@ Minimalist editor that appears directly within content when clicked. Ideal for i
 ![CKEditor 5 Inline Editor in Symfony application](docs/inline-editor.png)
 
 ```twig
-{# Only if AssetMapper is not used #}
-{{ cke5_cloud_assets() }}
-
-{# Inline editor #}
 {{ cke5_editor(
-    content: '<p>Click here to edit this content</p>',
-    editorType: 'inline',
-    editableHeight: 300
+  content: '<p>Click here to edit this content</p>',
+  editorType: 'inline',
+  editableHeight: 300
 ) }}
 ```
 
@@ -237,9 +222,6 @@ Flexible editor where toolbar and editing area are completely separated. Provide
 ![CKEditor 5 Decoupled Editor in Symfony application](docs/decoupled-editor.png)
 
 ```twig
-{# Only if AssetMapper is not used #}
-{{ cke5_cloud_assets() }}
-
 {# Decoupled editor container #}
 {{ cke5_editor(id: 'decoupled-editor', editorType: 'decoupled') }}
 
@@ -298,15 +280,18 @@ ckeditor5:
   presets:
     minimal:
       editorType: classic
+      config:
+        toolbar: [bold, italic, link]
+        plugins: [Bold, Italic, Link, Essentials, Paragraph]
+
+      # Only if don't use AssetsMapper and using cloud distribution. Otherwise, this section is ignored,
+      # as it's automatically configured during `ckeditor5:assets-mapper:install` command.
       cloud:
         version: 46.0.0
         premium: true
         translations: [pl]
         ckbox:
           version: 1.0.0
-      config:
-        toolbar: [bold, italic, link]
-        plugins: [Bold, Italic, Link, Essentials, Paragraph]
 
     full:
       editorType: classic
@@ -419,17 +404,45 @@ Support multiple languages in the editor UI and content. Learn how to load trans
 
 Depending on your setup, you can preload translations via CDN.
 
-```twig
-{# Only if AssetMapper is not used: Load specific translations #}
-{{ cke5_cloud_assets(translations: ['pl', 'de', 'fr']) }}
+#### AssetsMapper local translations assignment 📦
 
+If you want to load a specific language for the editor UI, you can specify the `language` argument in the `cke5_editor()` function:
+
+```twig
 {{ cke5_editor(
     language: 'pl',
     content: '<p>Content in English, UI in Polish</p>'
 ) }}
 ```
 
+Remember, that this only works if you have installed the translations using the `ckeditor5:assets-mapper:install` command with the `--translations` option.
+
+```bash
+php bin/console ckeditor5:assets-mapper:install --translations=pl,de,fr
+```
+
+#### Global CDN translation loading ☁️
+
+If you don't use `AssetsMapper`, you can load translations directly from CDN by specifying them in the preset config or during installation. See [Global Translation Config](#global-translation-config-️) for more details.
+
+If you want to specify it in the template,you can use `cke5_cloud_assets()` function:
+
+```twig
+{# It'll load translations for Polish, German, and French from CDN #}
+{{ cke5_cloud_assets(translations: ['pl', 'de', 'fr']) }}
+```
+
 ### Global Translation Config 🛠️
+
+#### AssetsMapper translations installation 📥
+
+You can fetch translations globally by specifying them in the `ckeditor5:assets-mapper:install` command:
+
+```bash
+php bin/console ckeditor5:assets-mapper:install --translations=pl,de,fr
+```
+
+#### Direct CDN translations configuration ⚙️
 
 You can also configure translations globally in your configuration file. This is useful if you want to load translations for multiple languages at once or set a default language for the editor. Keep in mind that this configuration is only used when loading translations via CDN. If you are using self-hosted setup, translations are handled by your bundler automatically.
 
@@ -438,9 +451,9 @@ You can also configure translations globally in your configuration file. This is
 
 ckeditor5:
   presets:
-    default:
-      cloud:
-        translations: [pl, de, fr]
+  default:
+    cloud:
+    translations: [pl, de, fr]
 ```
 
 **Note:** For self-hosted setups, translations are handled by your bundler automatically.
