@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-symfony",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "CKEditor 5 integration for Symfony",
   "repository": {
     "url": "https://github.com/Mati365/ckeditor5-symfony"
