@@ -106,6 +106,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
 
                 $this->composerManipulator
                     ->removeCommandsBySubstring('ckeditor5:importmap:install')
+                    ->removeCommandsBySubstring('ckeditor5:assets-mapper:install')
                     ->addCommandToAutoScripts($command);
             }
 
@@ -149,7 +150,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
      */
     private static function reconstructCommand(InputInterface $input): string
     {
-        $command = 'ckeditor5:importmap:install';
+        $command = 'ckeditor5:assets-mapper:install';
         $options = [];
 
         // Explicitly map strictly required options to ensure reproducibility
