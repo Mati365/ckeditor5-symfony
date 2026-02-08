@@ -51,6 +51,7 @@ export default defineConfig({
     passWithNoTests: true,
     environment: 'happy-dom',
     coverage: {
+      provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       thresholds: {
         lines: 100,
