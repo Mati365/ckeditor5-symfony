@@ -63,6 +63,7 @@ export default defineConfig({
         '**/node_modules/**',
         '**/dist/**',
         './src/**/index.ts',
+        './src/types/**/*.type.ts',
         '**/test-utils/**',
         './scripts/**',
         './bundler/**',
