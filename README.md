@@ -38,6 +38,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Configuration ⚙️](#configuration-️)
     - [Custom Presets 🧩](#custom-presets-)
     - [Dynamic configuration 🎯](#dynamic-configuration-)
+    - [Dynamic Presets 🎨](#dynamic-presets-)
     - [Providing the License Key 🗝️](#providing-the-license-key-️)
     - [Referencing DOM Elements in Config 🏷️](#referencing-dom-elements-in-config-️)
       - [How to use 🛠️](#how-to-use-️)
@@ -333,7 +334,7 @@ In template:
 
 The default one is specified here [src/DependencyInjection/DefaultConfiguration.php](src/DependencyInjection/DefaultConfiguration.php).
 
-### Dynamic configuration 🎯
+### Override configuration 🎯
 
 You can also override configuration at runtime by passing `config` or `mergeConfig` arguments to the editor function. This is useful if you want to change the editor configuration based on user input or other conditions.
 
@@ -350,6 +351,39 @@ You can also override configuration at runtime by passing `config` or `mergeConf
     mergeConfig: { 'toolbar': { 'items': ['bold'] } }
 ) }}
 ```
+
+### Dynamic Presets 🎨
+
+For more complex scenarios, you can create preset configurations programmatically in your controller using `PresetParser::parse()`. This is useful when you need to build editor configurations based on user permissions, database settings, or other runtime conditions.
+
+```php
+use Mati365\CKEditor5Symfony\Preset\PresetParser;
+
+class ArticleController extends AbstractController
+{
+    #[Route('/article/edit')]
+    public function edit(): Response
+    {
+        return $this->render('article/edit.html.twig', [
+            'preset' => PresetParser::parse([
+                'editorType' => 'balloon',
+                'config' => [
+                    'toolbar' => ['bold', 'italic', 'undo', 'redo'],
+                    'plugins' => ['Essentials', 'Paragraph', 'Bold', 'Italic', 'Undo'],
+                ],
+            ]),
+        ]);
+    }
+}
+```
+
+Then in your template, pass the preset object directly:
+
+```twig
+{{ cke5_editor('Your content here', preset: preset) }}
+```
+
+This approach gives you full control over editor configuration at runtime, allowing you to customize it based on application logic, user roles, or any other dynamic conditions.
 
 ### Providing the License Key 🗝️
 

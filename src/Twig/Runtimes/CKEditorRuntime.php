@@ -6,7 +6,7 @@ use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
 use Mati365\CKEditor5Symfony\Language\LanguageParser;
-use Mati365\CKEditor5Symfony\Preset\EditorType;
+use Mati365\CKEditor5Symfony\Preset\{EditorType, Preset};
 
 /**
  * CKEditor 5 Twig Widget.
@@ -22,7 +22,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      * Render the CKEditor widget.
      *
      * @param string|array|null $content The initial content of the editor
-     * @param string $preset The preset name to use (default: 'default')
+     * @param Preset|string|null $preset The preset name to use (default: 'default')
      * @param bool $watchdog Whether to enable the watchdog feature
      * @param string|null $name Optional name for the input field.
      * @param int|null $editableHeight Optional height for the editable area
@@ -40,7 +40,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      */
     public function render(
         string|array|null $content = null,
-        ?string $preset = null,
+        Preset|string|null $preset = null,
         ?bool $watchdog = true,
         ?string $name = null,
         ?bool $required = null,

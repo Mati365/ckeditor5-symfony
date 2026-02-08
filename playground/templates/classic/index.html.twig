@@ -10,12 +10,16 @@
         </a>
     </div>
 
-    <h1 class="mt-4 font-bold text-gray-800 text-2xl">Classic Editor</h1>
+    <h1 class="mt-4 mb-4 font-bold text-gray-800 text-2xl">Classic Editor</h1>
 
     {{ cke5_editor('Hello World') }}
 
     <h2 class="mt-12 mb-4 font-bold text-gray-800 text-xl">Minimal Preset</h2>
 
     {{ cke5_editor('Minimal preset', preset: 'minimal') }}
+
+    <h2 class="mt-12 mb-4 font-bold text-gray-800 text-xl">Dynamic Preset</h2>
+
+    {{ cke5_editor('Dynamic preset balloon editor', preset: preset) }}
 </div>
 {% endblock %}
