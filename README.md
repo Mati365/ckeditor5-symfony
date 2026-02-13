@@ -55,8 +55,12 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Context 🤝](#context-)
     - [Basic usage 🔧](#basic-usage--1)
     - [Custom context translations 🌐](#custom-context-translations-)
-  - [Watch registered editors 👀](#watch-registered-editors-)
-    - [Wait for particular editor to be registered ⏳](#wait-for-particular-editor-to-be-registered-)
+  - [Editors \& contexts registry 👀](#editors--contexts-registry-)
+    - [Watch registered editors](#watch-registered-editors)
+    - [Wait for particular editor ⏳](#wait-for-particular-editor-)
+    - [Execute callback when editor is ready ⏳](#execute-callback-when-editor-is-ready-)
+    - [Wait for context ⏳](#wait-for-context-)
+    - [Execute callback when context is ready ⏳](#execute-callback-when-context-is-ready-)
   - [Installer command options ⚙️](#installer-command-options-️)
   - [Development ⚙️](#development-️)
     - [Running Tests 🧪](#running-tests-)
@@ -278,13 +282,14 @@ The editor automatically synchronizes its content with the underlying hidden inp
 
 ### Editor roots change event 📡
 
-Each editor dispatches a custom `ckeditor5:change:data` when any of its roots' data changes. This event includes the editor's ID and the current data of all roots, allowing you to react to content changes in real time. It's safer to mount your listeners on the `document.body` to ensure they are registered to avoid issues with race conditions during editor initialization.
+Each editor dispatches a custom `ckeditor5:change:data` when any of its roots' data changes. This event includes the editor's ID, the editor instance, and the current data of all roots, allowing you to react to content changes in real time. It's safer to mount your listeners on the `document.body` to ensure they are registered to avoid issues with race conditions during editor initialization.
 
 ```js
 document.body.addEventListener('ckeditor5:change:data', (event) => {
-  const { editorId, roots } = event.detail;
+  const { editorId, editor, roots } = event.detail;
 
   console.log('Editor:', editorId);
+  console.log('Editor instance:', editor);
   console.log('Current roots data:', roots);
 });
 ```
@@ -645,9 +650,18 @@ ckeditor5:
 
 These translations will be used in the context's editors, overriding the default translations. They are available through `locale.t` plugin in every context plugin.
 
-## Watch registered editors 👀
+## Editors & contexts registry 👀
 
-You can watch the registered editors using the `watch` function. This is useful if you want to react to changes in the registered editors, for example, to update the UI or perform some actions when an editor is added or removed.
+The package exposes two async registries:
+
+- `EditorsRegistry` for editor instances.
+- `ContextsRegistry` for context watchdog instances.
+
+Both support `watch`, `waitFor`, and `execute`.
+
+### Watch registered editors
+
+Use `watch` if you want to react whenever the registry state changes.
 
 ```javascript
 import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
@@ -660,11 +674,9 @@ const unregisterWatcher = EditorsRegistry.the.watch((editors) => {
 unregisterWatcher();
 ```
 
-### Wait for particular editor to be registered ⏳
+### Wait for particular editor ⏳
 
-You can also wait for a specific editor to be registered using the `waitForEditor` function. This is useful if you want to perform some actions after a specific editor is registered.
-
-This method can be called before the editor is initialized, and it will resolve when the editor is registered.
+Use `waitFor` when you need the instance directly.
 
 ```javascript
 import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
@@ -676,7 +688,41 @@ EditorsRegistry.the.waitFor('editor1').then((editor) => {
 // ... init editor somewhere later
 ```
 
-The `id` of the editor must be used to identify the editor. If the editor is already registered, the promise will resolve immediately.
+The `id` identifies the editor. If it's already registered, the promise resolves immediately.
+
+### Execute callback when editor is ready ⏳
+
+Use `execute` to run logic immediately if the editor already exists, or later when it appears.
+
+```javascript
+import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
+
+EditorsRegistry.the.execute('editor1', (editor) => {
+  console.log('Current data:', editor.getData());
+});
+```
+
+### Wait for context ⏳
+
+Use `ContextsRegistry` in the same way if you work with shared contexts.
+
+```javascript
+import { ContextsRegistry } from '@mati365/ckeditor5-symfony';
+
+ContextsRegistry.the.waitFor('shared-context').then((watchdog) => {
+  console.log('Context is ready:', watchdog.context);
+});
+```
+
+### Execute callback when context is ready ⏳
+
+```javascript
+import { ContextsRegistry } from '@mati365/ckeditor5-symfony';
+
+ContextsRegistry.the.execute('shared-context', (watchdog) => {
+  console.log('Context state:', watchdog.state);
+});
+```
 
 ## Installer command options ⚙️
 

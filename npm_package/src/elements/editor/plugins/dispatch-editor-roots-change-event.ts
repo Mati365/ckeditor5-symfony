@@ -41,6 +41,7 @@ export async function createDispatchEditorRootsChangeEventPlugin(
         new CustomEvent('ckeditor5:change:data', {
           detail: {
             editorId,
+            editor: this.editor,
             roots: getEditorRootsValues(this.editor),
           },
           bubbles: true,

@@ -464,6 +464,7 @@ describe('editor component', () => {
       expect(changeSpy).toHaveBeenCalled();
       expect((changeSpy.mock.lastCall![0] as CustomEvent).detail).toEqual({
         editorId: 'test-editor',
+        editor,
         roots: {
           main: '<p>Updated main root content</p>',
         },
@@ -472,6 +473,7 @@ describe('editor component', () => {
       expect(bodyChangeSpy).toHaveBeenCalled();
       expect((bodyChangeSpy.mock.lastCall![0] as CustomEvent).detail).toEqual({
         editorId: 'test-editor',
+        editor,
         roots: {
           main: '<p>Updated main root content</p>',
         },
@@ -505,6 +507,7 @@ describe('editor component', () => {
       expect(changeSpy).toHaveBeenCalled();
       expect((changeSpy.mock.lastCall![0] as CustomEvent).detail).toEqual({
         editorId: 'test-editor',
+        editor,
         roots: {
           header: '<p>Updated header content</p>',
           footer: '<p>Updated footer content</p>',
