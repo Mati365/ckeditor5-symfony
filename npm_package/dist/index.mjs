@@ -1,4 +1,4 @@
-class N {
+class R {
   /**
    * Map of registered items.
    */
@@ -182,7 +182,7 @@ class N {
     this.items.size === 1 && t !== null && this.register(null, e);
   }
 }
-function R(r, t) {
+function T(r, t) {
   let e = null;
   return (...i) => {
     e && clearTimeout(e), e = setTimeout(() => {
@@ -197,7 +197,7 @@ function J(r, t) {
 function L(r) {
   return Object.keys(r).length === 0 && r.constructor === Object;
 }
-function x(r, t) {
+function O(r, t) {
   const e = Object.entries(r).map(([i, a]) => [i, t(a, i)]);
   return Object.fromEntries(e);
 }
@@ -224,7 +224,7 @@ function K(r, {
     c();
   });
 }
-function A() {
+function v() {
   return new Promise((r) => {
     switch (document.readyState) {
       case "loading":
@@ -239,7 +239,7 @@ function A() {
     }
   });
 }
-const v = /* @__PURE__ */ Symbol.for("context-editor-watchdog");
+const A = /* @__PURE__ */ Symbol.for("context-editor-watchdog");
 async function G({ element: r, context: t, creator: e, config: i }) {
   const a = _();
   await t.add({
@@ -254,7 +254,7 @@ async function G({ element: r, context: t, creator: e, config: i }) {
     editorContextId: a,
     context: t
   };
-  n[v] = s;
+  n[A] = s;
   const o = t.destroy.bind(t);
   return t.destroy = async () => (s.state = "unavailable", o()), {
     ...s,
@@ -262,17 +262,20 @@ async function G({ element: r, context: t, creator: e, config: i }) {
   };
 }
 function Y(r) {
-  return v in r ? r[v] : null;
+  return A in r ? r[A] : null;
 }
-function C(r) {
+function X(r) {
+  return Array.from(r.model.document.getRoots()).reduce((t, e) => (e.rootName === "$graveyard" || (t[e.rootName] = r.getData({ rootName: e.rootName })), t), /* @__PURE__ */ Object.create({}));
+}
+function P(r) {
   return ["inline", "classic", "balloon", "decoupled"].includes(r);
 }
-class h extends Error {
+class w extends Error {
   constructor(t) {
     super(t), this.name = "CKEditor5SymfonyError";
   }
 }
-async function X(r) {
+async function Q(r) {
   const t = await import("ckeditor5"), i = {
     inline: t.InlineEditor,
     balloon: t.BalloonEditor,
@@ -281,7 +284,7 @@ async function X(r) {
     multiroot: t.MultiRootEditor
   }[r];
   if (!i)
-    throw new h(`Unsupported editor type: ${r}`);
+    throw new w(`Unsupported editor type: ${r}`);
   return i;
 }
 class S {
@@ -304,7 +307,7 @@ class S {
    */
   register(t, e) {
     if (this.plugins.has(t))
-      throw new h(`Plugin with name "${t}" is already registered.`);
+      throw new w(`Plugin with name "${t}" is already registered.`);
     return this.plugins.set(t, e), this.unregister.bind(this, t);
   }
   /**
@@ -315,7 +318,7 @@ class S {
    */
   unregister(t) {
     if (!this.plugins.has(t))
-      throw new h(`Plugin with name "${t}" is not registered.`);
+      throw new w(`Plugin with name "${t}" is not registered.`);
     this.plugins.delete(t);
   }
   /**
@@ -358,12 +361,12 @@ async function W(r) {
       try {
         e = await import("ckeditor5-premium-features");
       } catch (c) {
-        throw console.error(`Failed to load premium package: ${c}`), new h(`Plugin "${a}" not found in base package and failed to load premium package.`);
+        throw console.error(`Failed to load premium package: ${c}`), new w(`Plugin "${a}" not found in base package and failed to load premium package.`);
       }
     const { [a]: o } = e || {};
     if (o)
       return o;
-    throw new h(`Plugin "${a}" not found in base or premium packages.`);
+    throw new w(`Plugin "${a}" not found in base or premium packages.`);
   });
   return {
     loadedPlugins: await Promise.all(i),
@@ -374,21 +377,21 @@ async function q(r, t) {
   const e = [r.ui, r.content];
   return await Promise.all(
     [
-      $("ckeditor5", e),
+      z("ckeditor5", e),
       /* v8 ignore next */
-      t && $("ckeditor5-premium-features", e)
+      t && z("ckeditor5-premium-features", e)
     ].filter((a) => !!a)
   ).then((a) => a.flat());
 }
-async function $(r, t) {
+async function z(r, t) {
   return await Promise.all(
     t.filter((e) => e !== "en").map(async (e) => {
-      const i = await Q(r, e);
+      const i = await Z(r, e);
       return i?.default ?? i;
     }).filter(Boolean)
   );
 }
-async function Q(r, t) {
+async function Z(r, t) {
   try {
     if (r === "ckeditor5")
       switch (t) {
@@ -689,7 +692,7 @@ async function Q(r, t) {
   }
 }
 function j(r) {
-  return x(r, (t) => ({
+  return O(r, (t) => ({
     dictionary: t
   }));
 }
@@ -697,14 +700,14 @@ function H() {
   return Array.from(document.querySelectorAll("cke5-editor")).map((r) => r.getAttribute("data-cke-editor-id")).filter((r) => r !== null);
 }
 function U(r) {
-  const t = B(r);
-  return x(t, ({ element: e }) => e);
+  const t = V(r);
+  return O(t, ({ element: e }) => e);
 }
-function z(r) {
-  const t = B(r), e = x(t, ({ content: i }) => i);
+function N(r) {
+  const t = V(r), e = O(t, ({ content: i }) => i);
   return J(e, (i) => typeof i == "string");
 }
-function B(r) {
+function V(r) {
   const t = Array.from(document.querySelectorAll(`cke5-editable[data-cke-editor-id="${r}"]`)).reduce((s, o) => {
     const c = o.getAttribute("data-cke-root-name"), u = o.getAttribute("data-cke-content");
     return s[c] = {
@@ -744,18 +747,18 @@ function I(r) {
     e[i] = I(a);
   return e;
 }
-function Z(r, t) {
+function tt(r, t) {
   const { editing: e } = r;
   e.view.change((i) => {
     i.setStyle("height", `${t}px`, e.view.document.getRoot());
   });
 }
-const T = /* @__PURE__ */ Symbol.for("elixir-editor-watchdog");
-async function tt(r) {
+const x = /* @__PURE__ */ Symbol.for("elixir-editor-watchdog");
+async function et(r) {
   const { EditorWatchdog: t } = await import("ckeditor5"), e = new t(r);
   return e.setCreator(async (...i) => {
     const a = await r.create(...i);
-    return a[T] = e, a;
+    return a[x] = e, a;
   }), {
     watchdog: e,
     Constructor: {
@@ -763,13 +766,13 @@ async function tt(r) {
     }
   };
 }
-function et(r) {
-  return T in r ? r[T] : null;
+function rt(r) {
+  return x in r ? r[x] : null;
 }
-class y extends N {
-  static the = new y();
+class b extends R {
+  static the = new b();
 }
-class rt extends HTMLElement {
+class it extends HTMLElement {
   /**
    * The promise that resolves to the context instance.
    */
@@ -778,29 +781,29 @@ class rt extends HTMLElement {
    * Mounts the context component.
    */
   async connectedCallback() {
-    await A();
+    await v();
     const t = this.getAttribute("data-cke-context-id"), e = JSON.parse(this.getAttribute("data-cke-language")), i = JSON.parse(this.getAttribute("data-cke-context")), { customTranslations: a, watchdogConfig: n, config: { plugins: s, ...o } } = i, { loadedPlugins: c, hasPremium: u } = await W(s ?? []), f = [
       ...await q(e, u),
       j(a || {})
     ].filter((m) => !L(m));
     this.contextPromise = (async () => {
-      const { ContextWatchdog: m, Context: b } = await import("ckeditor5"), w = new m(b, {
+      const { ContextWatchdog: m, Context: y } = await import("ckeditor5"), h = new m(y, {
         crashNumberLimit: 10,
         ...n
       });
-      return await w.create({
+      return await h.create({
         ...o,
         language: e,
         plugins: c,
         ...f.length && {
           translations: f
         }
-      }), w.on("itemError", (...P) => {
-        console.error("Context item error:", ...P);
-      }), w;
+      }), h.on("itemError", (...E) => {
+        console.error("Context item error:", ...E);
+      }), h;
     })();
     const g = await this.contextPromise;
-    this.isConnected && y.the.register(t, g);
+    this.isConnected && b.the.register(t, g);
   }
   /**
    * Destroys the context component. Unmounts root from the editor.
@@ -811,14 +814,14 @@ class rt extends HTMLElement {
     try {
       await (await this.contextPromise)?.destroy();
     } finally {
-      this.contextPromise = null, t && y.the.hasItem(t) && y.the.unregister(t);
+      this.contextPromise = null, t && b.the.hasItem(t) && b.the.unregister(t);
     }
   }
 }
-class d extends N {
+class d extends R {
   static the = new d();
 }
-class it extends HTMLElement {
+class at extends HTMLElement {
   /**
    * The promise that resolves when the editable is mounted.
    */
@@ -827,10 +830,10 @@ class it extends HTMLElement {
    * Mounts the editable component.
    */
   async connectedCallback() {
-    await A(), this.hasAttribute("data-cke-editor-id") || this.setAttribute("data-cke-editor-id", H()[0]);
+    await v(), this.hasAttribute("data-cke-editor-id") || this.setAttribute("data-cke-editor-id", H()[0]);
     const t = this.getAttribute("data-cke-editor-id"), e = this.getAttribute("data-cke-root-name"), i = this.getAttribute("data-cke-content"), a = Number.parseInt(this.getAttribute("data-cke-save-debounce-ms"), 10);
     if (!t || !e)
-      throw new h("Editor ID or Root Name is missing.");
+      throw new w("Editor ID or Root Name is missing.");
     this.style.display = "block", this.editorPromise = d.the.execute(t, async (n) => {
       if (!this.isConnected)
         return null;
@@ -856,7 +859,7 @@ class it extends HTMLElement {
         const m = n.getData({ rootName: e });
         s && (s.value = m, s.dispatchEvent(new Event("input"))), this.dispatchEvent(new CustomEvent("change", { detail: { value: m } }));
       };
-      return n.model.document.on("change:data", R(a, g)), g(), n;
+      return n.model.document.on("change:data", T(a, g)), g(), n;
     });
   }
   /**
@@ -879,7 +882,44 @@ class it extends HTMLElement {
     }
   }
 }
-async function at(r) {
+async function nt({
+  saveDebounceMs: r,
+  editorId: t,
+  targetElement: e
+}) {
+  const { Plugin: i } = await import("ckeditor5");
+  return class extends i {
+    /**
+     * The name of the plugin.
+     */
+    static get pluginName() {
+      return "DispatchEditorRootsChangeEvent";
+    }
+    /**
+     * Initializes the plugin.
+     */
+    afterInit() {
+      const n = T(r, this.dispatch);
+      this.editor.model.document.on("change:data", n), this.editor.once("ready", this.dispatch);
+    }
+    /**
+     * Dispatches a custom event with all roots data.
+     */
+    dispatch = () => {
+      e.dispatchEvent(
+        new CustomEvent("ckeditor5:change:data", {
+          detail: {
+            editorId: t,
+            editor: this.editor,
+            roots: X(this.editor)
+          },
+          bubbles: !0
+        })
+      );
+    };
+  };
+}
+async function st(r) {
   const { Plugin: t } = await import("ckeditor5");
   return class extends t {
     /**
@@ -901,7 +941,7 @@ async function at(r) {
      */
     afterInit() {
       const { editor: i } = this, n = i.sourceElement.id.replace(/_editor$/, "");
-      this.input = document.getElementById(`${n}_input`), this.input && (i.model.document.on("change:data", R(r, () => this.sync())), i.once("ready", this.sync), this.form = this.input.closest("form"), this.form?.addEventListener("submit", this.sync));
+      this.input = document.getElementById(`${n}_input`), this.input && (i.model.document.on("change:data", T(r, () => this.sync())), i.once("ready", this.sync), this.form = this.input.closest("form"), this.form?.addEventListener("submit", this.sync));
     }
     /**
      * Synchronizes the editor's content with the input field.
@@ -920,7 +960,7 @@ async function at(r) {
     }
   };
 }
-class nt extends HTMLElement {
+class ot extends HTMLElement {
   /**
    * The promise that resolves to the editor instance.
    */
@@ -929,7 +969,7 @@ class nt extends HTMLElement {
    * Mounts the editor component.
    */
   async connectedCallback() {
-    await A();
+    await v();
     const t = this.getAttribute("data-cke-editor-id");
     d.the.resetErrors(t);
     try {
@@ -952,7 +992,7 @@ class nt extends HTMLElement {
       const t = await this.editorPromise;
       if (!t)
         return;
-      const e = Y(t), i = et(t);
+      const e = Y(t), i = rt(t);
       e ? e.state !== "unavailable" && await e.context.remove(e.editorContextId) : i ? await i.destroy() : await t.destroy();
     } finally {
       this.editorPromise = null;
@@ -968,66 +1008,72 @@ class nt extends HTMLElement {
       licenseKey: f,
       config: { plugins: g, ...m }
     } = e;
-    let b = await X(p);
-    const w = await (i ? y.the.waitFor(i) : null);
-    if (o && !w) {
-      const l = await tt(b);
-      ({ Constructor: b } = l), l.watchdog.on("restart", () => {
-        const k = l.watchdog.editor;
-        this.editorPromise = Promise.resolve(k), d.the.register(t, k);
+    let y = await Q(p);
+    const h = await (i ? b.the.waitFor(i) : null);
+    if (o && !h) {
+      const l = await et(y);
+      ({ Constructor: y } = l), l.watchdog.on("restart", () => {
+        const C = l.watchdog.editor;
+        this.editorPromise = Promise.resolve(C), d.the.register(t, C);
       });
     }
-    const { loadedPlugins: P, hasPremium: V } = await W(g);
-    C(p) && P.push(
-      await at(n)
+    const { loadedPlugins: E, hasPremium: F } = await W(g);
+    E.push(
+      await nt({
+        saveDebounceMs: n,
+        editorId: t,
+        targetElement: this
+      })
+    ), P(p) && E.push(
+      await st(n)
     );
-    const O = [
-      ...await q(s, V),
+    const D = [
+      ...await q(s, F),
       j(u || {})
     ].filter((l) => !L(l));
-    let E = {
+    let k = {
       ...c,
-      ...z(t)
+      ...N(t)
     };
-    C(p) && (E = E.main || "");
-    const D = await (async () => {
+    P(p) && (k = k.main || "");
+    const M = await (async () => {
       let l = U(t);
       if (!l.main) {
-        const M = C(p) ? ["main"] : Object.keys(E);
-        F(l, M) || (l = await st(t, M), E = {
+        const $ = P(p) ? ["main"] : Object.keys(k);
+        B(l, $) || (l = await ct(t, $), k = {
           ...c,
-          ...z(t)
+          ...N(t)
         });
       }
-      C(p) && "main" in l && (l = l.main);
-      const k = {
+      P(p) && "main" in l && (l = l.main);
+      const C = {
         ...I(m),
-        initialData: E,
+        initialData: k,
         licenseKey: f,
-        plugins: P,
+        plugins: E,
         language: s,
-        ...O.length && {
-          translations: O
+        ...D.length && {
+          translations: D
         }
       };
-      return !w || !(l instanceof HTMLElement) ? b.create(l, k) : (await G({
-        context: w,
+      return !h || !(l instanceof HTMLElement) ? y.create(l, C) : (await G({
+        context: h,
         element: l,
-        creator: b,
-        config: k
+        creator: y,
+        config: C
       })).editor;
     })();
-    return C(p) && a && Z(D, a), D;
+    return P(p) && a && tt(M, a), M;
   }
 }
-function F(r, t) {
+function B(r, t) {
   return t.every((e) => r[e]);
 }
-async function st(r, t) {
+async function ct(r, t) {
   return K(
     () => {
       const e = U(r);
-      if (!F(e, t))
+      if (!B(e, t))
         throw new Error(
           `It looks like not all required root elements are present yet.
 * If you want to wait for them, ensure they are registered before editor initialization.
@@ -1039,7 +1085,7 @@ Missing roots: ${t.filter((i) => !e[i]).join(", ")}.`
     { timeOutAfter: 2e3, retryAfter: 100 }
   );
 }
-class ot extends HTMLElement {
+class ut extends HTMLElement {
   /**
    * The promise that resolves when the UI part is mounted.
    */
@@ -1048,14 +1094,14 @@ class ot extends HTMLElement {
    * Mounts the UI part component.
    */
   async connectedCallback() {
-    await A();
+    await v();
     const t = this.getAttribute("data-cke-editor-id") || H()[0], e = this.getAttribute("data-cke-name");
     !t || !e || (this.style.display = "block", this.mountedPromise = d.the.execute(t, (i) => {
       if (!this.isConnected)
         return;
-      const { ui: a } = i, n = ct(e), s = a.view[n];
+      const { ui: a } = i, n = lt(e), s = a.view[n];
       if (!s)
-        throw new h(`Unknown UI part name: "${e}". Supported names are "toolbar" and "menubar".`);
+        throw new w(`Unknown UI part name: "${e}". Supported names are "toolbar" and "menubar".`);
       this.appendChild(s.element);
     }));
   }
@@ -1066,7 +1112,7 @@ class ot extends HTMLElement {
     this.style.display = "none", await this.mountedPromise, this.mountedPromise = null, this.innerHTML = "";
   }
 }
-function ct(r) {
+function lt(r) {
   switch (r) {
     case "toolbar":
       return "toolbar";
@@ -1077,24 +1123,24 @@ function ct(r) {
       return null;
   }
 }
-const ut = {
-  "cke5-editor": nt,
-  "cke5-context": rt,
-  "cke5-ui-part": ot,
-  "cke5-editable": it
+const mt = {
+  "cke5-editor": ot,
+  "cke5-context": it,
+  "cke5-ui-part": ut,
+  "cke5-editable": at
 };
-function lt() {
-  for (const [r, t] of Object.entries(ut))
+function dt() {
+  for (const [r, t] of Object.entries(mt))
     window.customElements.get(r) || window.customElements.define(r, t);
 }
-lt();
+dt();
 export {
-  h as CKEditor5SymfonyError,
-  y as ContextsRegistry,
+  w as CKEditor5SymfonyError,
+  b as ContextsRegistry,
   S as CustomEditorPluginsRegistry,
-  it as EditableComponentElement,
-  nt as EditorComponentElement,
+  at as EditableComponentElement,
+  ot as EditorComponentElement,
   d as EditorsRegistry,
-  ot as UIPartComponentElement
+  ut as UIPartComponentElement
 };
 //# sourceMappingURL=index.mjs.map
