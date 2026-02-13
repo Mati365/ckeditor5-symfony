@@ -543,7 +543,7 @@ ckeditor5:
 To register a custom plugin, use the `CustomEditorPluginsRegistry`.
 
 ```javascript
-import { CustomEditorPluginsRegistry as Registry } from '@mati365/ckeditor5-symfony';
+import { CustomEditorPluginsRegistry as Registry } from 'ckeditor5-symfony';
 
 const unregister = Registry.the.register('MyCustomPlugin', async () => {
   // It's recommended to use lazy import to
@@ -584,7 +584,7 @@ unregister();
 If you want to de-register all registered plugins, you can use the `unregisterAll` method:
 
 ```javascript
-import { CustomEditorPluginsRegistry } from '@mati365/ckeditor5-symfony';
+import { CustomEditorPluginsRegistry } from 'ckeditor5-symfony';
 
 CustomEditorPluginsRegistry.the.unregisterAll();
 ```
@@ -657,7 +657,7 @@ Both support `watch`, `waitFor`, and `execute`.
 - **`watch(callback)`** — react whenever registry state changes.
 
 ```javascript
-import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
+import { EditorsRegistry } from 'ckeditor5-symfony';
 
 const unregisterWatcher = EditorsRegistry.the.watch((editors) => {
   console.log('Registered editors changed:', editors);
@@ -670,7 +670,7 @@ unregisterWatcher();
 - **`waitFor(id)`** — get the instance directly. If it is already registered, the promise resolves immediately.
 
 ```javascript
-import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
+import { EditorsRegistry } from 'ckeditor5-symfony';
 
 EditorsRegistry.the.waitFor('editor1').then((editor) => {
   console.log('Editor "editor1" is registered:', editor);
@@ -682,7 +682,7 @@ EditorsRegistry.the.waitFor('editor1').then((editor) => {
 - **`execute(id, callback)`** — run logic immediately if the instance already exists, or later when it appears.
 
 ```javascript
-import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
+import { EditorsRegistry } from 'ckeditor5-symfony';
 
 EditorsRegistry.the.execute('editor1', (editor) => {
   console.log('Current data:', editor.getData());
@@ -692,7 +692,7 @@ EditorsRegistry.the.execute('editor1', (editor) => {
 - The same methods are available on `ContextsRegistry` for shared contexts:
 
 ```javascript
-import { ContextsRegistry } from '@mati365/ckeditor5-symfony';
+import { ContextsRegistry } from 'ckeditor5-symfony';
 
 ContextsRegistry.the.waitFor('shared-context').then((watchdog) => {
   console.log('Context is ready:', watchdog.context);
