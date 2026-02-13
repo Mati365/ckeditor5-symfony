@@ -56,11 +56,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Basic usage 🔧](#basic-usage--1)
     - [Custom context translations 🌐](#custom-context-translations-)
   - [Editors \& contexts registry 👀](#editors--contexts-registry-)
-    - [Watch registered editors](#watch-registered-editors)
-    - [Wait for particular editor ⏳](#wait-for-particular-editor-)
-    - [Execute callback when editor is ready ⏳](#execute-callback-when-editor-is-ready-)
-    - [Wait for context ⏳](#wait-for-context-)
-    - [Execute callback when context is ready ⏳](#execute-callback-when-context-is-ready-)
   - [Installer command options ⚙️](#installer-command-options-️)
   - [Development ⚙️](#development-️)
     - [Running Tests 🧪](#running-tests-)
@@ -659,9 +654,7 @@ The package exposes two async registries:
 
 Both support `watch`, `waitFor`, and `execute`.
 
-### Watch registered editors
-
-Use `watch` if you want to react whenever the registry state changes.
+- **`watch(callback)`** — react whenever registry state changes.
 
 ```javascript
 import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
@@ -674,9 +667,7 @@ const unregisterWatcher = EditorsRegistry.the.watch((editors) => {
 unregisterWatcher();
 ```
 
-### Wait for particular editor ⏳
-
-Use `waitFor` when you need the instance directly.
+- **`waitFor(id)`** — get the instance directly. If it is already registered, the promise resolves immediately.
 
 ```javascript
 import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
@@ -688,11 +679,7 @@ EditorsRegistry.the.waitFor('editor1').then((editor) => {
 // ... init editor somewhere later
 ```
 
-The `id` identifies the editor. If it's already registered, the promise resolves immediately.
-
-### Execute callback when editor is ready ⏳
-
-Use `execute` to run logic immediately if the editor already exists, or later when it appears.
+- **`execute(id, callback)`** — run logic immediately if the instance already exists, or later when it appears.
 
 ```javascript
 import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
@@ -702,9 +689,7 @@ EditorsRegistry.the.execute('editor1', (editor) => {
 });
 ```
 
-### Wait for context ⏳
-
-Use `ContextsRegistry` in the same way if you work with shared contexts.
+- The same methods are available on `ContextsRegistry` for shared contexts:
 
 ```javascript
 import { ContextsRegistry } from '@mati365/ckeditor5-symfony';
@@ -712,12 +697,6 @@ import { ContextsRegistry } from '@mati365/ckeditor5-symfony';
 ContextsRegistry.the.waitFor('shared-context').then((watchdog) => {
   console.log('Context is ready:', watchdog.context);
 });
-```
-
-### Execute callback when context is ready ⏳
-
-```javascript
-import { ContextsRegistry } from '@mati365/ckeditor5-symfony';
 
 ContextsRegistry.the.execute('shared-context', (watchdog) => {
   console.log('Context state:', watchdog.state);
