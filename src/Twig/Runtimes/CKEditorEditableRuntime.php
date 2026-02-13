@@ -32,7 +32,7 @@ final class CKEditorEditableRuntime implements RuntimeExtensionInterface
      */
     public function render(
         string $rootName = 'main',
-        ?int $saveDebounceMs = 500,
+        ?int $saveDebounceMs = 200,
         ?string $editorId = null,
         ?string $content = null,
         ?string $name = null,

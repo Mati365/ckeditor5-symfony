@@ -30,6 +30,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      * @param string|null $style Optional inline styles for the editor container
      * @param string|null $id Optional ID for the editor instance
      * @param bool|null $required Whether the input is required
+     * @param int|null $saveDebounceMs Optional debounce time in milliseconds for saving changes
      * @param string|null $contextId Optional context ID for multiple editors
      * @param string|array|null $language Optional language configuration (string or array)
      * @param array|null $config Optional editor configuration overrides (shallow replace editor config)
@@ -44,6 +45,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
         ?bool $watchdog = true,
         ?string $name = null,
         ?bool $required = null,
+        ?int $saveDebounceMs = 200,
         ?int $editableHeight = null,
         ?string $class = null,
         ?string $style = 'display: block; width: 100%;',
@@ -94,6 +96,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
             'name' => $name,
             'required' => $required,
             'content' => json_encode($content),
+            'saveDebounceMs' => $saveDebounceMs,
             'editableHeight' => $editableHeight,
             'preset' => json_encode($resolvedPreset),
             'language' => json_encode($parsedLanguage),
