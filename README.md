@@ -23,6 +23,9 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 - [ckeditor5-symfony](#ckeditor5-symfony)
   - [Table of Contents](#table-of-contents)
   - [Installation 🚀](#installation-)
+    - [Self-hosted (AssetsMapper) 🏠](#self-hosted-assetsmapper-)
+    - [Self-hosted (Webpack Encore) 🧰](#self-hosted-webpack-encore-)
+    - [Cloud (CDN) ☁️](#cloud-cdn-️)
   - [Usage 📖](#usage-)
   - [Basic Usage 🏁](#basic-usage-)
     - [Simple Editor ✏️](#simple-editor-️)
@@ -37,7 +40,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Symfony Form Type 🧑‍💻](#symfony-form-type-)
   - [Configuration ⚙️](#configuration-️)
     - [Custom Presets 🧩](#custom-presets-)
-    - [Dynamic configuration 🎯](#dynamic-configuration-)
+    - [Override configuration 🎯](#override-configuration-)
     - [Dynamic Presets 🎨](#dynamic-presets-)
     - [Providing the License Key 🗝️](#providing-the-license-key-️)
     - [Referencing DOM Elements in Config 🏷️](#referencing-dom-elements-in-config-️)
@@ -66,7 +69,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 ## Installation 🚀
 
-1. **Install the package:**
+1. **Install the Symfony package:**
 
    ```bash
    composer require mati365/ckeditor5-symfony
@@ -83,29 +86,66 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    ];
    ```
 
-3. **Run the installer:**
+  Choose one of the installation paths below.
 
-   Choose the distribution method that best fits your needs:
+### Self-hosted (AssetsMapper) 🏠
 
-   **🏠 Self-hosted (Recommended)**
-   Bundles assets locally. No Node.js required.
+  Recommended when you use Symfony AssetsMapper and want local assets without Node.js.
 
-   ```bash
-   php bin/console ckeditor5:assets-mapper:install
-   ```
+  1. **Run the installer:**
 
-   **📡 CDN Distribution**
-   Loads assets from CKSource CDN.
+    ```bash
+    php bin/console ckeditor5:assets-mapper:install
+    ```
 
-   ```bash
-   php bin/console ckeditor5:assets-mapper:install --distribution=cloud
-   ```
+  2. **(Optional) install additional translations:**
 
-   _For CDN, add `CKEDITOR5_LICENSE_KEY="your-key"` to your `.env` file._
+    ```bash
+    php bin/console ckeditor5:assets-mapper:install --translations=pl,de,fr
+    ```
 
-   > 💡 **Tip:** Add `--premium` to either command to install premium features (requires a valid license).
+### Self-hosted (Webpack Encore) 🧰
 
-   For more options, see [Installer command options](#installer-command-options-️).
+  Use this path if your frontend is built with Webpack Encore.
+
+  1. **Install npm packages:**
+
+    ```bash
+    yarn add ckeditor5 ckeditor5-premium-features ckeditor5-symfony --dev
+    ```
+
+  2. **Import CKEditor assets in your Encore entry file** (for example `assets/app.js`):
+
+    ```javascript
+    import 'ckeditor5-symfony';
+    import 'ckeditor5/ckeditor5.css';
+    ```
+
+### Cloud (CDN) ☁️
+
+  Use CDN distribution when you want to load CKEditor assets from CKSource Cloud.
+
+  1. **Run the installer in cloud mode:**
+
+    ```bash
+    php bin/console ckeditor5:assets-mapper:install --distribution=cloud
+    ```
+
+  2. **Set your license key** in `.env`:
+
+    ```bash
+    CKEDITOR5_LICENSE_KEY="your-key"
+    ```
+
+  3. **If you are not using AssetsMapper, include cloud assets in `<head>`:**
+
+    ```twig
+    {{ cke5_cloud_assets() }}
+    ```
+
+  > 💡 **Tip:** Add `--premium` to installer commands to include premium features (requires a valid license).
+
+  For more options, see [Installer command options](#installer-command-options-️).
 
 ## Usage 📖
 
