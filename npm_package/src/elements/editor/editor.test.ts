@@ -443,6 +443,76 @@ describe('editor component', () => {
     });
   });
 
+  describe('roots change event integration', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    it('should dispatch `ckeditor5:change:data` event with all roots values for single-root editor', async () => {
+      const component = renderTestEditor({ saveDebounceMs: 0 });
+      const changeSpy = vi.fn();
+      const bodyChangeSpy = vi.fn();
+
+      component.addEventListener('ckeditor5:change:data', changeSpy);
+      document.body.addEventListener('ckeditor5:change:data', bodyChangeSpy);
+
+      const editor = await waitForTestEditor();
+
+      editor.setData('<p>Updated main root content</p>');
+      await vi.advanceTimersByTimeAsync(1);
+
+      expect(changeSpy).toHaveBeenCalled();
+      expect((changeSpy.mock.lastCall![0] as CustomEvent).detail).toEqual({
+        editorId: 'test-editor',
+        roots: {
+          main: '<p>Updated main root content</p>',
+        },
+      });
+
+      expect(bodyChangeSpy).toHaveBeenCalled();
+      expect((bodyChangeSpy.mock.lastCall![0] as CustomEvent).detail).toEqual({
+        editorId: 'test-editor',
+        roots: {
+          main: '<p>Updated main root content</p>',
+        },
+      });
+    });
+
+    it('should dispatch `ckeditor5:change:data` event with all roots values for multiroot editor', async () => {
+      const component = renderTestEditor({
+        saveDebounceMs: 0,
+        preset: createEditorPreset('multiroot'),
+        content: {
+          header: '<p>Header root initial content</p>',
+          footer: '<p>Footer root initial content</p>',
+        },
+      });
+      const changeSpy = vi.fn();
+
+      component.addEventListener('ckeditor5:change:data', changeSpy);
+
+      renderTestEditable(createEditableSnapshot('header'));
+      renderTestEditable(createEditableSnapshot('footer'));
+
+      const editor = await waitForTestEditor<MultiRootEditor>();
+
+      editor.setData({
+        header: '<p>Updated header content</p>',
+        footer: '<p>Updated footer content</p>',
+      });
+      await vi.advanceTimersByTimeAsync(1);
+
+      expect(changeSpy).toHaveBeenCalled();
+      expect((changeSpy.mock.lastCall![0] as CustomEvent).detail).toEqual({
+        editorId: 'test-editor',
+        roots: {
+          header: '<p>Updated header content</p>',
+          footer: '<p>Updated footer content</p>',
+        },
+      });
+    });
+  });
+
   describe('destroy', () => {
     it('should destroy editor on component unmount', async () => {
       const component = renderTestEditor();

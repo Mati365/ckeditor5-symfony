@@ -34,6 +34,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Inline editor 📝](#inline-editor-)
     - [Decoupled editor 🌐](#decoupled-editor-)
   - [Forms Integration 🧾](#forms-integration-)
+    - [Editor roots change event 📡](#editor-roots-change-event-)
   - [Configuration ⚙️](#configuration-️)
     - [Custom Presets 🧩](#custom-presets-)
     - [Override configuration 🎯](#override-configuration-)
@@ -274,6 +275,19 @@ Then in your template:
 ```
 
 The editor automatically synchronizes its content with the underlying hidden input field upon form submission.
+
+### Editor roots change event 📡
+
+Each editor dispatches a custom `ckeditor5:change:data` when any of its roots' data changes. This event includes the editor's ID and the current data of all roots, allowing you to react to content changes in real time. It's safer to mount your listeners on the `document.body` to ensure they are registered to avoid issues with race conditions during editor initialization.
+
+```js
+document.body.addEventListener('ckeditor5:change:data', (event) => {
+  const { editorId, roots } = event.detail;
+
+  console.log('Editor:', editorId);
+  console.log('Current roots data:', roots);
+});
+```
 
 ## Configuration ⚙️
 
