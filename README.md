@@ -37,7 +37,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Inline editor 📝](#inline-editor-)
     - [Decoupled editor 🌐](#decoupled-editor-)
   - [Forms Integration 🧾](#forms-integration-)
-    - [Symfony Form Type 🧑‍💻](#symfony-form-type-)
   - [Configuration ⚙️](#configuration-️)
     - [Custom Presets 🧩](#custom-presets-)
     - [Override configuration 🎯](#override-configuration-)
@@ -90,62 +89,62 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 ### Self-hosted (AssetsMapper) 🏠
 
-  Recommended when you use Symfony AssetsMapper and want local assets without Node.js.
+Recommended when you use Symfony AssetsMapper and want local assets without Node.js.
 
-  1. **Run the installer:**
+1. **Run the installer:**
 
-    ```bash
-    php bin/console ckeditor5:assets-mapper:install
-    ```
+  ```bash
+  php bin/console ckeditor5:assets-mapper:install
+  ```
 
-  2. **(Optional) install additional translations:**
+2. **(Optional) install additional translations:**
 
-    ```bash
-    php bin/console ckeditor5:assets-mapper:install --translations=pl,de,fr
-    ```
+  ```bash
+  php bin/console ckeditor5:assets-mapper:install --translations=pl,de,fr
+  ```
 
 ### Self-hosted (Webpack Encore) 🧰
 
-  Use this path if your frontend is built with Webpack Encore.
+Use this path if your frontend is built with Webpack Encore.
 
-  1. **Install npm packages:**
+1. **Install npm packages:**
 
-    ```bash
-    yarn add ckeditor5 ckeditor5-premium-features ckeditor5-symfony --dev
-    ```
+  ```bash
+  yarn add ckeditor5 ckeditor5-premium-features ckeditor5-symfony --dev
+  ```
 
-  2. **Import CKEditor assets in your Encore entry file** (for example `assets/app.js`):
+2. **Import CKEditor assets in your Encore entry file** (for example `assets/app.js`):
 
-    ```javascript
-    import 'ckeditor5-symfony';
-    import 'ckeditor5/ckeditor5.css';
-    ```
+  ```javascript
+  import 'ckeditor5-symfony';
+  import 'ckeditor5/ckeditor5.css';
+  ```
 
 ### Cloud (CDN) ☁️
 
-  Use CDN distribution when you want to load CKEditor assets from CKSource Cloud.
+Use CDN distribution when you want to load CKEditor assets from CKSource Cloud.
 
-  1. **Run the installer in cloud mode:**
+1. **Run the installer in cloud mode:**
 
-    ```bash
-    php bin/console ckeditor5:assets-mapper:install --distribution=cloud
-    ```
+  ```bash
+  php bin/console ckeditor5:assets-mapper:install --distribution=cloud
+  ```
 
-  2. **Set your license key** in `.env`:
+2. **Set your license key** in `.env`:
 
-    ```bash
-    CKEDITOR5_LICENSE_KEY="your-key"
-    ```
+  ```bash
+  CKEDITOR5_LICENSE_KEY="your-key"
+  ```
 
-  3. **If you are not using AssetsMapper, include cloud assets in `<head>`:**
+3. **If you are not using AssetsMapper, include cloud assets in `<head>`:**
 
-    ```twig
-    {{ cke5_cloud_assets() }}
-    ```
+  ```twig
+  {{ cke5_cloud_assets() }}
+  ```
 
-  > 💡 **Tip:** Add `--premium` to installer commands to include premium features (requires a valid license).
+> 💡 **Tip:** Add `--premium` to installer commands to include premium features (requires a valid license).
 
-  For more options, see [Installer command options](#installer-command-options-️).
+For more options, see [Installer command options](#installer-command-options-️).
 
 ## Usage 📖
 
@@ -281,11 +280,7 @@ Flexible editor where toolbar and editing area are completely separated. Provide
 
 ## Forms Integration 🧾
 
-Seamlessly integrate CKEditor 5 with Symfony Forms. The bundle provides a `CKEditor5Type` that facilitates easy integration.
-
-### Symfony Form Type 🧑‍💻
-
-Use `CKEditor5Type` in your form class to render the editor.
+Seamlessly integrate CKEditor 5 with Symfony Forms. The bundle provides a `CKEditor5Type` that facilitates easy integration. Use `CKEditor5Type` in your form class to render the editor.
 
 ```php
 use Mati365\CKEditor5Symfony\Form\Type\CKEditor5Type;
