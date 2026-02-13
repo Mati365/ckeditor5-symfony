@@ -23,9 +23,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 - [ckeditor5-symfony](#ckeditor5-symfony)
   - [Table of Contents](#table-of-contents)
   - [Installation 🚀](#installation-)
-    - [Self-hosted (AssetsMapper) 🏠](#self-hosted-assetsmapper-)
-    - [Self-hosted (Webpack Encore) 🧰](#self-hosted-webpack-encore-)
-    - [Cloud (CDN) ☁️](#cloud-cdn-️)
   - [Usage 📖](#usage-)
   - [Basic Usage 🏁](#basic-usage-)
     - [Simple Editor ✏️](#simple-editor-️)
@@ -68,7 +65,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 ## Installation 🚀
 
-1. **Install the Symfony package:**
+1. **Install the package:**
 
    ```bash
    composer require mati365/ckeditor5-symfony
@@ -85,66 +82,43 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    ];
    ```
 
-  Choose one of the installation paths below.
+3. **Run the installer:**
 
-### Self-hosted (AssetsMapper) 🏠
+   Choose the distribution method that best fits your needs:
 
-Recommended when you use Symfony AssetsMapper and want local assets without Node.js.
+   **🏠 Self-hosted via AssetsMapper (Recommended)**
+   Bundles assets locally. No Node.js required.
 
-1. **Run the installer:**
+   ```bash
+   php bin/console ckeditor5:assets-mapper:install
+   ```
 
-  ```bash
-  php bin/console ckeditor5:assets-mapper:install
-  ```
+   **📦 Self-hosted via Webpack Encore**
+   Requires Node.js and a bundler like Webpack Encore. Assets are bundled with your application.
 
-2. **(Optional) install additional translations:**
+   ```bash
+   npm install ckeditor5 ckeditor5-premium-features ckeditor5-symfony --dev
+   ```
 
-  ```bash
-  php bin/console ckeditor5:assets-mapper:install --translations=pl,de,fr
-  ```
+   and then add the following line to your main JavaScript file (e.g., `assets/app.js`):
 
-### Self-hosted (Webpack Encore) 🧰
+   ```javascript
+   import 'ckeditor5-symfony';
+   import 'ckeditor5/ckeditor5.css';
+   ```
 
-Use this path if your frontend is built with Webpack Encore.
+   **📡 CDN Distribution**
+   Loads assets from CKSource CDN.
 
-1. **Install npm packages:**
+   ```bash
+   php bin/console ckeditor5:assets-mapper:install --distribution=cloud
+   ```
 
-  ```bash
-  yarn add ckeditor5 ckeditor5-premium-features ckeditor5-symfony --dev
-  ```
+   _For CDN, add `CKEDITOR5_LICENSE_KEY="your-key"` to your `.env` file._
 
-2. **Import CKEditor assets in your Encore entry file** (for example `assets/app.js`):
+   > 💡 **Tip:** Add `--premium` to either command to install premium features (requires a valid license).
 
-  ```javascript
-  import 'ckeditor5-symfony';
-  import 'ckeditor5/ckeditor5.css';
-  ```
-
-### Cloud (CDN) ☁️
-
-Use CDN distribution when you want to load CKEditor assets from CKSource Cloud.
-
-1. **Run the installer in cloud mode:**
-
-  ```bash
-  php bin/console ckeditor5:assets-mapper:install --distribution=cloud
-  ```
-
-2. **Set your license key** in `.env`:
-
-  ```bash
-  CKEDITOR5_LICENSE_KEY="your-key"
-  ```
-
-3. **If you are not using AssetsMapper, include cloud assets in `<head>`:**
-
-  ```twig
-  {{ cke5_cloud_assets() }}
-  ```
-
-> 💡 **Tip:** Add `--premium` to installer commands to include premium features (requires a valid license).
-
-For more options, see [Installer command options](#installer-command-options-️).
+   For more options, see [Installer command options](#installer-command-options-️).
 
 ## Usage 📖
 
