@@ -647,12 +647,7 @@ These translations will be used in the context's editors, overriding the default
 
 ## Editors & contexts registry 👀
 
-The package exposes two async registries:
-
-- `EditorsRegistry` for editor instances.
-- `ContextsRegistry` for context watchdog instances.
-
-Both support `watch`, `waitFor`, and `execute`.
+The package provides two registries: `EditorsRegistry` and `ContextsRegistry`. They allow you to watch for changes in registered editors and contexts, get instances directly, or execute logic when a specific editor or context appears.
 
 - **`watch(callback)`** — react whenever registry state changes.
 
