@@ -25,6 +25,7 @@ final class CKEditor5Type extends AbstractType
         $view->vars['editor_type'] = $options['editor_type'];
         $view->vars['language'] = $options['language'];
         $view->vars['context_id'] = $options['context_id'];
+        $view->vars['save_debounce_ms'] = $options['save_debounce_ms'];
     }
 
     #[\Override]
@@ -40,9 +41,11 @@ final class CKEditor5Type extends AbstractType
             'editor_type' => null,
             'language' => null,
             'context_id' => null,
+            'save_debounce_ms' => 200,
         ]);
 
         $resolver->setAllowedTypes('preset', ['string', 'null']);
+        $resolver->setAllowedTypes('save_debounce_ms', ['int', 'null']);
         $resolver->setAllowedTypes('watchdog', ['bool']);
         $resolver->setAllowedTypes('editable_height', ['int', 'null']);
         $resolver->setAllowedTypes('editor_config', ['array', 'null']);

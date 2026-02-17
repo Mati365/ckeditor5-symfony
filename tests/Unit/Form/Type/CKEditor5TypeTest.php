@@ -26,6 +26,7 @@ class CKEditor5TypeTest extends TestCase
             'editor_type' => 'classic',
             'language' => 'en',
             'context_id' => 'context_1',
+            'save_debounce_ms' => 200,
         ];
 
         $type->buildView($view, $form, $options);
