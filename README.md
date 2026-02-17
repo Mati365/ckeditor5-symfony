@@ -55,7 +55,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Context 🤝](#context-)
     - [Basic usage 🔧](#basic-usage--1)
     - [Custom context translations 🌐](#custom-context-translations-)
-  - [Editors \& contexts registry 👀](#editors--contexts-registry-)
+  - [Editors and Contexts registry 👀](#editors-and-contexts-registry-)
   - [Installer command options ⚙️](#installer-command-options-️)
   - [Development ⚙️](#development-️)
     - [Running Tests 🧪](#running-tests-)
