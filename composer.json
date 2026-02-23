@@ -1,6 +1,6 @@
 {
   "name": "mati365/ckeditor5-symfony",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "CKEditor 5 integration for Symfony",
   "type": "symfony-bundle",
   "license": "MIT",
@@ -24,7 +24,7 @@
   ],
   "require": {
     "php": ">=8.3",
-    "respect/validation": "^2.4|^3.0",
+    "respect/validation": "^2.4",
     "twig/twig": "^3.0",
     "symfony/asset": "^6.4|^7.0|^8.0",
     "symfony/console": "^6.4|^7.0|^8.0",
