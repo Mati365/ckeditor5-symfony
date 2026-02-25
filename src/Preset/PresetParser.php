@@ -29,10 +29,17 @@ final class PresetParser
 
         if (isset($data['licenseKey'])) {
             $licenseKey = KeyParser::parse((string) $data['licenseKey']);
-        } elseif (getenv('CKEDITOR5_LICENSE_KEY') !== false) {
-            $licenseKey = KeyParser::parse((string) getenv('CKEDITOR5_LICENSE_KEY'));
         } else {
-            $licenseKey = Key::ofGPL();
+            $envKey = getenv('CKEDITOR5_LICENSE_KEY');
+
+            if ($envKey === false) {
+                $envKey = $_ENV['CKEDITOR5_LICENSE_KEY']
+                    ?? null;
+            }
+
+            $licenseKey = $envKey !== null
+                ? KeyParser::parse($envKey)
+                : Key::ofGPL();
         }
 
         return new Preset(

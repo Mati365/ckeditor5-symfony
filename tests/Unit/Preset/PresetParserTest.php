@@ -183,6 +183,31 @@ class PresetParserTest extends TestCase
         }
     }
 
+    public function testParseWithEnvSuperglobalLicenseKey(): void
+    {
+        $original = array_key_exists('CKEDITOR5_LICENSE_KEY', $_ENV) ? $_ENV['CKEDITOR5_LICENSE_KEY'] : null;
+        $_ENV['CKEDITOR5_LICENSE_KEY'] = 'GPL';
+
+        try {
+            // ensure getenv returns false so the fallback path is exercised
+            putenv('CKEDITOR5_LICENSE_KEY');
+
+            $data = [
+                'config' => ['toolbar' => ['bold']],
+                'editorType' => 'classic',
+            ];
+
+            $preset = PresetParser::parse($data);
+            $this->assertTrue($preset->licenseKey->isGPL());
+        } finally {
+            if ($original !== null) {
+                $_ENV['CKEDITOR5_LICENSE_KEY'] = $original;
+            } else {
+                unset($_ENV['CKEDITOR5_LICENSE_KEY']);
+            }
+        }
+    }
+
     public function testDumpPresetWithoutCloud(): void
     {
         $preset = new Preset(
