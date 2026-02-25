@@ -95,4 +95,17 @@ final class Preset
         $clone->customTranslations = $customTranslations;
         return $clone;
     }
+
+    /**
+     * Creates a new Preset instance with modified cloud configuration.
+     *
+     * @param Cloud|null $cloud New cloud configuration.
+     * @return self A new Preset instance with the specified cloud configuration.
+     */
+    public function ofCloud(?Cloud $cloud): self
+    {
+        $clone = $this->clone();
+        $clone->cloud = $cloud;
+        return $clone;
+    }
 }

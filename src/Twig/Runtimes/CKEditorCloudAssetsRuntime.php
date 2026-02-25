@@ -5,9 +5,9 @@ namespace Mati365\CKEditor5Symfony\Twig\Runtimes;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Mati365\CKEditor5Symfony\Service\ConfigManager;
-use Mati365\CKEditor5Symfony\Exceptions\NoCloudConfig;
 use Mati365\CKEditor5Symfony\Cloud\Bundle\JSAssetType;
 use Mati365\CKEditor5Symfony\Cloud\{CloudBundleBuilder, CloudLoaderInterface};
+use Mati365\CKEditor5Symfony\Preset\PresetLicenseCompatibility;
 
 /**
  * CKEditor 5 Assets Twig Widget.
@@ -36,15 +36,19 @@ final class CKEditorCloudAssetsRuntime implements RuntimeExtensionInterface
         bool $emitImportMap = false,
         array $customImportMap = []
     ): string {
-        $cloud = $this->cloudLoader->load();
-        $cloud ??= $this->configManager->resolvePresetOrThrow($preset)->cloud;
+        $globalCloud = $this->cloudLoader->load();
+        $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset);
 
-        if ($cloud == null) {
-            throw new NoCloudConfig();
+        // Ignore preset cloud config if global cloud config is available, to avoid conflicts.
+        // This allows users to configure cloud via the `ckeditor5:sitemap:install` command without needing to set a specific preset for it.
+        if ($globalCloud) {
+            $resolvedPreset = $resolvedPreset->ofCloud($globalCloud);
         }
 
-        // Group JS assets.
+        $cloud = PresetLicenseCompatibility::ensureCloudCompatibilityOrThrow($resolvedPreset);
         $bundle = CloudBundleBuilder::build($cloud);
+
+        // Group JS assets.
         $esmAssets = [];
         $umdAssets = [];
         $generatedImportMap = [];
