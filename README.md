@@ -652,7 +652,7 @@ The package provides two registries: `EditorsRegistry` and `ContextsRegistry`. T
 - **`watch(callback)`** — react whenever registry state changes.
 
     ```javascript
-    import { EditorsRegistry } from 'ckeditor5-livewire';
+    import { EditorsRegistry } from 'ckeditor5-symfony';
 
     const unregisterWatcher = EditorsRegistry.the.watch((editors) => {
       console.log('Registered editors changed:', editors);
@@ -665,7 +665,7 @@ The package provides two registries: `EditorsRegistry` and `ContextsRegistry`. T
 - **`waitFor(id)`** — get the instance directly. If it is already registered, the promise resolves immediately.
 
     ```javascript
-    import { EditorsRegistry } from 'ckeditor5-livewire';
+    import { EditorsRegistry } from 'ckeditor5-symfony';
 
     EditorsRegistry.the.waitFor('editor1').then((editor) => {
       console.log('Editor "editor1" is registered:', editor);
@@ -677,7 +677,7 @@ The package provides two registries: `EditorsRegistry` and `ContextsRegistry`. T
 - **`execute(id, callback)`** — run logic immediately if the instance already exists, or later when it appears.
 
     ```javascript
-    import { EditorsRegistry } from 'ckeditor5-livewire';
+    import { EditorsRegistry } from 'ckeditor5-symfony';
 
     EditorsRegistry.the.execute('editor1', (editor) => {
       console.log('Current data:', editor.getData());
@@ -687,7 +687,7 @@ The package provides two registries: `EditorsRegistry` and `ContextsRegistry`. T
 - The same methods are available on `ContextsRegistry` for shared contexts:
 
     ```javascript
-    import { ContextsRegistry } from 'ckeditor5-livewire';
+    import { ContextsRegistry } from 'ckeditor5-symfony';
 
     ContextsRegistry.the.waitFor('shared-context').then((watchdog) => {
       console.log('Context is ready:', watchdog.context);
