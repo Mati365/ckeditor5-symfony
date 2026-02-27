@@ -36,3 +36,13 @@ ckeditor5:
           - BlockQuote
           - Essentials
           - Paragraph
+
+    custom_translations:
+      editorType: classic
+      config:
+        toolbar: [bold, italic, link]
+        plugins: [Bold, Italic, Link, Essentials, Paragraph]
+      customTranslations:
+        en:
+          Bold: Custom bold
+          Italic: Custom italic

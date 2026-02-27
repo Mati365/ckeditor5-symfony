@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Language / Translation Demo - CKEditor 5 Playground{% endblock %}
+
+{% block body %}
+<div class="mx-auto mt-12 px-4 max-w-5xl">
+    <div class="mb-4">
+        <a href="{{ path('app_index') }}" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm hover:underline">
+            &larr; Back to Home
+        </a>
+    </div>
+
+    <h1 class="mt-4 mb-4 font-bold text-gray-800 text-2xl">Language / Translation Demo</h1>
+
+    <p class="mb-6 text-gray-600">Each editor below is initialized with a different UI language (PL, DE, RU, EN).  A final example uses a
+    preset that provides custom translations for some strings.</p>
+
+    <div class="gap-10 grid">
+        <div>
+            <h2 class="mb-2 font-semibold">Polski (PL)</h2>
+            {{ cke5_editor('Treść w polskim interfejsie', language: 'pl') }}
+        </div>
+
+        <div>
+            <h2 class="mb-2 font-semibold">Deutsch (DE)</h2>
+            {{ cke5_editor('Inhalt im deutschen Interface', language: 'de') }}
+        </div>
+
+        <div>
+            <h2 class="mb-2 font-semibold">Русский (RU)</h2>
+            {{ cke5_editor('Содержимое с русским интерфейсом', language: 'ru') }}
+        </div>
+
+        <div>
+            <h2 class="mb-2 font-semibold">English (EN)</h2>
+            {{ cke5_editor('Content with English UI', language: 'en') }}
+        </div>
+
+        <div>
+            <h2 class="mb-2 font-semibold">Custom translations</h2>
+            <p class="mb-2 text-gray-600 text-sm">The toolbar save/cancel labels are overridden by a preset.</p>
+            {{ cke5_editor('Custom translations example', preset: 'custom_translations') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

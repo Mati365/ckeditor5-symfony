@@ -51,6 +51,8 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
       - [AssetsMapper translations installation 📥](#assetsmapper-translations-installation-)
       - [Direct CDN translations configuration ⚙️](#direct-cdn-translations-configuration-️)
     - [Custom translations 🌐](#custom-translations-)
+      - [Translation references in config 🔤](#translation-references-in-config-)
+      - [YAML example](#yaml-example)
   - [Custom plugins 🧩](#custom-plugins-)
   - [Context 🤝](#context-)
     - [Basic usage 🔧](#basic-usage--1)
@@ -537,6 +539,41 @@ ckeditor5:
           Bold: Pogrubiony
           Italic: Kursywa
 ```
+
+#### Translation references in config 🔤
+
+You can also reference custom translations directly from your editor configuration by using
+an object with a `$translation` key. When the editor is initialized the value will be
+replaced with the correct string from the loaded translation packs (including any
+`customTranslations` defined in your preset).
+
+This is handy if you want to keep plugin labels or other strings inside the YAML and
+reuse them across presets or languages.
+
+#### YAML example
+
+```yaml
+# config/packages/ckeditor5.yaml
+
+ckeditor5:
+  presets:
+    with-translations:
+      editorType: classic
+      config:
+        toolbar: [bold, italic]
+        customPlugin:
+          label: {$translation: MyPluginLabel}
+      customTranslations:
+        en:
+          MyPluginLabel: My plugin
+          AnotherKey: Another value
+        pl:
+          MyPluginLabel: Mój wtyczka
+```
+
+When the editor runs the `{ $translation: 'MyPluginLabel' }` entry will be automatically
+resolved to the appropriate string for the current UI language, so you don’t need to
+hard‑code the text in multiple places.
 
 ## Custom plugins 🧩
 

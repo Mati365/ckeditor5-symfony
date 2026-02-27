@@ -34,4 +34,13 @@ return [
     'ckeditor5/translations/en.js' => [
         'path' => './assets/vendor/ckeditor5/dist/translations/en.js',
     ],
+    'ckeditor5/translations/pl.js' => [
+        'path' => './assets/vendor/ckeditor5/dist/translations/pl.js',
+    ],
+    'ckeditor5/translations/de.js' => [
+        'path' => './assets/vendor/ckeditor5/dist/translations/de.js',
+    ],
+    'ckeditor5/translations/ru.js' => [
+        'path' => './assets/vendor/ckeditor5/dist/translations/ru.js',
+    ],
 ];

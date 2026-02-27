@@ -153,6 +153,37 @@ describe('context component', () => {
 
       expect(plugin.getHelloTitle()).toBe('Witaj z CustomPlugin');
     });
+
+    it('should resolve $translation references in the context configuration', async () => {
+      renderTestContext(
+        createContextSnapshot(
+          DEFAULT_TEST_CONTEXT_ID,
+          {
+            customTranslations: {
+              en: {
+                Custom: 'Custom value',
+              },
+              pl: {
+                Custom: 'Wartość niestandardowa',
+              },
+            },
+            config: {
+              customPlugin: {
+                label: { $translation: 'Custom' },
+              },
+            },
+          },
+          {
+            ui: 'pl',
+            content: 'pl',
+          },
+        ),
+      );
+
+      const { context } = await waitForTestContext();
+
+      expect((context!.config.get('customPlugin') as any).label).toBe('Wartość niestandardowa');
+    });
   });
 
   describe('attaching editor', () => {

@@ -358,6 +358,34 @@ describe('editor component', () => {
 
       expect(editor.t('Bold')).toBe('Czcionka grubaśna');
     });
+
+    it('should resolve $translation references in the editor configuration', async () => {
+      const preset = createEditorPreset(
+        'classic',
+        {
+          customPlugin: {
+            label: { $translation: 'Custom' },
+          },
+        },
+        {
+          pl: {
+            Custom: 'Mocarna czcionka',
+          },
+        },
+      );
+
+      renderTestEditor({
+        preset,
+        language: {
+          ui: 'pl',
+          content: 'pl',
+        },
+      });
+
+      const editor = await waitForTestEditor();
+
+      expect((editor.config.get('customPlugin') as any).label).toBe('Mocarna czcionka');
+    });
   });
 
   describe('`watchdog` snapshot parameter`', () => {

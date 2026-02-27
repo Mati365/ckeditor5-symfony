@@ -33,8 +33,7 @@ final class PresetParser
             $envKey = getenv('CKEDITOR5_LICENSE_KEY');
 
             if ($envKey === false) {
-                $envKey = $_ENV['CKEDITOR5_LICENSE_KEY']
-                    ?? null;
+                $envKey = $_ENV['CKEDITOR5_LICENSE_KEY'] ?? null;
             }
 
             $licenseKey = $envKey !== null
