@@ -8,6 +8,7 @@ export * from './normalize-custom-translations';
 export * from './query-all-editor-ids';
 export * from './query-editor-editables';
 export * from './resolve-editor-config-elements-references';
+export * from './resolve-editor-config-translations';
 export * from './set-editor-editable-height';
 export * from './wrap-with-watchdog';
 //# sourceMappingURL=index.d.ts.map

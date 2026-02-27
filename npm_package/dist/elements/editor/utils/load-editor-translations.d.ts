@@ -1,3 +1,4 @@
+import { Translations } from 'ckeditor5';
 /**
  * Loads all required translations for the editor based on the language configuration.
  *
@@ -10,5 +11,5 @@
 export declare function loadAllEditorTranslations(language: {
     ui: string;
     content: string;
-}, hasPremium: boolean): Promise<any[]>;
+}, hasPremium: boolean): Promise<Translations[]>;
 //# sourceMappingURL=load-editor-translations.d.ts.map
