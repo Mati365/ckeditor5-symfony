@@ -52,7 +52,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
       - [Direct CDN translations configuration ⚙️](#direct-cdn-translations-configuration-️)
     - [Custom translations 🌐](#custom-translations-)
       - [Translation references in config 🔤](#translation-references-in-config-)
-        - [YAML example ⚙️](#yaml-example-️)
   - [Custom plugins 🧩](#custom-plugins-)
   - [Context 🤝](#context-)
     - [Basic usage 🔧](#basic-usage--1)
@@ -550,8 +549,6 @@ replaced with the correct string from the loaded translation packs (including an
 This is handy if you want to keep plugin labels or other strings inside the YAML and
 reuse them across presets or languages.
 
-##### YAML example ⚙️
-
 ```yaml
 # config/packages/ckeditor5.yaml
 
@@ -568,7 +565,7 @@ ckeditor5:
           MyPluginLabel: My plugin
           AnotherKey: Another value
         pl:
-          MyPluginLabel: Mój wtyczka
+          MyPluginLabel: Moja wtyczka
 ```
 
 When the editor runs the `{ $translation: 'MyPluginLabel' }` entry will be automatically
