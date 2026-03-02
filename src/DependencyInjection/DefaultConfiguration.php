@@ -114,10 +114,13 @@ return [
                 ],
                 'image' => [
                     'toolbar' => [
-                        'imageTextAlternative',
-                        'imageStyle',
-                        'imageResize',
-                        'imageInsertViaUrl',
+                        "imageStyle:inline",
+                        "imageStyle:block",
+                        "imageStyle:wrapText",
+                        "imageResize",
+                        "|",
+                        "toggleImageCaption",
+                        "imageTextAlternative",
                     ],
                 ],
             ],
