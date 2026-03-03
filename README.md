@@ -32,6 +32,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Classic editor 📝](#classic-editor-)
     - [Multiroot editor 🌳](#multiroot-editor-)
     - [Inline editor 📝](#inline-editor-)
+    - [Balloon editor 🎈](#balloon-editor-)
     - [Decoupled editor 🌐](#decoupled-editor-)
   - [Forms Integration 🧾](#forms-integration-)
     - [Editor roots change event 📡](#editor-roots-change-event-)
@@ -229,6 +230,20 @@ Minimalist editor that appears directly within content when clicked. Ideal for i
 ```
 
 **Note:** Inline editors don't work with `<textarea>` elements and may not be suitable for traditional form scenarios.
+
+### Balloon editor 🎈
+
+Contextual editor that shows a floating toolbar when text is selected. Great for simple editing tasks where a full toolbar isn't necessary.
+
+![CKEditor 5 Balloon Editor in Symfony application](docs/balloon-editor.png)
+
+```twig
+{{ cke5_editor(
+  content: '<p>Select some text to see the balloon toolbar</p>',
+  editorType: 'balloon',
+  editableHeight: 300
+) }}
+```
 
 ### Decoupled editor 🌐
 
