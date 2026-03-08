@@ -38,7 +38,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
         $this
             ->addOption('distribution', null, InputOption::VALUE_REQUIRED, 'Distribution type: cloud or npm', 'npm')
             ->addOption('importmap-path', null, InputOption::VALUE_REQUIRED, 'Path to importmap.php file', 'importmap.php')
-            ->addOption('editor-version', null, InputOption::VALUE_REQUIRED, 'CKEditor version', '47.3.0')
+            ->addOption('editor-version', null, InputOption::VALUE_REQUIRED, 'CKEditor version', '47.6.0')
             ->addOption('translations', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of translations', 'en')
             ->addOption('template-path', null, InputOption::VALUE_REQUIRED, 'Path to base template file', 'templates/base.html.twig')
             ->addOption('js-path', null, InputOption::VALUE_REQUIRED, 'Path to main JS file', 'assets/app.js')
