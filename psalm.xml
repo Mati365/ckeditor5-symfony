@@ -28,6 +28,8 @@
         <PropertyNotSetInConstructor errorLevel="info"/>
         <MissingOverrideAttribute errorLevel="info"/>
     </issueHandlers>
-<plugins>
-    <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/></plugins>
+
+    <plugins>
+        <pluginClass class="Psalm\SymfonyPsalmPlugin\Plugin"/>
+    </plugins>
 </psalm>
