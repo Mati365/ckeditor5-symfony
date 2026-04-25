@@ -8,6 +8,8 @@ jobs:
   js_checks:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +33,7 @@ jobs:
         run: pnpm run npm_package:test
 
       - name: Upload JS coverage to Codecov
+        if: env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v5
         with:
           files: ./npm_package/coverage/lcov.info
@@ -42,6 +45,8 @@ jobs:
   php_checks:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -68,6 +73,7 @@ jobs:
           fi
 
       - name: Upload PHP coverage to Codecov
+        if: env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
