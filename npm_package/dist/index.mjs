@@ -253,21 +253,6 @@ function N(r, t) {
 function Q() {
   return Math.random().toString(36).substring(2);
 }
-function P() {
-  return new Promise((r) => {
-    switch (document.readyState) {
-      case "loading":
-        document.addEventListener("DOMContentLoaded", () => r(), { once: !0 });
-        break;
-      case "interactive":
-      case "complete":
-        setTimeout(r, 0);
-        break;
-      default:
-        console.warn("Unexpected document.readyState:", document.readyState), setTimeout(r, 0);
-    }
-  });
-}
 function Z(r, {
   timeOutAfter: t = 500,
   retryAfter: e = 100
@@ -286,6 +271,21 @@ function Z(r, {
       }
     };
     c();
+  });
+}
+function P() {
+  return new Promise((r) => {
+    switch (document.readyState) {
+      case "loading":
+        document.addEventListener("DOMContentLoaded", () => r(), { once: !0 });
+        break;
+      case "interactive":
+      case "complete":
+        setTimeout(r, 0);
+        break;
+      default:
+        console.warn("Unexpected document.readyState:", document.readyState), setTimeout(r, 0);
+    }
   });
 }
 const S = /* @__PURE__ */ Symbol.for("context-editor-watchdog");
