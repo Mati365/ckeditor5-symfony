@@ -335,6 +335,8 @@ ckeditor5:
 
     full:
       editorType: classic
+      watchdogConfig:
+        crashNumberLimit: 3
       config:
         toolbar:
           - heading

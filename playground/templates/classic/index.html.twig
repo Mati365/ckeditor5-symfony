@@ -12,7 +12,16 @@
 
     <h1 class="mt-4 mb-4 font-bold text-gray-800 text-2xl">Classic Editor</h1>
 
-    {{ cke5_editor('Hello World') }}
+    <div class="flex gap-4 mb-6">
+        <button
+            type="button"
+            onclick="window.triggerCKE5Error('base-classic')"
+            class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-white transition-colors">
+            Trigger Error
+        </button>
+    </div>
+
+    {{ cke5_editor('Hello World', id: 'base-classic') }}
 
     <h2 class="mt-12 mb-4 font-bold text-gray-800 text-xl">Minimal Preset</h2>
 

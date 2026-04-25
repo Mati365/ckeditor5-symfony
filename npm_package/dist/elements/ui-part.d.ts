@@ -3,9 +3,9 @@
  */
 export declare class UIPartComponentElement extends HTMLElement {
     /**
-     * The promise that resolves when the UI part is mounted.
+     * Stops observing the editor registry and immediately runs any pending cleanup.
      */
-    private mountedPromise;
+    private unmountEffect;
     /**
      * Mounts the UI part component.
      */
@@ -13,6 +13,6 @@ export declare class UIPartComponentElement extends HTMLElement {
     /**
      * Destroys the UI part component. Unmounts UI parts from the editor.
      */
-    disconnectedCallback(): Promise<void>;
+    disconnectedCallback(): void;
 }
 //# sourceMappingURL=ui-part.d.ts.map

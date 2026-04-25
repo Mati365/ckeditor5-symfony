@@ -12,6 +12,15 @@
 
     <h1 class="mb-4 font-bold text-gray-800 text-2xl">Multiroot Editor</h1>
 
+    <div class="flex gap-4 mb-6">
+        <button
+            type="button"
+            onclick="window.triggerCKE5Error('base-multiroot')"
+            class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-white transition-colors">
+            Trigger Error
+        </button>
+    </div>
+
     {{ cke5_ui_part(name: 'toolbar', class: 'mt-4 mb-6') }}
 
     <div class="gap-4 grid grid-cols-2">
@@ -31,6 +40,6 @@
         {{ cke5_editable(root_name: 'footer', content: 'Footer content', class: 'border border-gray-300 rounded-sm') }}
     </div>
 
-    {{ cke5_editor(editor_type: 'multiroot') }}
+    {{ cke5_editor(id: 'base-multiroot', editor_type: 'multiroot') }}
 </div>
 {% endblock %}

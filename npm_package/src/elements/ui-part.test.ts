@@ -136,7 +136,7 @@ describe('ui-part component', () => {
 
     it('should handle destruction when mounted promise is not resolved yet', async () => {
       document.body.innerHTML = '';
-      EditorsRegistry.the.reset();
+      void EditorsRegistry.the.reset();
 
       const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
 

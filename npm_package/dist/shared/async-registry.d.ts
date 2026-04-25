@@ -20,6 +20,15 @@ export declare class AsyncRegistry<T extends Destructible> {
      */
     private readonly watchers;
     /**
+     * Batch nesting depth. When > 0, watcher notifications are deferred.
+     */
+    private batchDepth;
+    /**
+     * Snapshot of the last state dispatched to watchers, used for change detection.
+     */
+    private lastNotifiedItems;
+    private lastNotifiedErrors;
+    /**
      * Executes a function on an item.
      * If the item is not yet registered, it will wait for it to be registered.
      *
@@ -29,6 +38,14 @@ export declare class AsyncRegistry<T extends Destructible> {
      * @returns A promise that resolves with the result of the function.
      */
     execute<R, E extends T = T>(id: RegistryId | null, onSuccess: (item: E) => R, onError?: (error: any) => void): Promise<Awaited<R>>;
+    /**
+     * Reactively binds a mount/unmount lifecycle to a single registry item.
+     *
+     * @param id The ID of the item to observe.
+     * @param onMount Function executed when the item mounts.
+     * @returns A function that stops observing and immediately runs any pending cleanup.
+     */
+    mountEffect<E extends T = T>(id: RegistryId | null, onMount: (item: E) => (() => void) | void): () => void;
     /**
      * Registers an item.
      *
@@ -53,14 +70,21 @@ export declare class AsyncRegistry<T extends Destructible> {
      * Un-registers an item.
      *
      * @param id The ID of the item.
+     * @param resetPendingCallbacks If true resets pending callbacks.
      */
-    unregister(id: RegistryId | null): void;
+    unregister(id: RegistryId | null, resetPendingCallbacks?: boolean): void;
     /**
      * Gets all registered items.
      *
      * @returns An array of all registered items.
      */
     getItems(): T[];
+    /**
+     * Returns single registered item.
+     *
+     * @returns Registered item.
+     */
+    getItem(id: RegistryId | null): T | undefined;
     /**
      * Checks if an item with the given ID is registered.
      *
@@ -73,15 +97,30 @@ export declare class AsyncRegistry<T extends Destructible> {
      * If the item is not registered yet, it will wait for it to be registered.
      *
      * @param id The ID of the item.
-     * @param timeout Optional timeout in milliseconds.
      * @returns A promise that resolves with the item instance.
      */
-    waitFor<E extends T = T>(id: RegistryId | null, timeout?: number): Promise<E>;
+    waitFor<E extends T = T>(id: RegistryId | null): Promise<E>;
     /**
      * Destroys all registered items and clears the registry.
      * This will call the `destroy` method on each item.
      */
     destroyAll(): Promise<void>;
+    /**
+     * Destroys all registered editors and removes all watchers.
+     */
+    reset(): Promise<void>;
+    /**
+     * Executes a callback while deferring all watcher notifications.
+     * A single notification is fired synchronously after the callback returns,
+     * but only if the registry actually changed.
+     *
+     * Batches can be nested — watchers are notified only when the outermost
+     * batch completes.
+     *
+     * @param fn The callback to execute.
+     * @returns The return value of the callback.
+     */
+    batch<R>(fn: () => R): R;
     /**
      * Registers a watcher that will be called whenever the registry changes.
      *
@@ -96,13 +135,9 @@ export declare class AsyncRegistry<T extends Destructible> {
      */
     unwatch(watcher: RegistryWatcher<T>): void;
     /**
-     * Resets the registry by clearing all items, errors, and pending callbacks.
+     * Immediately dispatches the current state to all watchers if it changed.
      */
-    reset(): void;
-    /**
-     * Notifies all watchers about changes to the registry.
-     */
-    private notifyWatchers;
+    private flushWatchers;
     /**
      * Gets or creates pending callbacks for a specific ID.
      *
@@ -110,13 +145,6 @@ export declare class AsyncRegistry<T extends Destructible> {
      * @returns The pending callbacks structure.
      */
     private getPendingCallbacks;
-    /**
-     * Registers an item as the default (null ID) item if it's the first one.
-     *
-     * @param id The ID of the item being registered.
-     * @param item The item instance.
-     */
-    private registerAsDefault;
 }
 /**
  * Interface for objects that can be destroyed.

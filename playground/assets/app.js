@@ -1,6 +1,17 @@
-import '@mati365/ckeditor5-symfony';
 import './bootstrap.js';
 import './styles/app.css';
 
-// eslint-disable-next-line no-console
-console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+import { EditorsRegistry } from '@mati365/ckeditor5-symfony';
+
+export function triggerCKE5Error(editorId = null) {
+  setTimeout(() => {
+    const err = new Error('foo');
+
+    err.context = EditorsRegistry.the.getItem(editorId);
+    err.is = () => true;
+
+    throw err;
+  });
+}
+
+window.triggerCKE5Error = triggerCKE5Error;

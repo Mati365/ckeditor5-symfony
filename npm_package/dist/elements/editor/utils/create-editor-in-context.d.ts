@@ -1,5 +1,4 @@
 import { Context, ContextWatchdog, Editor, EditorConfig } from 'ckeditor5';
-import { EditorCreator } from './wrap-with-watchdog';
 /**
  * Creates a CKEditor 5 editor instance within a given context watchdog.
  *
@@ -39,6 +38,12 @@ type EditorContextDescriptor = {
     state: 'available' | 'unavailable';
     editorContextId: string;
     context: ContextWatchdog<Context>;
+};
+/**
+ * Type representing an Editor creator with a create method.
+ */
+type EditorCreator = {
+    create: (...args: any) => Promise<Editor>;
 };
 export {};
 //# sourceMappingURL=create-editor-in-context.d.ts.map

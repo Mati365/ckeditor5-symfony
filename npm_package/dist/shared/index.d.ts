@@ -1,3 +1,4 @@
+export * from './are-maps-equal';
 export * from './async-registry';
 export * from './camel-case';
 export * from './debounce';
@@ -10,6 +11,6 @@ export * from './once';
 export * from './shallow-equal';
 export * from './timeout';
 export * from './uid';
-export * from './wait-for';
 export * from './wait-for-dom-ready';
+export * from './wait-for';
 //# sourceMappingURL=index.d.ts.map

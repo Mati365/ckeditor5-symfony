@@ -1,24 +1,15 @@
-import { Editor, EditorWatchdog } from 'ckeditor5';
+import { Editor, EditorWatchdog, WatchdogConfig } from 'ckeditor5';
 /**
- * Wraps an Editor creator with a watchdog for automatic recovery.
+ * Wraps an editor factory with a watchdog for automatic recovery.
+ * The factory is invoked on each (re)start, so configuration is rebuilt every time.
  *
- * @param Editor - The Editor creator to wrap.
- * @returns The Editor creator wrapped with a watchdog.
+ * @param factory Async function that creates and returns an Editor instance.
+ * @param watchdogConfig Configuration of the watchdog.
+ * @returns The watchdog instance.
  */
-export declare function wrapWithWatchdog(Editor: EditorCreator): Promise<{
-    watchdog: EditorWatchdog<Editor>;
-    Constructor: {
-        create: (...args: Parameters<(typeof Editor)["create"]>) => Promise<Editor>;
-    };
-}>;
+export declare function wrapWithWatchdog(factory: () => Promise<Editor>, watchdogConfig?: WatchdogConfig | null): Promise<EditorWatchdog<Editor>>;
 /**
  * Unwraps the EditorWatchdog from the editor instance.
  */
 export declare function unwrapEditorWatchdog(editor: Editor): EditorWatchdog | null;
-/**
- * Type representing an Editor creator with a create method.
- */
-export type EditorCreator = {
-    create: (...args: any) => Promise<Editor>;
-};
 //# sourceMappingURL=wrap-with-watchdog.d.ts.map

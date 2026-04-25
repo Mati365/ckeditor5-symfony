@@ -3,9 +3,9 @@
  */
 export declare class EditableComponentElement extends HTMLElement {
     /**
-     * The promise that resolves when the editable is mounted.
+     * Stops observing the editor registry and immediately runs any pending cleanup.
      */
-    private editorPromise;
+    private unmountEffect;
     /**
      * Mounts the editable component.
      */
@@ -13,6 +13,6 @@ export declare class EditableComponentElement extends HTMLElement {
     /**
      * Destroys the editable component. Unmounts root from the editor.
      */
-    disconnectedCallback(): Promise<void>;
+    disconnectedCallback(): void;
 }
 //# sourceMappingURL=editable.d.ts.map

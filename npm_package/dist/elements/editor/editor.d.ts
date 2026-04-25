@@ -3,18 +3,22 @@
  */
 export declare class EditorComponentElement extends HTMLElement {
     /**
-     * The promise that resolves to the editor instance.
+     * Stops observing the editor registry and immediately runs any pending cleanup.
      */
-    private editorPromise;
+    private unmountEffect;
     /**
      * Mounts the editor component.
      */
     connectedCallback(): Promise<void>;
     /**
+     * Initializes the editor instance.
+     */
+    private initializeEditor;
+    /**
      * Destroys the editor instance when the component is destroyed.
      * This is important to prevent memory leaks and ensure that the editor is properly cleaned up.
      */
-    disconnectedCallback(): Promise<void>;
+    disconnectedCallback(): void;
     /**
      * Creates the CKEditor instance.
      */

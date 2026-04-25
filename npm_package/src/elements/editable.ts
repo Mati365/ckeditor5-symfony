@@ -1,18 +1,18 @@
-import type { MultiRootEditor } from 'ckeditor5';
+import type { DecoupledEditor, MultiRootEditor } from 'ckeditor5';
 
 import { CKEditor5SymfonyError } from '../ckeditor5-symfony-error';
 import { debounce, waitForDOMReady } from '../shared';
 import { EditorsRegistry } from './editor/editors-registry';
-import { queryAllEditorIds } from './editor/utils';
+import { isMultirootEditorInstance, queryAllEditorIds } from './editor/utils';
 
 /**
  * Editable hook for Symfony. It allows you to create editables for multi-root editors.
  */
 export class EditableComponentElement extends HTMLElement {
   /**
-   * The promise that resolves when the editable is mounted.
+   * Stops observing the editor registry and immediately runs any pending cleanup.
    */
-  private editorPromise: Promise<MultiRootEditor | null> | null = null;
+  private unmountEffect: VoidFunction | null = null;
 
   /**
    * Mounts the editable component.
@@ -36,15 +36,15 @@ export class EditableComponentElement extends HTMLElement {
 
     // If the editor is not registered yet, we will wait for it to be registered.
     this.style.display = 'block';
-    this.editorPromise = EditorsRegistry.the.execute(editorId, async (editor: MultiRootEditor) => {
+
+    this.unmountEffect = EditorsRegistry.the.mountEffect(editorId, (editor: DecoupledEditor | MultiRootEditor) => {
       if (!this.isConnected) {
-        return null;
+        return;
       }
 
       const input = this.querySelector('input') as HTMLInputElement | null;
-      const { ui, editing, model } = editor;
 
-      if (model.document.getRoot(rootName)) {
+      if (editor.model.document.getRoot(rootName)) {
         // If the newly added root already exists, but the newly added editable has content,
         // we need to update the root data with the editable content.
         if (content !== null) {
@@ -57,21 +57,25 @@ export class EditableComponentElement extends HTMLElement {
           }
         }
 
-        return editor;
+        return;
       }
 
-      editor.addRoot(rootName, {
-        isUndoable: false,
-        ...content !== null && {
-          data: content,
-        },
-      });
+      if (isMultirootEditorInstance(editor)) {
+        const { ui, editing } = editor;
 
-      const contentElement = this.querySelector('[data-cke-editable-content]') as HTMLElement | null;
-      const editable = ui.view.createEditable(rootName, contentElement!);
+        editor.addRoot(rootName, {
+          isUndoable: false,
+          ...content !== null && {
+            data: content,
+          },
+        });
 
-      ui.addEditable(editable);
-      editing.view.forceRender();
+        const contentElement = this.querySelector('[data-cke-editable-content]') as HTMLElement | null;
+        const editable = ui.view.createEditable(rootName, contentElement!);
+
+        ui.addEditable(editable);
+        editing.view.forceRender();
+      }
 
       // Sync data with socket and input element.
       const sync = () => {
@@ -85,41 +89,50 @@ export class EditableComponentElement extends HTMLElement {
         this.dispatchEvent(new CustomEvent('change', { detail: { value: html } }));
       };
 
-      editor.model.document.on('change:data', debounce(saveDebounceMs, sync));
+      const debouncedSync = debounce(saveDebounceMs, sync);
+
+      editor.model.document.on('change:data', debouncedSync);
       sync();
 
-      return editor;
+      return () => {
+        editor.model.document.off('change:data', debouncedSync);
+
+        if (editor.state !== 'destroyed' && rootName) {
+          const root = editor.model.document.getRoot(rootName);
+
+          if (root && isMultirootEditorInstance(editor)) {
+            // Detaching editables seem to be buggy when something removed DOM element of the editable (e.g. Blazor re-render) before
+            // the editable is unmounted. To prevent errors in such cases, we will try to detach the editable if it exists, but ignore errors.
+            try {
+              if (editor.ui.view.editables[rootName]) {
+                editor.detachEditable(root);
+              }
+              /* v8 ignore start -- @preserve */
+            }
+            catch (err) {
+              // Ignore errors when detaching editable.
+              console.error('Unable unmount editable from root:', err);
+            }
+            /* v8 ignore end */
+
+            if (root.isAttached()) {
+              editor.detachRoot(rootName, false);
+            }
+          }
+        }
+      };
     });
   }
 
   /**
    * Destroys the editable component. Unmounts root from the editor.
    */
-  async disconnectedCallback() {
-    const rootName = this.getAttribute('data-cke-root-name');
-
+  disconnectedCallback() {
     // Let's hide the element during destruction to prevent flickering.
     this.style.display = 'none';
 
-    // Let's wait for the mounted promise to resolve before proceeding with destruction.
-    const editor = await this.editorPromise;
-    this.editorPromise = null;
-
-    // Unmount root from the editor if editor is still registered.
-    if (editor && editor.state !== 'destroyed' && rootName) {
-      const root = editor.model.document.getRoot(rootName);
-
-      if (root && 'detachEditable' in editor) {
-        try {
-          editor.detachEditable(root);
-        }
-        catch (err) {
-          // Ignore errors when detaching editable.
-          console.error('Unable unmount editable from root:', err);
-        }
-
-        editor.detachRoot(rootName, false);
-      }
-    }
+    // Stop observing the registry and run cleanup immediately.
+    this.unmountEffect?.();
+    this.unmountEffect = null;
   }
 }

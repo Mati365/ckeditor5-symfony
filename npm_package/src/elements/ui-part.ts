@@ -8,9 +8,9 @@ import { queryAllEditorIds } from './editor/utils';
  */
 export class UIPartComponentElement extends HTMLElement {
   /**
-   * The promise that resolves when the UI part is mounted.
+   * Stops observing the editor registry and immediately runs any pending cleanup.
    */
-  private mountedPromise: Promise<void> | null = null;
+  private unmountEffect: VoidFunction | null = null;
 
   /**
    * Mounts the UI part component.
@@ -28,7 +28,8 @@ export class UIPartComponentElement extends HTMLElement {
 
     // If the editor is not registered yet, we will wait for it to be registered.
     this.style.display = 'block';
-    this.mountedPromise = EditorsRegistry.the.execute(editorId, (editor) => {
+
+    this.unmountEffect = EditorsRegistry.the.mountEffect(editorId, (editor) => {
       if (!this.isConnected) {
         return;
       }
@@ -44,22 +45,23 @@ export class UIPartComponentElement extends HTMLElement {
       }
 
       this.appendChild(uiPart.element);
+
+      return () => {
+        this.innerHTML = '';
+      };
     });
   }
 
   /**
    * Destroys the UI part component. Unmounts UI parts from the editor.
    */
-  async disconnectedCallback() {
+  disconnectedCallback() {
     // Let's hide the element during destruction to prevent flickering.
     this.style.display = 'none';
 
-    // Let's wait for the mounted promise to resolve before proceeding with destruction.
-    await this.mountedPromise;
-    this.mountedPromise = null;
-
-    // Unmount all UI parts from the editor.
-    this.innerHTML = '';
+    // Stop observing the registry and run cleanup immediately.
+    this.unmountEffect?.();
+    this.unmountEffect = null;
   }
 }
 
