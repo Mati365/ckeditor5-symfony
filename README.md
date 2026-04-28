@@ -92,7 +92,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    Bundles assets locally. No Node.js required.
 
    ```bash
-   php bin/console ckeditor5:assets-mapper:install
+   php bin/console ckeditor5:assets-mapper:install # --editor-version 48.0.0 --premium --translations en,pl
    ```
 
    **📦 Self-hosted via Webpack Encore**
