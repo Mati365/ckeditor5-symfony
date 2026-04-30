@@ -85,9 +85,10 @@ final class JSManipulator
      */
     private static function hasImport(string $content, string $importName): bool
     {
-        // Simple check, can be improved to be usage aware, but for now str_contains is enough for simple imports
-        // checking for "import 'name'" or 'import "name"' would be more precise
-        return preg_match(sprintf('/import\s+[\'"]%s[\'"]/', preg_quote($importName, '/')), $content) === 1;
+        return preg_match(
+            sprintf('/import\s+(?:[^;]*?\s+from\s+)?[\'"]%s[\'"]/', preg_quote($importName, '/')),
+            $content
+        ) === 1;
     }
 
     /**

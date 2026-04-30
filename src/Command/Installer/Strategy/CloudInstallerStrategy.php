@@ -85,10 +85,6 @@ final class CloudInstallerStrategy implements InstallerStrategyInterface
     #[\Override]
     public function updateTwig(InputInterface $input, SymfonyStyle $io): void
     {
-        if ($input->getOption('skip-template-update')) {
-            return;
-        }
-
         /** @psalm-suppress RedundantCast */
         $templatePath = (string) $input->getOption('template-path');
         $blockName = 'ckeditor5_assets';
@@ -105,10 +101,6 @@ final class CloudInstallerStrategy implements InstallerStrategyInterface
     #[\Override]
     public function updateCss(InputInterface $input, SymfonyStyle $io): void
     {
-        if ($input->getOption('skip-css-update')) {
-            return;
-        }
-
         /** @psalm-suppress RedundantCast */
         $cssPath = (string) $input->getOption('css-path');
         $cssImports = ['../vendor/ckeditor5/dist/ckeditor5.css'];

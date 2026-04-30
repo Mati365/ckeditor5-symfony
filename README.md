@@ -776,14 +776,14 @@ Options:
       --skip-template-update           Skip updating the Twig template
       --skip-composer-update           Skip updating composer.json
       --skip-css-update                Skip updating CSS imports
-      --skip-js-update                 Skip updating Jng composer.json
+      --skip-js-update                 Skip updating JS imports
+      --skip-all-updates               Alias: skip all update steps (template, composer, CSS, JS) — used in auto-scripts to prevent re-runs
   -h, --help                           Display help for the given command. When no command is given display help for the list command
-      --silent                         Do not output any message
-  -q, --quiet                          Only errors are displayed. All other output is suppressed
+  -q, --quiet                          Do not output any message
   -V, --version                        Display this application version
       --ansi|--no-ansi                 Force (or disable --no-ansi) ANSI output
   -n, --no-interaction                 Do not ask any interactive question
-  -e, --env=ENV                        The Environment name. [default: "dev"]
+  -e, --env=ENV                        The Environment name. [default: "1"]
       --no-debug                       Switch off debug mode.
       --profile                        Enables profiling (requires debug).
   -v|vv|vvv, --verbose                 Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug

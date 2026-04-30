@@ -49,8 +49,8 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
             ->addOption('skip-template-update', null, InputOption::VALUE_NONE, 'Skip updating the Twig template')
             ->addOption('skip-composer-update', null, InputOption::VALUE_NONE, 'Skip updating composer.json')
             ->addOption('skip-css-update', null, InputOption::VALUE_NONE, 'Skip updating CSS imports')
-            ->addOption('skip-js-update', null, InputOption::VALUE_NONE, 'Skip updating Jng composer.json')
-            ->addOption('skip-css-update', null, InputOption::VALUE_NONE, 'Skip updating CSS imports');
+            ->addOption('skip-js-update', null, InputOption::VALUE_NONE, 'Skip updating JS imports')
+            ->addOption('skip-all-updates', null, InputOption::VALUE_NONE, 'Alias: skip all update steps (template, composer, CSS, JS) — used in auto-scripts to prevent re-runs');
     }
 
     #[\Override]
@@ -59,6 +59,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $distribution = $input->getOption('distribution');
         $importmapPath = $input->getOption('importmap-path');
+        $skipAllUpdates = $input->getOption('skip-all-updates');
 
         try {
             // 1. Select Strategy
@@ -80,16 +81,23 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
             $this->importmapManipulator->saveImportmap($importmapPath, $importmap);
 
             // 4. Update Twig, JS and CSS
-            $strategy->updateTwig($input, $io);
-            $strategy->updateCss($input, $io);
+            if (!$skipAllUpdates) {
+                if (!$input->getOption('skip-template-update')) {
+                    $strategy->updateTwig($input, $io);
+                }
 
-            if (!$input->getOption('skip-js-update')) {
-                $jsPath = $input->getOption('js-path');
-                $io->note("Adding import to JS file: $jsPath");
-                $this->jsManipulator->addImport($jsPath, '@mati365/ckeditor5-symfony');
+                if (!$input->getOption('skip-css-update')) {
+                    $strategy->updateCss($input, $io);
+                }
+
+                if (!$input->getOption('skip-js-update')) {
+                    $jsPath = $input->getOption('js-path');
+                    $io->note("Adding import to JS file: $jsPath");
+                    $this->jsManipulator->addImport($jsPath, '@mati365/ckeditor5-symfony');
+                }
             }
 
-            // 5.  Compile asset map
+            // 5. Compile asset map
             $io->note('Compiling asset map...');
             $process = new Process([PHP_BINARY, 'bin/console', 'asset-map:compile']);
             $process->run();
@@ -100,7 +108,7 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
             }
 
             // 6. Update composer.json
-            if (!$input->getOption('skip-composer-update')) {
+            if (!$skipAllUpdates && !$input->getOption('skip-composer-update')) {
                 $io->note("Updating composer.json auto-scripts...");
                 $command = self::reconstructCommand($input);
 
@@ -164,11 +172,8 @@ final class CKEditor5AssetsMapperInstallCommand extends Command
             $options['--premium'] = null;
         }
 
-        // Always add these for the auto-script version to prevent recursion/loops
-        $options['--skip-template-update'] = null;
-        $options['--skip-composer-update'] = null;
-        $options['--skip-css-update'] = null;
-        $options['--skip-js-update'] = null;
+        // Single alias flag prevents recursion/loops — much shorter than four separate skips
+        $options['--skip-all-updates'] = null;
 
         // Build string
         $parts = [$command];
