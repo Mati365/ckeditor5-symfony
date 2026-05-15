@@ -2,6 +2,10 @@ packages:
   - npm_package
   - playground
 
+allowBuilds:
+  esbuild: false
+  protobufjs: false
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
