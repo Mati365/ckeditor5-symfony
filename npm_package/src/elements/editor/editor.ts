@@ -10,6 +10,8 @@ import {
   createSyncEditorWithInputPlugin,
 } from './plugins';
 import {
+  assignInitialDataToEditorConfig,
+  assignSourceElementsToEditorConfig,
   createEditorInContext,
   isSingleRootEditor,
   loadAllEditorTranslations,
@@ -182,19 +184,19 @@ export class EditorComponentElement extends HTMLElement {
 
       // Depending of the editor type, and parent lookup for nearest context or initialize it without it.
       const editor = await (async () => {
-        let sourceElementOrData: HTMLElement | Record<string, HTMLElement> = queryEditablesElements(editorId);
+        let sourceElements: HTMLElement | Record<string, HTMLElement> = queryEditablesElements(editorId);
 
         // Handle special case when user specified `initialData` of several root elements, but editable components
         // are not yet present in the DOM. In other words - editor is initialized before attaching root elements.
-        if (!sourceElementOrData['main']) {
+        if (!sourceElements['main']) {
           const requiredRoots = (
             isSingleRootEditor(editorType)
               ? ['main']
               : Object.keys(initialData as Record<string, string>)
           );
 
-          if (!checkIfAllRootsArePresent(sourceElementOrData, requiredRoots)) {
-            sourceElementOrData = await waitForAllRootsToBePresent(editorId, requiredRoots);
+          if (!checkIfAllRootsArePresent(sourceElements, requiredRoots)) {
+            sourceElements = await waitForAllRootsToBePresent(editorId, requiredRoots);
             initialData = {
               ...content,
               ...queryEditablesSnapshotContent(editorId),
@@ -203,23 +205,12 @@ export class EditorComponentElement extends HTMLElement {
         }
 
         // If single root editor, unwrap the element from the object.
-        if (isSingleRootEditor(editorType) && 'main' in sourceElementOrData) {
-          sourceElementOrData = sourceElementOrData['main'];
+        if (isSingleRootEditor(editorType) && 'main' in sourceElements) {
+          sourceElements = sourceElements['main'];
         }
 
-        // Construct parsed config. First resolve DOM element references in the provided configuration.
-        let resolvedConfig = resolveEditorConfigElementReferences(config);
-
-        // Then resolve translation references in the provided configuration, using the mixed translations.
-        resolvedConfig = resolveEditorConfigTranslations(
-          [...mixedTranslations].reverse(),
-          language.ui,
-          resolvedConfig,
-        );
-
-        const parsedConfig = {
-          ...resolvedConfig,
-          initialData,
+        let resolvedConfig = {
+          ...config,
           licenseKey,
           plugins: loadedPlugins,
           language,
@@ -228,15 +219,20 @@ export class EditorComponentElement extends HTMLElement {
           },
         };
 
-        if (!context || !(sourceElementOrData instanceof HTMLElement)) {
-          return Constructor.create(sourceElementOrData as any, parsedConfig);
+        // Do some postprocessing on received configuration.
+        resolvedConfig = resolveEditorConfigElementReferences(resolvedConfig);
+        resolvedConfig = resolveEditorConfigTranslations([...mixedTranslations].reverse(), language.ui, resolvedConfig);
+        resolvedConfig = assignSourceElementsToEditorConfig(Constructor, sourceElements, resolvedConfig);
+        resolvedConfig = assignInitialDataToEditorConfig(initialData, resolvedConfig);
+
+        if (!context) {
+          return Constructor.create(resolvedConfig);
         }
 
         const result = await createEditorInContext({
           context,
-          element: sourceElementOrData,
           creator: Constructor,
-          config: parsedConfig,
+          config: resolvedConfig,
         });
 
         return result.editor;

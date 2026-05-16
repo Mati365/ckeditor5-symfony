@@ -3,13 +3,12 @@ import { Context, ContextWatchdog, Editor, EditorConfig } from 'ckeditor5';
  * Creates a CKEditor 5 editor instance within a given context watchdog.
  *
  * @param params Parameters for editor creation.
- * @param params.element The DOM element or data for the editor.
  * @param params.context The context watchdog instance.
  * @param params.creator The editor creator utility.
  * @param params.config The editor configuration object.
  * @returns The created editor instance.
  */
-export declare function createEditorInContext({ element, context, creator, config }: Attrs): Promise<{
+export declare function createEditorInContext({ context, creator, config }: Attrs): Promise<{
     editor: Editor;
     state: "available" | "unavailable";
     editorContextId: string;
@@ -28,7 +27,6 @@ export declare function unwrapEditorContext(editor: Editor): EditorContextDescri
 type Attrs = {
     context: ContextWatchdog<Context>;
     creator: EditorCreator;
-    element: HTMLElement;
     config: EditorConfig;
 };
 /**

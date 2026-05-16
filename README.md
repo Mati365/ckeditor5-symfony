@@ -22,6 +22,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 
 - [ckeditor5-symfony](#ckeditor5-symfony)
   - [Table of Contents](#table-of-contents)
+  - [Compatibility 🔗](#compatibility-)
   - [Installation 🚀](#installation-)
   - [Usage 📖](#usage-)
   - [Basic Usage 🏁](#basic-usage-)
@@ -64,6 +65,13 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Psst... 👀](#psst-)
   - [Trademarks 📜](#trademarks-)
   - [License 📜](#license-)
+
+## Compatibility 🔗
+
+| CKEditor 5 Version | Integration Version |
+|--------------------|---------------------|
+| 43.x – 47.x        | `<= 1.8.x`          |
+| >= 48.0            | `>= 1.9.x`          |
 
 ## Installation 🚀
 
@@ -784,7 +792,7 @@ Usage:
 Options:
       --distribution=DISTRIBUTION      Distribution type: cloud or npm [default: "npm"]
       --importmap-path=IMPORTMAP-PATH  Path to importmap.php file [default: "importmap.php"]
-      --editor-version=EDITOR-VERSION  CKEditor version [default: "47.6.0"]
+      --editor-version=EDITOR-VERSION  CKEditor version [default: "48.1.0"]
       --translations=TRANSLATIONS      Comma-separated list of translations [default: "en"]
       --template-path=TEMPLATE-PATH    Path to base template file [default: "templates/base.html.twig"]
       --js-path=JS-PATH                Path to main JS file [default: "assets/app.js"]
