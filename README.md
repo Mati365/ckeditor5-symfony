@@ -135,7 +135,31 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 To use CKEditor 5 in your Twig templates, simply call the `cke5_editor()` function:
 
 ```twig
-{{ cke5_editor('Your content here') }}
+{{ cke5_editor("Hello World")}}
+
+{# Or ... #}
+
+{{ cke5_editor(
+    content: '<p>Hello world!</p>',   {# initial HTML content; pass an array for multiroot: {'main': '<p>...</p>'} #}
+    id: 'my-editor',                  {# unique ID; auto-generated with "cke5-" prefix if omitted #}
+    preset: 'default',                {# preset name from config or a Preset object; default: 'default' #}
+    editorType: 'classic',            {# classic | inline | balloon | decoupled | multiroot #}
+    editableHeight: 300,              {# fixed height in px; editor grows with content if omitted #}
+    language: 'pl',                   {# UI language (toolbar, dialogs); pass array for advanced config #}
+    saveDebounceMs: 200,              {# debounce in ms for syncing content to the hidden input (default: 200) #}
+    watchdog: true,                   {# auto-restart the editor on crash (default: true) #}
+    name: 'content',                  {# name attribute on the hidden input field (e.g. for Symfony forms) #}
+    required: true,                   {# adds required attribute to the hidden input field #}
+    contextId: 'my-context',          {# ties this editor to a shared CKEditor context instance #}
+    config: { toolbar: ['bold'] },    {# shallow-replaces the preset's editor config #}
+    mergeConfig: { toolbar: { shouldNotGroupWhenFull: true } }, {# deep-merges with the preset's editor config #}
+    customTranslations: {             {# override built-in UI strings per language #}
+        en: { Bold: 'Strong' },
+        pl: { Bold: 'Pogrubienie' }
+    },
+    class: 'my-editor',               {# CSS classes on the outer container element #}
+    style: 'border: 1px solid #ccc',  {# inline styles on the outer container element #}
+) }}
 ```
 
 If you don't use `AssetsMapper`, and your distribution is set to `cloud`, make sure to include the assets using `cke5_cloud_assets()` in your `<head>` section.

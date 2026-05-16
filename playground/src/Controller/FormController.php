@@ -17,13 +17,14 @@ class FormController extends AbstractController
             ->add('content', CKEditor5Type::class, [
                 'label' => 'Content',
                 'required' => true,
+                'data' => 'Hello World',
                 'label_attr' => ['class' => 'mb-2 block font-bold text-gray-700'],
             ])
             ->getForm();
 
         $form->handleRequest($request);
 
-        $data = null;
+        $data = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
         }
