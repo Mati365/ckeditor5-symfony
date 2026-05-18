@@ -1,6 +1,9 @@
 import type { Editor } from 'ckeditor5';
 
 import type { EditorId, EditorLanguage, EditorPreset } from './typings';
+import type {
+  EditableItem,
+} from './utils';
 
 import { isEmptyObject, waitFor, waitForDOMReady } from '../../shared';
 import { ContextsRegistry } from '../context';
@@ -10,16 +13,14 @@ import {
   createSyncEditorWithInputPlugin,
 } from './plugins';
 import {
-  assignInitialDataToEditorConfig,
-  assignSourceElementsToEditorConfig,
+  assignEditorRootsToConfig,
   createEditorInContext,
   isSingleRootEditor,
   loadAllEditorTranslations,
   loadEditorConstructor,
   loadEditorPlugins,
   normalizeCustomTranslations,
-  queryEditablesElements,
-  queryEditablesSnapshotContent,
+  queryAllEditorEditables,
   resolveEditorConfigElementReferences,
   resolveEditorConfigTranslations,
   setEditorEditableHeight,
@@ -128,7 +129,6 @@ export class EditorComponentElement extends HTMLElement {
     const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms')!, 10);
     const language = JSON.parse(this.getAttribute('data-cke-language')!) as EditorLanguage;
     const useWatchdog = this.hasAttribute('data-cke-watchdog');
-    const content = JSON.parse(this.getAttribute('data-cke-content')!) as Record<string, string>;
 
     const {
       customTranslations,
@@ -172,59 +172,37 @@ export class EditorComponentElement extends HTMLElement {
       ]
         .filter(translations => !isEmptyObject(translations));
 
-      // Let's query all elements, and create basic configuration.
-      let initialData: string | Record<string, string> = {
-        ...content,
-        ...queryEditablesSnapshotContent(editorId),
-      };
+      // Query all editable elements along with their content in one pass.
+      // Roots present in the editor container's data-cke-content but not yet in the DOM
+      // are included with element: null so we know which roots to wait for.
+      let editables = queryAllEditorEditables(editorId);
+      const requiredRoots = Object.keys(editables);
 
       if (isSingleRootEditor(editorType)) {
-        initialData = initialData['main'] || '';
+        requiredRoots.push('main');
       }
+
+      if (!checkIfAllRootsArePresent(editables, requiredRoots)) {
+        editables = await waitForAllRootsToBePresent(editorId, requiredRoots);
+      }
+
+      // Do some postprocessing on received configuration.
+      let resolvedConfig = {
+        ...config,
+        licenseKey,
+        plugins: loadedPlugins,
+        language,
+        ...mixedTranslations.length && {
+          translations: mixedTranslations,
+        },
+      };
+
+      resolvedConfig = resolveEditorConfigElementReferences(resolvedConfig);
+      resolvedConfig = resolveEditorConfigTranslations([...mixedTranslations].reverse(), language.ui, resolvedConfig);
+      resolvedConfig = assignEditorRootsToConfig(Constructor, editables, resolvedConfig);
 
       // Depending of the editor type, and parent lookup for nearest context or initialize it without it.
       const editor = await (async () => {
-        let sourceElements: HTMLElement | Record<string, HTMLElement> = queryEditablesElements(editorId);
-
-        // Handle special case when user specified `initialData` of several root elements, but editable components
-        // are not yet present in the DOM. In other words - editor is initialized before attaching root elements.
-        if (!sourceElements['main']) {
-          const requiredRoots = (
-            isSingleRootEditor(editorType)
-              ? ['main']
-              : Object.keys(initialData as Record<string, string>)
-          );
-
-          if (!checkIfAllRootsArePresent(sourceElements, requiredRoots)) {
-            sourceElements = await waitForAllRootsToBePresent(editorId, requiredRoots);
-            initialData = {
-              ...content,
-              ...queryEditablesSnapshotContent(editorId),
-            };
-          }
-        }
-
-        // If single root editor, unwrap the element from the object.
-        if (isSingleRootEditor(editorType) && 'main' in sourceElements) {
-          sourceElements = sourceElements['main'];
-        }
-
-        let resolvedConfig = {
-          ...config,
-          licenseKey,
-          plugins: loadedPlugins,
-          language,
-          ...mixedTranslations.length && {
-            translations: mixedTranslations,
-          },
-        };
-
-        // Do some postprocessing on received configuration.
-        resolvedConfig = resolveEditorConfigElementReferences(resolvedConfig);
-        resolvedConfig = resolveEditorConfigTranslations([...mixedTranslations].reverse(), language.ui, resolvedConfig);
-        resolvedConfig = assignSourceElementsToEditorConfig(Constructor, sourceElements, resolvedConfig);
-        resolvedConfig = assignInitialDataToEditorConfig(initialData, resolvedConfig);
-
         if (!context) {
           return Constructor.create(resolvedConfig);
         }
@@ -265,42 +243,42 @@ export class EditorComponentElement extends HTMLElement {
 }
 
 /**
- * Checks if all required root elements are present in the elements object.
+ * Checks if all required root elements are present (i.e. have a non-null element) in the editables map.
  *
- * @param elements The elements object mapping root IDs to HTMLElements.
- * @param requiredRoots The list of required root IDs.
- * @returns True if all required roots are present, false otherwise.
+ * @param editables The editables map keyed by root name.
+ * @param requiredRoots The list of required root names.
+ * @returns True if all required roots have a DOM element attached, false otherwise.
  */
-function checkIfAllRootsArePresent(elements: Record<string, HTMLElement>, requiredRoots: string[]): boolean {
-  return requiredRoots.every(rootId => elements[rootId]);
+function checkIfAllRootsArePresent(editables: Record<string, EditableItem>, requiredRoots: string[]): boolean {
+  return requiredRoots.every(rootId => editables[rootId]?.element);
 }
 
 /**
  * Waits for all required root elements to be present in the DOM.
  *
  * @param editorId The editor's ID.
- * @param requiredRoots The list of required root IDs.
- * @returns A promise that resolves to the record of root elements.
+ * @param requiredRoots The list of required root names.
+ * @returns A promise that resolves to the updated editables map once all elements are attached.
  */
 async function waitForAllRootsToBePresent(
   editorId: EditorId,
   requiredRoots: string[],
-): Promise<Record<string, HTMLElement>> {
+): Promise<Record<string, EditableItem>> {
   return waitFor(
     () => {
-      const elements = queryEditablesElements(editorId) as unknown as Record<string, HTMLElement>;
+      const editables = queryAllEditorEditables(editorId);
 
-      if (!checkIfAllRootsArePresent(elements, requiredRoots)) {
+      if (!checkIfAllRootsArePresent(editables, requiredRoots)) {
         throw new Error(
           'It looks like not all required root elements are present yet.\n'
           + '* If you want to wait for them, ensure they are registered before editor initialization.\n'
           + '* If you want lazy initialize roots, consider removing root values from the `initialData` config '
           + 'and assign initial data in editable components.\n'
-          + `Missing roots: ${requiredRoots.filter(rootId => !elements[rootId]).join(', ')}.`,
+          + `Missing roots: ${requiredRoots.filter(rootId => !editables[rootId]?.element).join(', ')}.`,
         );
       }
 
-      return elements;
+      return editables;
     },
     { timeOutAfter: 2000, retryAfter: 100 },
   );
