@@ -9,6 +9,9 @@ return [
                 'premium' => false,
                 'translations' => ['en'],
             ],
+            'watchdogConfig' => [
+                'crashNumberLimit' => 5,
+            ],
             'config' => [
                 'toolbar' => [
                     'items' => [

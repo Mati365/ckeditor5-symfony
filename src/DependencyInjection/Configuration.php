@@ -24,6 +24,7 @@ final class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('editorType')->isRequired()->cannotBeEmpty()->end()
                             ->variableNode('config')->defaultValue([])->end()
+                            ->variableNode('watchdogConfig')->defaultNull()->end()
                             ->scalarNode('licenseKey')->defaultNull()->end()
                             ->variableNode('cloud')->defaultNull()->end()
                             ->variableNode('customTranslations')->defaultNull()->end()

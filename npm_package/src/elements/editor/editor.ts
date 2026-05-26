@@ -134,6 +134,7 @@ export class EditorComponentElement extends HTMLElement {
       customTranslations,
       editorType,
       licenseKey,
+      watchdogConfig,
       config: { plugins, ...config },
     } = preset;
 
@@ -225,7 +226,7 @@ export class EditorComponentElement extends HTMLElement {
 
     // Do not use editor specific watchdog if context is attached, as the context is by default protected.
     if (useWatchdog && !context) {
-      const watchdogInstance = await wrapWithWatchdog(buildAndCreateEditor);
+      const watchdogInstance = await wrapWithWatchdog(buildAndCreateEditor, watchdogConfig);
 
       watchdogInstance.on('restart', () => {
         const newInstance = watchdogInstance.editor!;
