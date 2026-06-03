@@ -24,7 +24,7 @@ export function queryAllEditorEditables(editorId: EditorId): Record<string, Edit
       };
 
       return acc;
-    }, Object.create({}));
+    }, Object.create(null));
 
   const rootEditorElement = document.querySelector<HTMLElement>(`cke5-editor[data-cke-editor-id="${editorId}"]`);
 

@@ -17,5 +17,5 @@ export function getEditorRootsValues(editor: Editor): Record<string, string> {
       acc[root.rootName] = editor.getData({ rootName: root.rootName });
 
       return acc;
-    }, Object.create({}));
+    }, Object.create(null));
 }
