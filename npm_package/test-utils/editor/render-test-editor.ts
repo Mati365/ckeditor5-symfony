@@ -25,6 +25,9 @@ export function renderTestEditor(
     'data-cke-save-debounce-ms': fullSnapshot.saveDebounceMs,
     'data-cke-language': JSON.stringify(fullSnapshot.language),
     'data-cke-content': JSON.stringify(fullSnapshot.content),
+    ...fullSnapshot.modelElement && {
+      'data-cke-root-model-element-name': fullSnapshot.modelElement,
+    },
     ...(fullSnapshot.watchdog && { 'data-cke-watchdog': '' }),
   });
 

@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   createEditorPreset,
-  createUIPartSnapshot,
   renderTestEditor,
   renderTestUIPart,
   waitForDestroyAllEditors,
@@ -34,7 +33,7 @@ describe('ui-part component', () => {
       const editor = await waitForTestEditor();
       const toolbarElement = editor.ui.view.toolbar?.element;
 
-      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      const el = renderTestUIPart();
 
       await vi.waitFor(() => {
         expect(el.contains(toolbarElement!)).toBe(true);
@@ -49,7 +48,7 @@ describe('ui-part component', () => {
       const editor = await waitForTestEditor();
       const menubarElement = (editor.ui.view as any).menuBarView.element;
 
-      const el = renderTestUIPart(createUIPartSnapshot('menubar'));
+      const el = renderTestUIPart({ name: 'menubar' });
 
       await vi.waitFor(() => {
         expect(el.children.length).toBeGreaterThan(0);
@@ -59,7 +58,7 @@ describe('ui-part component', () => {
     });
 
     it('should mount UI part before editor is created', async () => {
-      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      const el = renderTestUIPart();
 
       appendMultirootEditor();
 
@@ -80,7 +79,7 @@ describe('ui-part component', () => {
       const toolbarElement = editor.ui.view.toolbar?.element;
 
       // Render UI part without editorId
-      const el = renderTestUIPart({ editorId: undefined } as any);
+      const el = renderTestUIPart({ editorId: null });
 
       await vi.waitFor(() => {
         expect(el.contains(toolbarElement!)).toBe(true);
@@ -90,7 +89,7 @@ describe('ui-part component', () => {
     });
 
     it('should not mount UI part if element is disconnected before editor is ready', async () => {
-      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      const el = renderTestUIPart();
       el.remove();
 
       appendMultirootEditor();
@@ -109,7 +108,7 @@ describe('ui-part component', () => {
     });
 
     it('should clear UI part element on destruction', async () => {
-      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      const el = renderTestUIPart();
 
       await vi.waitFor(() => {
         expect(el.children.length).toBeGreaterThan(0);
@@ -125,7 +124,7 @@ describe('ui-part component', () => {
     });
 
     it('should hide element during destruction', async () => {
-      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      const el = renderTestUIPart();
 
       // If we remove immediately, disconnectedCallback should hide it.
       el.remove();
@@ -138,7 +137,7 @@ describe('ui-part component', () => {
       document.body.innerHTML = '';
       void EditorsRegistry.the.reset();
 
-      const el = renderTestUIPart(createUIPartSnapshot('toolbar'));
+      const el = renderTestUIPart();
 
       el.remove();
 

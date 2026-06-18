@@ -37,6 +37,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      * @param array|null $mergeConfig Optional editor configuration to merge (deep merge with editor config)
      * @param array|null $customTranslations Optional custom translations dictionary
      * @param string|null $editorType Optional editor type to use
+     * @param string|null $modelElement Root model element name for `main` root.
      * @return string Rendered HTML
      */
     public function render(
@@ -56,6 +57,7 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
         ?array $mergeConfig = null,
         ?array $customTranslations = null,
         ?string $editorType = null,
+        ?string $modelElement = null
     ): string {
         $id ??= 'cke5-' . uniqid();
         $resolvedPreset = $this->configManager->resolvePresetOrThrow($preset ?? 'default');
@@ -102,7 +104,8 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
             'language' => json_encode($parsedLanguage),
             'watchdog' => $watchdog,
             'contextId' => $contextId,
-            'show_input' => $showInput,
+            'showInput' => $showInput,
+            'modelElement' => $modelElement ?? '$root',
         ]);
     }
 }

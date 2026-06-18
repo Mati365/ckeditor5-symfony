@@ -1,33 +1,35 @@
-import type { EditableSnapshot } from './create-editable-snapshot';
-
+import { DEFAULT_TEST_EDITOR_ID } from '../editor';
 import { html } from '../html';
-import { createEditableSnapshot } from './create-editable-snapshot';
 
 /**
  * Renders the editable component in the DOM.
  */
 export function renderTestEditable(
-  snapshot: Partial<EditableSnapshot> = {},
-  options: { withInput?: boolean; } = {},
+  {
+    editorId = DEFAULT_TEST_EDITOR_ID,
+    rootName = 'main',
+    modelElement,
+    content,
+    saveDebounceMs,
+    withInput,
+  }: Options,
 ): HTMLElement {
-  const fullSnapshot: EditableSnapshot = {
-    ...createEditableSnapshot(),
-    ...snapshot,
-  };
-
   const element = html.tag(
     'cke5-editable',
     {
-      ...fullSnapshot.editorId && {
-        'data-cke-editor-id': fullSnapshot.editorId,
+      ...editorId && {
+        'data-cke-editor-id': editorId,
       },
-      'data-cke-root-name': fullSnapshot.rootName,
-      'data-cke-content': fullSnapshot.content,
-      'data-cke-save-debounce-ms': fullSnapshot.saveDebounceMs,
+      'data-cke-root-name': rootName,
+      'data-cke-content': content,
+      'data-cke-save-debounce-ms': saveDebounceMs,
+      ...modelElement && {
+        'data-cke-root-model-element-name': modelElement,
+      },
     },
     ...[
       html.div({ 'data-cke-editable-content': '' }),
-      ...options.withInput
+      ...withInput
         ? [html.input({ type: 'text' })]
         : [],
     ],
@@ -41,3 +43,35 @@ export function renderTestEditable(
 
   return element;
 }
+
+type Options = {
+  /**
+   * Render HTML input.
+   */
+  withInput?: boolean;
+
+  /**
+   * The ID of the editor instance this editable belongs to.
+   */
+  editorId?: string;
+
+  /**
+   * The name of the root element in the editor.
+   */
+  rootName: string;
+
+  /**
+   * Model element name.
+   */
+  modelElement?: string;
+
+  /**
+   * The initial content value for the editable.
+   */
+  content?: string | null;
+
+  /**
+   * The debounce time in milliseconds for saving changes.
+   */
+  saveDebounceMs?: number;
+};

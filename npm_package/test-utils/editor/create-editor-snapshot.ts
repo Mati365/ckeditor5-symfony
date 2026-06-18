@@ -67,4 +67,9 @@ export type EditorSnapshot = {
    * The language of the editor UI and content.
    */
   language: EditorLanguage;
+
+  /**
+   * Model element name.
+   */
+  modelElement?: string;
 };

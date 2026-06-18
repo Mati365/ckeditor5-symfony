@@ -26,7 +26,12 @@
     <div class="gap-4 grid grid-cols-2">
         <div>
             <h2 class="mb-2 font-bold">Header</h2>
-            {{ cke5_editable(root_name: 'header', content: 'Header content', class: 'border border-gray-300 rounded-sm') }}
+            {{ cke5_editable(
+                root_name: 'header',
+                model_element: '$inlineRoot',
+                content: 'Header content',
+                class: 'border border-gray-300 rounded-sm'
+            ) }}
         </div>
 
         <div>

@@ -37,6 +37,7 @@ export function assignEditorRootsToConfig<C extends EditorConfig>(
             ...editables[rootKey]!.content !== null && {
               initialData: editables[rootKey]!.content,
             },
+            modelElement: editables[rootKey]!.modelElement || '$root',
             ...!isClassicEditor && editables[rootKey]!.element !== null && {
               element: editables[rootKey]!.element,
             },

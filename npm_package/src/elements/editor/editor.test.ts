@@ -12,7 +12,6 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  createEditableSnapshot,
   createEditorPreset,
   getTestEditorInput,
   html,
@@ -103,6 +102,16 @@ describe('editor component', () => {
 
         expect(editor.getData()).toBe('');
       });
+
+      it('should be possible to specify root element name', async () => {
+        renderTestEditor({
+          modelElement: '$inlineRoot',
+        });
+
+        const editor = await waitForTestEditor();
+
+        expect(editor.model.document.getRoot()?.name).toBe('$inlineRoot');
+      });
     });
 
     describe('inline', () => {
@@ -119,7 +128,7 @@ describe('editor component', () => {
     describe('decoupled', () => {
       it('should create a decoupled editor with `main` editable and default preset', async () => {
         renderTestEditor({ preset: createEditorPreset('decoupled') });
-        renderTestEditable(createEditableSnapshot('main', null));
+        renderTestEditable({ rootName: 'main' });
 
         const editor = await waitForTestEditor();
 
@@ -131,7 +140,10 @@ describe('editor component', () => {
         const initialEditableContent = '<p>Initial editable content</p>';
 
         renderTestEditor({ preset: createEditorPreset('decoupled') });
-        renderTestEditable(createEditableSnapshot('main', initialEditableContent));
+        renderTestEditable({
+          rootName: 'main',
+          content: initialEditableContent,
+        });
 
         const editor = await waitForTestEditor();
 
@@ -144,12 +156,70 @@ describe('editor component', () => {
 
         await timeout(200);
 
-        renderTestEditable(createEditableSnapshot('main', null));
+        renderTestEditable({
+          rootName: 'main',
+          content: null,
+        });
 
         const editor = await waitForTestEditor();
 
         expect(editor).to.toBeInstanceOf(DecoupledEditor);
         expect(isEditorShown()).toBe(true);
+      });
+
+      it('should be possible to specify root element name using editable config alone', async () => {
+        renderTestEditor({
+          preset: createEditorPreset('decoupled'),
+          content: {},
+        });
+
+        renderTestEditable({
+          rootName: 'main',
+          modelElement: '$inlineRoot',
+        });
+
+        const editor = await waitForTestEditor<DecoupledEditor>();
+
+        await vi.waitFor(() => {
+          expect(editor.model.document.getRoot()?.name).toEqual('$inlineRoot');
+        });
+      });
+
+      it('should use editable root element name config if both specified', async () => {
+        renderTestEditor({
+          preset: createEditorPreset('decoupled'),
+          content: {},
+          modelElement: '$miamia',
+        });
+
+        renderTestEditable({
+          rootName: 'main',
+          modelElement: '$inlineRoot',
+        });
+
+        const editor = await waitForTestEditor<DecoupledEditor>();
+
+        await vi.waitFor(() => {
+          expect(editor.model.document.getRoot()?.name).toEqual('$inlineRoot');
+        });
+      });
+
+      it('should use `main` root element name if editable root name is not specified', async () => {
+        renderTestEditor({
+          preset: createEditorPreset('decoupled'),
+          content: {},
+          modelElement: '$inlineRoot',
+        });
+
+        renderTestEditable({
+          rootName: 'main',
+        });
+
+        const editor = await waitForTestEditor<DecoupledEditor>();
+
+        await vi.waitFor(() => {
+          expect(editor.model.document.getRoot()?.name).toEqual('$inlineRoot');
+        });
       });
     });
 
@@ -186,7 +256,7 @@ describe('editor component', () => {
 
         await timeout(500); // Simulate some delay before adding the root.
 
-        renderTestEditable(createEditableSnapshot('header'));
+        renderTestEditable({ rootName: 'header' });
 
         const editor = await waitForTestEditor();
 
@@ -204,7 +274,10 @@ describe('editor component', () => {
 
         await timeout(500); // Simulate some delay before adding the root.
 
-        renderTestEditable(createEditableSnapshot('header', ''));
+        renderTestEditable({
+          rootName: 'header',
+          content: '',
+        });
 
         const editor = await waitForTestEditor();
 
@@ -220,9 +293,10 @@ describe('editor component', () => {
           },
         });
 
-        renderTestEditable(
-          createEditableSnapshot('header', '<p>Editable content overrides snapshot content</p>'),
-        );
+        renderTestEditable({
+          rootName: 'header',
+          content: '<p>Editable content overrides snapshot content</p>',
+        });
 
         const editor = await waitForTestEditor();
 
@@ -255,9 +329,12 @@ describe('editor component', () => {
 
         const editor = await waitForTestEditor<MultiRootEditor>();
 
-        editor.addRoot('existingRoot', { data: '<p>Old content</p>' });
+        editor.addRoot('existingRoot', { initialData: '<p>Old content</p>' });
 
-        renderTestEditable(createEditableSnapshot('existingRoot', '<p>New content</p>'));
+        renderTestEditable({
+          rootName: 'existingRoot',
+          content: '<p>New content</p>',
+        });
 
         await vi.waitFor(() => {
           expect(editor.getData({ rootName: 'existingRoot' })).toBe('<p>New content</p>');
@@ -521,8 +598,8 @@ describe('editor component', () => {
 
       component.addEventListener('ckeditor5:change:data', changeSpy);
 
-      renderTestEditable(createEditableSnapshot('header'));
-      renderTestEditable(createEditableSnapshot('footer'));
+      renderTestEditable({ rootName: 'header' });
+      renderTestEditable({ rootName: 'footer' });
 
       const editor = await waitForTestEditor<MultiRootEditor>();
 

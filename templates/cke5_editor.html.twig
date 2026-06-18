@@ -6,12 +6,13 @@
     data-cke-content="{{ content|e('html_attr') }}"
     data-cke-language="{{ language|e('html_attr') }}"
     data-cke-save-debounce-ms="{{ saveDebounceMs }}"
+    data-cke-root-model-element-name="{{ modelElement }}"
     {% if watchdog %}data-cke-watchdog="true"{% endif %}
     {% if contextId is not null %}data-cke-context-id="{{ contextId }}"{% endif %}
     {% if editableHeight is not null %}data-cke-editable-height="{{ editableHeight }}"{% endif %}
     data-turbo-temporary
 >
-    {% if show_input %}
+    {% if showInput %}
         <div id="{{ id }}_editor" data-cke-controlled></div>
     {% endif %}
 

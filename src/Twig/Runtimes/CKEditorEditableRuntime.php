@@ -28,6 +28,7 @@ final class CKEditorEditableRuntime implements RuntimeExtensionInterface
      * @param string|null $id Optional ID for the editable instance.
      * @param string|null $innerClass Optional CSS class for the inner content container.
      * @param string|null $innerStyle Optional inline styles for the inner content container.
+     * @param string|null $modelElement Root model element name for `main` root.
      * @return string Rendered HTML
      */
     public function render(
@@ -42,6 +43,7 @@ final class CKEditorEditableRuntime implements RuntimeExtensionInterface
         ?string $id = null,
         ?string $innerClass = null,
         ?string $innerStyle = null,
+        ?string $modelElement = null,
     ): string {
         $id ??= 'cke5-editable-' . uniqid();
         $style = 'position: relative;' . ($style !== null ? ' ' . $style : '');
@@ -58,6 +60,7 @@ final class CKEditorEditableRuntime implements RuntimeExtensionInterface
             'style' => $style,
             'innerClass' => $innerClass,
             'innerStyle' => $innerStyle,
+            'modelElement' => $modelElement ?? '$root',
         ]);
     }
 }

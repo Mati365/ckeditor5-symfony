@@ -19,5 +19,6 @@ export declare function queryAllEditorEditables(editorId: EditorId): Record<stri
 export type EditableItem = {
     element: HTMLElement | null;
     content: string | null;
+    modelElement: string | null;
 };
 //# sourceMappingURL=query-all-editor-editables.d.ts.map

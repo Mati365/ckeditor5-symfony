@@ -816,7 +816,7 @@ Usage:
 Options:
       --distribution=DISTRIBUTION      Distribution type: cloud or npm [default: "npm"]
       --importmap-path=IMPORTMAP-PATH  Path to importmap.php file [default: "importmap.php"]
-      --editor-version=EDITOR-VERSION  CKEditor version [default: "48.1.0"]
+      --editor-version=EDITOR-VERSION  CKEditor version [default: "48.2.0"]
       --translations=TRANSLATIONS      Comma-separated list of translations [default: "en"]
       --template-path=TEMPLATE-PATH    Path to base template file [default: "templates/base.html.twig"]
       --js-path=JS-PATH                Path to main JS file [default: "assets/app.js"]

@@ -26,6 +26,7 @@ final class CKEditor5Type extends AbstractType
         $view->vars['language'] = $options['language'];
         $view->vars['context_id'] = $options['context_id'];
         $view->vars['save_debounce_ms'] = $options['save_debounce_ms'];
+        $view->vars['model_element'] = $options['model_element'];
     }
 
     #[\Override]
@@ -42,6 +43,7 @@ final class CKEditor5Type extends AbstractType
             'language' => null,
             'context_id' => null,
             'save_debounce_ms' => 200,
+            'model_element' => '$root',
         ]);
 
         $resolver->setAllowedTypes('preset', ['string', 'null']);
@@ -54,6 +56,7 @@ final class CKEditor5Type extends AbstractType
         $resolver->setAllowedTypes('editor_type', ['string', 'null']);
         $resolver->setAllowedTypes('language', ['string', 'array', 'null']);
         $resolver->setAllowedTypes('context_id', ['string', 'null']);
+        $resolver->setAllowedTypes('model_element', ['string', 'null']);
     }
 
     public function getName(): string

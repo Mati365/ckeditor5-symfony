@@ -23,6 +23,10 @@
 
     {{ cke5_editor('Hello World', id: 'base-classic') }}
 
+    <h2 class="mt-12 mb-4 font-bold text-gray-800 text-xl">Inline editable</h2>
+
+    {{ cke5_editor('Hello World', id: 'inline-classic', model_element: '$inlineRoot') }}
+
     <h2 class="mt-12 mb-4 font-bold text-gray-800 text-xl">Minimal Preset</h2>
 
     {{ cke5_editor('Minimal preset', preset: 'minimal') }}

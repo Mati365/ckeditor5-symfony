@@ -4,6 +4,7 @@
     {% if style is not null %}style="{{ style }}"{% endif %}
     {% if editorId is not null %}data-cke-editor-id="{{ editorId }}"{% endif %}
     data-cke-root-name="{{ rootName }}"
+    data-cke-root-model-element-name="{{ modelElement }}"
     data-cke-content="{{ content|e('html_attr') }}"
     data-cke-save-debounce-ms="{{ saveDebounceMs }}"
     data-turbo-temporary

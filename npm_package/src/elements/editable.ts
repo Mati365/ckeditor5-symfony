@@ -26,6 +26,7 @@ export class EditableComponentElement extends HTMLElement {
 
     const editorId = this.getAttribute('data-cke-editor-id');
     const rootName = this.getAttribute('data-cke-root-name');
+    const rootModelElement = this.getAttribute('data-cke-root-model-element-name') || '$root';
     const content = this.getAttribute('data-cke-content');
     const saveDebounceMs = Number.parseInt(this.getAttribute('data-cke-save-debounce-ms')!, 10);
 
@@ -65,6 +66,7 @@ export class EditableComponentElement extends HTMLElement {
 
         editor.addRoot(rootName, {
           isUndoable: false,
+          modelElement: rootModelElement,
           ...content !== null && {
             initialData: content,
           },
