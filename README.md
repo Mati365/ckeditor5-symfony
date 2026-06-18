@@ -25,8 +25,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Compatibility 🔗](#compatibility-)
   - [Installation 🚀](#installation-)
   - [Usage 📖](#usage-)
-  - [Basic Usage 🏁](#basic-usage-)
-    - [Simple Editor ✏️](#simple-editor-️)
     - [Watchdog prop 🐶](#watchdog-prop-)
       - [Disabling the watchdog 🚫](#disabling-the-watchdog-)
   - [Editor Types 🖊️](#editor-types-️)
@@ -60,7 +58,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Editor roots change event 📡](#editor-roots-change-event-)
   - [Custom plugins 🧩](#custom-plugins-)
   - [Context 🤝](#context-)
-    - [Basic usage 🔧](#basic-usage--1)
+    - [Basic usage 🔧](#basic-usage-)
     - [Custom context translations 🌐](#custom-context-translations-)
   - [Editors and Contexts registry 👀](#editors-and-contexts-registry-)
   - [Installer command options ⚙️](#installer-command-options-️)
@@ -170,25 +168,6 @@ If you don't use `AssetsMapper`, and your distribution is set to `cloud`, make s
 
 ```twig
 {{ cke5_cloud_assets() }}
-```
-
-This will render a classic editor with the provided content.
-For more advanced usage, check the playground examples.
-
-## Basic Usage 🏁
-
-Get started with the most common usage patterns. These examples show how to render editors in your templates.
-
-### Simple Editor ✏️
-
-Create a basic editor with default toolbar and features.
-
-```twig
-{{ cke5_editor(
-  content: '<p>Initial content</p>',
-  editorType: 'classic',
-  editableHeight: 300
-) }}
 ```
 
 ### Watchdog prop 🐶
