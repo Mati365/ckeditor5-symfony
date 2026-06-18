@@ -1,6 +1,6 @@
 {
   "name": "mati365/ckeditor5-symfony",
-  "version": "1.9.2",
+  "version": "1.10.0",
   "description": "CKEditor 5 integration for Symfony",
   "type": "symfony-bundle",
   "license": "MIT",
