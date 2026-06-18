@@ -35,6 +35,10 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Inline editor 📝](#inline-editor-)
     - [Balloon editor 🎈](#balloon-editor-)
     - [Decoupled editor 🌐](#decoupled-editor-)
+  - [Paragraph-like editing 📄](#paragraph-like-editing-)
+    - [Classic / Balloon / Inline editor](#classic--balloon--inline-editor)
+    - [Decoupled editor](#decoupled-editor)
+    - [Multiroot editor](#multiroot-editor)
   - [Forms Integration 🧾](#forms-integration-)
     - [Editor roots change event 📡](#editor-roots-change-event-)
   - [Configuration ⚙️](#configuration-️)
@@ -100,7 +104,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    Bundles assets locally. No Node.js required.
 
    ```bash
-   php bin/console ckeditor5:assets-mapper:install # --editor-version 48.0.0 --premium --translations en,pl
+   php bin/console ckeditor5:assets-mapper:install # --editor-version 48.2.0 --premium --translations en,pl
    ```
 
    **📦 Self-hosted via Webpack Encore**
@@ -298,6 +302,110 @@ Flexible editor where toolbar and editing area are completely separated. Provide
     editableHeight: 300
   ) }}
 </div>
+```
+
+## Paragraph-like editing 📄
+
+Paragraph-like editing mode restricts the editor's root to a single block element — by default a `<p>` — preventing users from inserting multiple top-level block elements (headings, lists, etc.). This is ideal for short-text fields such as article titles, captions, or descriptions: places where you want the richness of inline formatting (bold, italic, links) but a single-paragraph constraint.
+
+The feature is enabled by passing `model_element: '$inlineRoot'` to the `cke5_editor()` or `cke5_editable()` Twig function. This maps the CKEditor 5 model root to the `$inlineRoot` schema element, which allows only inline content.
+
+> [!NOTE]
+> Make sure your preset's toolbar and plugin list does not include block-level items (`Heading`, `List`, `BlockQuote`, etc.) when using `model_element: '$inlineRoot'`, as those commands require block-level schema support that is absent in inline roots.
+
+### Classic / Balloon / Inline editor
+
+For single-root editor types, pass `model_element: '$inlineRoot'` directly to `cke5_editor()`:
+
+```twig
+{# Paragraph-like classic editor — single <p>, inline formatting only #}
+{{ cke5_editor('Article title goes here', id: 'title-editor', model_element: '$inlineRoot') }}
+```
+
+The same parameter works with `balloon` and `inline` editor types:
+
+```twig
+{# Paragraph-like balloon editor — ideal for image captions #}
+{{ cke5_editor('Image caption', editor_type: 'balloon', model_element: '$inlineRoot') }}
+```
+
+If you reuse the inline-text pattern in many places, define a dedicated preset without block-level plugins and reference it by name:
+
+```yaml
+# config/packages/ckeditor5.yaml
+ckeditor5:
+  presets:
+    inline_text:
+      editor_type: classic
+      config:
+        plugins: [Essentials, Bold, Italic, Link]
+        toolbar:
+          items: [bold, italic, link]
+```
+
+```twig
+{# No need to repeat the plugin list — just use the preset and restrict the root #}
+{{ cke5_editor('Article title', preset: 'inline_text', model_element: '$inlineRoot') }}
+```
+
+### Decoupled editor
+
+For the decoupled editor, pass `model_element: '$inlineRoot'` to the `cke5_editable()` function rather than to `cke5_editor()`. Link the editable to the editor via `editor_id`:
+
+```twig
+{{ cke5_editor(editor_type: 'decoupled', id: 'caption-editor') }}
+
+{# Single editable in paragraph-like mode #}
+{{ cke5_editable('main',
+    editor_id: 'caption-editor',
+    content: 'Caption text here',
+    model_element: '$inlineRoot',
+    inner_class: 'p-2 border border-gray-300'
+) }}
+```
+
+### Multiroot editor
+
+In a multiroot setup each `cke5_editable()` can independently opt in to paragraph-like mode. Set `model_element: '$inlineRoot'` only on the roots that should be restricted; leave the others without it (they default to the standard `$root`):
+
+```twig
+{{ cke5_editor(editor_type: 'multiroot', id: 'article-editor') }}
+
+{# Title root: paragraph-like, only inline content allowed #}
+{{ cke5_editable('title',
+    editor_id: 'article-editor',
+    content: '<p>Page Title</p>',
+    model_element: '$inlineRoot',
+    class: 'p-2 text-2xl font-bold border border-gray-300'
+) }}
+
+{# Lead root: paragraph-like, only inline content allowed #}
+{{ cke5_editable('lead',
+    editor_id: 'article-editor',
+    content: '<p>Short introductory sentence.</p>',
+    model_element: '$inlineRoot',
+    class: 'p-2 italic border border-gray-300'
+) }}
+
+{# Body root: normal editing, full block content allowed #}
+{{ cke5_editable('body',
+    editor_id: 'article-editor',
+    content: '<p>Full article content with headings, lists, etc.</p>',
+    class: 'p-2 border border-gray-300'
+) }}
+```
+
+When the editor initialises, each root whose `model_element` is set to `'$inlineRoot'` is registered under that schema element name. You can verify this at runtime via the JavaScript `EditorsRegistry`:
+
+```javascript
+import { EditorsRegistry } from 'ckeditor5-symfony';
+
+EditorsRegistry.the.waitFor('article-editor').then((editor) => {
+  // '$inlineRoot' for restricted roots, '$root' for unrestricted ones
+  console.log(editor.model.document.getRoot('title')?.name); // '$inlineRoot'
+  console.log(editor.model.document.getRoot('lead')?.name); // '$inlineRoot'
+  console.log(editor.model.document.getRoot('body')?.name); // '$root'
+});
 ```
 
 ## Forms Integration 🧾
