@@ -26,7 +26,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Installation 🚀](#installation-)
   - [Usage 📖](#usage-)
     - [Watchdog prop 🐶](#watchdog-prop-)
-      - [Disabling the watchdog 🚫](#disabling-the-watchdog-)
   - [Editor Types 🖊️](#editor-types-️)
     - [Classic editor 📝](#classic-editor-)
     - [Multiroot editor 🌳](#multiroot-editor-)
@@ -173,8 +172,6 @@ If you don't use `AssetsMapper`, and your distribution is set to `cloud`, make s
 ### Watchdog prop 🐶
 
 By default, the editor uses a built-in watchdog mechanism to automatically restart the editor if it crashes (e.g., due to a JavaScript error). The watchdog periodically saves the editor's content and restores it after a crash, minimizing the risk of data loss for users.
-
-#### Disabling the watchdog 🚫
 
 The watchdog is enabled by default. To disable it, set the `watchdog` argument to `false`:
 
