@@ -38,8 +38,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
     - [Dynamic Presets 🎨](#dynamic-presets-)
     - [Providing the License Key 🗝️](#providing-the-license-key-️)
     - [Referencing DOM Elements in Config 🏷️](#referencing-dom-elements-in-config-️)
-      - [How to use 🛠️](#how-to-use-️)
-      - [Example 📄](#example-)
   - [Localization 🌍](#localization-)
     - [CDN Translation Loading 🌐](#cdn-translation-loading-)
       - [AssetsMapper local translations assignment 📦](#assetsmapper-local-translations-assignment-)
@@ -423,13 +421,6 @@ If both are set, the preset config takes priority. For more details, see the [CK
 ### Referencing DOM Elements in Config 🏷️
 
 You can reference DOM elements directly in your editor configuration using the special `{ $element: "selector" }` format. This is useful when you want to attach the editor's UI parts (like toolbars or editable areas) to specific elements in your HTML.
-
-#### How to use 🛠️
-
-- In your config object, use `{ "$element": "CSS_SELECTOR" }` wherever a DOM element is expected.
-- The selector will be resolved to the actual DOM element before initializing the editor.
-
-#### Example 📄
 
 ```yaml
 # config/packages/ckeditor5.yaml
