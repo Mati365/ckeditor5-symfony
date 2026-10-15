@@ -9,6 +9,8 @@ use Mati365\CKEditor5Symfony\DependencyInjection\CKEditorExtension;
 
 /**
  * CKEditor 5 Symfony Bundle.
+ *
+ * @psalm-suppress DeprecatedInterface
  */
 final class CKEditorBundle extends Bundle
 {
