@@ -10,13 +10,11 @@ class ContextTest extends TestCase
     public function testConstructor(): void
     {
         $config = ['plugins' => ['Bold']];
-        $watchdogConfig = ['timeout' => 5000];
         $customTranslations = ['en' => ['Ok' => 'Okay']];
 
-        $context = new Context($config, $watchdogConfig, $customTranslations);
+        $context = new Context($config, $customTranslations);
 
         $this->assertSame($config, $context->config);
-        $this->assertSame($watchdogConfig, $context->watchdogConfig);
         $this->assertSame($customTranslations, $context->customTranslations);
     }
 
@@ -46,21 +44,9 @@ class ContextTest extends TestCase
         $this->assertSame(['plugins' => ['Bold']], $context->config);
     }
 
-    public function testOfWatchdogConfig(): void
-    {
-        $context = new Context(['plugins' => ['Bold']], ['timeout' => 1000]);
-        $newWatchdogConfig = ['timeout' => 2000];
-
-        $newContext = $context->ofWatchdogConfig($newWatchdogConfig);
-
-        $this->assertNotSame($context, $newContext);
-        $this->assertSame($newWatchdogConfig, $newContext->watchdogConfig);
-        $this->assertSame(['timeout' => 1000], $context->watchdogConfig);
-    }
-
     public function testOfCustomTranslations(): void
     {
-        $context = new Context(['plugins' => ['Bold']], null, ['en' => []]);
+        $context = new Context(['plugins' => ['Bold']], ['en' => []]);
         $newTranslations = ['pl' => []];
 
         $newContext = $context->ofCustomTranslations($newTranslations);

@@ -46,7 +46,6 @@ final class PresetParser
             editorType: $editorType,
             licenseKey: $licenseKey,
             cloud: $cloud,
-            watchdogConfig: isset($data['watchdogConfig']) ? (array) $data['watchdogConfig'] : null,
             customTranslations: isset($data['customTranslations']) ? (array) $data['customTranslations'] : null,
         );
     }
@@ -71,10 +70,6 @@ final class PresetParser
 
         if ($preset->customTranslations !== null) {
             $result['customTranslations'] = $preset->customTranslations;
-        }
-
-        if ($preset->watchdogConfig !== null) {
-            $result['watchdogConfig'] = $preset->watchdogConfig;
         }
 
         return $result;

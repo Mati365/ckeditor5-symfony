@@ -40,7 +40,6 @@ class ConfigurationTest extends TestCase
                     'licenseKey' => null,
                     'cloud' => null,
                     'customTranslations' => null,
-                    'watchdogConfig' => null,
                 ],
             ],
             'contexts' => [],
@@ -63,7 +62,6 @@ class ConfigurationTest extends TestCase
             'contexts' => [
                 'main' => [
                     'config' => ['language' => 'en'],
-                    'watchdogConfig' => null,
                     'customTranslations' => null,
                 ],
             ],

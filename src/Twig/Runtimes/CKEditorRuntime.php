@@ -23,7 +23,6 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
      *
      * @param string|array|null $content The initial content of the editor
      * @param Preset|string|null $preset The preset name to use (default: 'default')
-     * @param bool $watchdog Whether to enable the watchdog feature
      * @param string|null $name Optional name for the input field.
      * @param int|null $editableHeight Optional height for the editable area
      * @param string|null $class Optional CSS class for the editor container
@@ -43,7 +42,6 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
     public function render(
         string|array|null $content = null,
         Preset|string|null $preset = null,
-        ?bool $watchdog = true,
         ?string $name = null,
         ?bool $required = null,
         ?int $saveDebounceMs = 200,
@@ -102,7 +100,6 @@ final class CKEditorRuntime implements RuntimeExtensionInterface
             'editableHeight' => $editableHeight,
             'preset' => json_encode($resolvedPreset),
             'language' => json_encode($parsedLanguage),
-            'watchdog' => $watchdog,
             'contextId' => $contextId,
             'showInput' => $showInput,
             'modelElement' => $modelElement ?? '$root',

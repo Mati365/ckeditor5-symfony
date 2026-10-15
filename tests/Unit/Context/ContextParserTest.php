@@ -12,14 +12,12 @@ class ContextParserTest extends TestCase
     {
         $data = [
             'config' => ['plugins' => ['Bold']],
-            'watchdogConfig' => ['timeout' => 5000],
             'customTranslations' => ['en' => ['Ok' => 'Okay']],
         ];
 
         $context = ContextParser::parse($data);
 
         $this->assertSame($data['config'], $context->config);
-        $this->assertSame($data['watchdogConfig'], $context->watchdogConfig);
         $this->assertSame($data['customTranslations'], $context->customTranslations);
     }
 
@@ -32,7 +30,6 @@ class ContextParserTest extends TestCase
         $context = ContextParser::parse($data);
 
         $this->assertEquals($data['config'], $context->config);
-        $this->assertNull($context->watchdogConfig);
         $this->assertNull($context->customTranslations);
     }
 
@@ -56,7 +53,6 @@ class ContextParserTest extends TestCase
     {
         $data = [
             'config' => ['plugins' => ['Bold']],
-            'watchdogConfig' => ['timeout' => 5000],
             'customTranslations' => ['en' => ['Ok' => 'Okay']],
         ];
 

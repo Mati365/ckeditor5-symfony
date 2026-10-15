@@ -18,7 +18,6 @@ class CKEditor5TypeTest extends TestCase
         $form = $this->createMock(FormInterface::class);
         $options = [
             'preset' => 'default',
-            'watchdog' => true,
             'editable_height' => 500,
             'editor_config' => ['foo' => 'bar'],
             'merge_config' => ['baz' => 'qux'],
@@ -26,16 +25,14 @@ class CKEditor5TypeTest extends TestCase
             'editor_type' => 'classic',
             'language' => 'en',
             'context_id' => 'context_1',
-            'save_debounce_ms' => 200,
+            'save_debounce_ms' => 300,
+            'model_element' => '$inlineRoot',
         ];
 
         $type->buildView($view, $form, $options);
 
         $this->assertArrayHasKey('preset', $view->vars);
         $this->assertEquals('default', $view->vars['preset']);
-
-        $this->assertArrayHasKey('watchdog', $view->vars);
-        $this->assertEquals(true, $view->vars['watchdog']);
 
         $this->assertArrayHasKey('editable_height', $view->vars);
         $this->assertEquals(500, $view->vars['editable_height']);
@@ -57,6 +54,12 @@ class CKEditor5TypeTest extends TestCase
 
         $this->assertArrayHasKey('context_id', $view->vars);
         $this->assertEquals('context_1', $view->vars['context_id']);
+
+        $this->assertArrayHasKey('save_debounce_ms', $view->vars);
+        $this->assertEquals(300, $view->vars['save_debounce_ms']);
+
+        $this->assertArrayHasKey('model_element', $view->vars);
+        $this->assertEquals('$inlineRoot', $view->vars['model_element']);
     }
 
     public function testConfigureOptions(): void
@@ -69,7 +72,6 @@ class CKEditor5TypeTest extends TestCase
         $options = $resolver->resolve([]);
 
         $this->assertEquals('default', $options['preset']);
-        $this->assertTrue($options['watchdog']);
         $this->assertNull($options['editable_height']);
         $this->assertNull($options['editor_config']);
         $this->assertNull($options['merge_config']);
@@ -77,6 +79,8 @@ class CKEditor5TypeTest extends TestCase
         $this->assertNull($options['editor_type']);
         $this->assertNull($options['language']);
         $this->assertNull($options['context_id']);
+        $this->assertEquals(200, $options['save_debounce_ms']);
+        $this->assertEquals('$root', $options['model_element']);
     }
 
     public function testGetParent(): void

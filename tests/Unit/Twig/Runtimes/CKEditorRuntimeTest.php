@@ -29,8 +29,7 @@ class CKEditorRuntimeTest extends TestCase
             ->with('@CKEditor5/cke5_editor.html.twig', $this->callback(function ($parameters) {
                 return isset($parameters['id']) && str_starts_with($parameters['id'], 'cke5-')
                     && isset($parameters['preset'])
-                    && isset($parameters['content'])
-                    && $parameters['watchdog'] === true;
+                    && isset($parameters['content']);
             }))
             ->willReturn('html content');
 
@@ -56,10 +55,6 @@ class CKEditorRuntimeTest extends TestCase
         $twig->expects($this->once())
             ->method('render')
             ->with('@CKEditor5/cke5_editor.html.twig', $this->callback(function ($parameters) {
-                if ($parameters['watchdog'] !== false) {
-                    return false;
-                }
-
                 $preset = json_decode($parameters['preset'], true);
 
                 if ($preset['editorType'] !== 'inline') {
@@ -84,7 +79,6 @@ class CKEditorRuntimeTest extends TestCase
         $result = $runtime->render(
             content: 'some content',
             preset: 'default',
-            watchdog: false,
             config: ['placeholder' => 'Type here'],
             mergeConfig: ['toolbar' => ['italic']],
             customTranslations: ['en' => ['foo' => 'bar']],

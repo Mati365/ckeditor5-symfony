@@ -25,7 +25,6 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
   - [Compatibility 🔗](#compatibility-)
   - [Installation 🚀](#installation-)
   - [Usage 📖](#usage-)
-    - [Watchdog prop 🐶](#watchdog-prop-)
   - [Editor Types 🖊️](#editor-types-️)
     - [Classic editor 📝](#classic-editor-)
     - [Multiroot editor 🌳](#multiroot-editor-)
@@ -147,7 +146,6 @@ To use CKEditor 5 in your Twig templates, simply call the `cke5_editor()` functi
     editableHeight: 300,              {# fixed height in px; editor grows with content if omitted #}
     language: 'pl',                   {# UI language (toolbar, dialogs); pass array for advanced config #}
     saveDebounceMs: 200,              {# debounce in ms for syncing content to the hidden input (default: 200) #}
-    watchdog: true,                   {# auto-restart the editor on crash (default: true) #}
     name: 'content',                  {# name attribute on the hidden input field (e.g. for Symfony forms) #}
     required: true,                   {# adds required attribute to the hidden input field #}
     contextId: 'my-context',          {# ties this editor to a shared CKEditor context instance #}
@@ -166,20 +164,6 @@ If you don't use `AssetsMapper`, and your distribution is set to `cloud`, make s
 
 ```twig
 {{ cke5_cloud_assets() }}
-```
-
-### Watchdog prop 🐶
-
-By default, the editor uses a built-in watchdog mechanism to automatically restart the editor if it crashes (e.g., due to a JavaScript error). The watchdog periodically saves the editor's content and restores it after a crash, minimizing the risk of data loss for users.
-
-The watchdog is enabled by default. To disable it, set the `watchdog` argument to `false`:
-
-```twig
-{{ cke5_editor(
-  content: '<p>Initial content</p>',
-  editorType: 'classic',
-  watchdog: false
-) }}
 ```
 
 ## Editor Types 🖊️
@@ -309,8 +293,6 @@ ckeditor5:
 
     full:
       editorType: classic
-      watchdogConfig:
-        crashNumberLimit: 3
       config:
         toolbar:
           - heading
@@ -767,8 +749,6 @@ ckeditor5:
       config:
         plugins:
           - CustomContextPlugin
-      watchdogConfig:
-        crashNumberLimit: 20
 ```
 
 And use it in your template:
@@ -867,12 +847,12 @@ The package provides two registries: `EditorsRegistry` and `ContextsRegistry`. T
     ```javascript
     import { ContextsRegistry } from 'ckeditor5-symfony';
 
-    ContextsRegistry.the.waitFor('shared-context').then((watchdog) => {
-      console.log('Context is ready:', watchdog.context);
+    ContextsRegistry.the.waitFor('shared-context').then((context) => {
+      console.log('Context is ready:', context);
     });
 
-    ContextsRegistry.the.execute('shared-context', (watchdog) => {
-      console.log('Context state:', watchdog.state);
+    ContextsRegistry.the.execute('shared-context', (context) => {
+      console.log('Context:', context);
     });
     ```
 

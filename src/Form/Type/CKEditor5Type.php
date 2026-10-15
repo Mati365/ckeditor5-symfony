@@ -17,7 +17,6 @@ final class CKEditor5Type extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['preset'] = $options['preset'];
-        $view->vars['watchdog'] = $options['watchdog'];
         $view->vars['editable_height'] = $options['editable_height'];
         $view->vars['editor_config'] = $options['editor_config'];
         $view->vars['merge_config'] = $options['merge_config'];
@@ -34,7 +33,6 @@ final class CKEditor5Type extends AbstractType
     {
         $resolver->setDefaults([
             'preset' => 'default',
-            'watchdog' => true,
             'editable_height' => null,
             'editor_config' => null,
             'merge_config' => null,
@@ -48,7 +46,6 @@ final class CKEditor5Type extends AbstractType
 
         $resolver->setAllowedTypes('preset', ['string', 'null']);
         $resolver->setAllowedTypes('save_debounce_ms', ['int', 'null']);
-        $resolver->setAllowedTypes('watchdog', ['bool']);
         $resolver->setAllowedTypes('editable_height', ['int', 'null']);
         $resolver->setAllowedTypes('editor_config', ['array', 'null']);
         $resolver->setAllowedTypes('merge_config', ['array', 'null']);
