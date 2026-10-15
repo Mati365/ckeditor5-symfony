@@ -70,8 +70,8 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 | CKEditor 5 Version | Integration Version |
 |--------------------|---------------------|
 | 43.x – 47.x        | `<= 1.8.x`          |
-| 48.x               | `1.9.x`             |
-| >= 49.x            | `>= 1.10.x`         |
+| 48.x               | `1.9.x - 1.10.x`    |
+| >= 49.x            | `>= 1.11.x`         |
 
 ## Installation 🚀
 
