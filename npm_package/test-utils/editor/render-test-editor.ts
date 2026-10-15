@@ -28,7 +28,6 @@ export function renderTestEditor(
     ...fullSnapshot.modelElement && {
       'data-cke-root-model-element-name': fullSnapshot.modelElement,
     },
-    ...(fullSnapshot.watchdog && { 'data-cke-watchdog': '' }),
   });
 
   const elements = [component];

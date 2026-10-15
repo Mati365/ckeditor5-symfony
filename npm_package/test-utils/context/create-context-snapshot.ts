@@ -23,7 +23,6 @@ export function createContextSnapshot(
     language,
     context: {
       customTranslations: null,
-      watchdogConfig: null,
       config: {
         plugins: [],
       },

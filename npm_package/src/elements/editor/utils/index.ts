@@ -1,6 +1,4 @@
 export * from './assign-editor-roots-to-config';
-export * from './cleanup-orphan-editor-elements';
-export * from './create-editor-in-context';
 export * from './get-editor-roots-values';
 export * from './is-multiroot-editor-instance';
 export * from './is-single-root-editor';
@@ -13,4 +11,3 @@ export * from './query-all-editor-ids';
 export * from './resolve-editor-config-elements-references';
 export * from './resolve-editor-config-translations';
 export * from './set-editor-editable-height';
-export * from './wrap-with-watchdog';

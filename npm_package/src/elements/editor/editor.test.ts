@@ -2,6 +2,7 @@ import type { LanguageConfig } from 'ckeditor5';
 
 import {
   BalloonEditor,
+  CKEditorError,
   ClassicEditor,
   DecoupledEditor,
   Editor,
@@ -25,7 +26,7 @@ import {
 import { timeout } from '../../shared/timeout';
 import { registerCustomElements } from '../register-custom-elements';
 import { CustomEditorPluginsRegistry } from './custom-editor-plugins';
-import { unwrapEditorWatchdog } from './utils';
+import { EditorsRegistry } from './editors-registry';
 
 describe('editor component', () => {
   beforeEach(async () => {
@@ -40,6 +41,8 @@ describe('editor component', () => {
     document.body.innerHTML = '';
 
     await waitForDestroyAllEditors();
+
+    vi.restoreAllMocks();
   });
 
   it('should save the editor instance in the registry with provided editorId', async () => {
@@ -465,34 +468,87 @@ describe('editor component', () => {
     });
   });
 
-  describe('`watchdog` snapshot parameter`', () => {
-    it('should not wrap editor with watchdog if `watchdog` is false', async () => {
-      renderTestEditor({
-        watchdog: false,
-      });
-
-      const editor = await waitForTestEditor();
-      const watchdog = unwrapEditorWatchdog(editor);
-
-      expect(watchdog).toBeNull();
+  describe('initialization errors', () => {
+    beforeEach(() => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
     });
 
-    it('should resurrect editor after crashing and broadcast the new instance when `watchdog` is enabled', async () => {
+    afterEach(() => {
+      // Errors are not cleared by destroying editors. Clearing them also clears the default (`null`) error,
+      // so they do not leak into tests that wait for the default editor.
+      EditorsRegistry.the.resetErrors('failing-init-editor');
+    });
+
+    it('should log and register the error if the editor cannot be created', async () => {
+      class FailingPlugin extends Plugin {
+        static pluginName = 'FailingPlugin';
+
+        init() {
+          throw new Error('Plugin initialization failed');
+        }
+      }
+
+      CustomEditorPluginsRegistry.the.register('FailingPlugin', () => FailingPlugin);
+
       renderTestEditor({
-        editorId: 'editor-with-watchdog',
-        watchdog: true,
+        editorId: 'failing-init-editor',
+        preset: createEditorPreset('classic', {
+          toolbar: [],
+          plugins: ['FailingPlugin'],
+        }),
       });
 
-      const originalEditor = await waitForTestEditor('editor-with-watchdog');
-      const watchdog = unwrapEditorWatchdog(originalEditor)!;
+      await expect(EditorsRegistry.the.waitFor('failing-init-editor')).rejects.toThrow('Plugin initialization failed');
 
-      (watchdog as any)._restart();
+      expect(console.error).toHaveBeenCalledWith(
+        'Error initializing CKEditor5 instance with ID "failing-init-editor":',
+        expect.any(Error),
+      );
+    });
+  });
 
-      await vi.waitFor(async () => {
-        const newEditor = await waitForTestEditor('editor-with-watchdog');
+  describe('errors of the running editor', () => {
+    /**
+     * Reports an error attributed to the given editor the same way the browser does for an uncaught error.
+     */
+    const reportEditorError = (editor: Editor) => {
+      const error = new CKEditorError('test-editor-error', editor);
 
-        expect(newEditor).not.equals(originalEditor);
-      });
+      window.dispatchEvent(new ErrorEvent('error', { error }));
+
+      return error;
+    };
+
+    beforeEach(() => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    it('should log the error and switch the editor to read-only mode', async () => {
+      renderTestEditor({ editorId: 'failing-editor' });
+
+      const editor = await waitForTestEditor('failing-editor');
+
+      expect(editor.isReadOnly).toBe(false);
+
+      const error = reportEditorError(editor);
+
+      expect(console.error).toHaveBeenCalledWith('CKEditor5 instance with ID "failing-editor" failed.', error);
+      expect(editor.isReadOnly).toBe(true);
+    });
+
+    it('should ignore errors attributed to other editors', async () => {
+      renderTestEditor({ editorId: 'healthy-editor' });
+      renderTestEditor({ editorId: 'other-failing-editor' });
+
+      const healthyEditor = await waitForTestEditor('healthy-editor');
+      const failingEditor = await waitForTestEditor('other-failing-editor');
+
+      reportEditorError(failingEditor);
+
+      expect(console.error).toHaveBeenCalledWith('CKEditor5 instance with ID "other-failing-editor" failed.', expect.anything());
+      expect(console.error).not.toHaveBeenCalledWith('CKEditor5 instance with ID "healthy-editor" failed.', expect.anything());
+      expect(healthyEditor.isReadOnly).toBe(false);
+      expect(failingEditor.isReadOnly).toBe(true);
     });
   });
 
@@ -632,6 +688,100 @@ describe('editor component', () => {
       await vi.waitFor(() => {
         expect(editor.state).toBe('destroyed');
       });
+    });
+
+    it('should not create the editor if component is removed before the DOM is ready', async () => {
+      const createSpy = vi.spyOn(ClassicEditor, 'create');
+      const component = renderTestEditor();
+
+      component.remove();
+
+      await timeout(50);
+
+      expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('should destroy the editor and skip registration if component is removed during creation', async () => {
+      const registerSpy = vi.spyOn(EditorsRegistry.the, 'register');
+
+      let releaseInit!: () => void;
+      const initGate = new Promise<void>((resolve) => {
+        releaseInit = resolve;
+      });
+
+      let createdEditor: Editor | null = null;
+
+      // Keeps the editor in the `initializing` state until the component is removed.
+      class SlowPlugin extends Plugin {
+        static pluginName = 'SlowPlugin';
+
+        async init() {
+          createdEditor = this.editor;
+          await initGate;
+        }
+      }
+
+      CustomEditorPluginsRegistry.the.register('SlowPlugin', () => SlowPlugin);
+
+      const component = renderTestEditor({
+        editorId: 'short-lived-editor',
+        preset: createEditorPreset('classic', {
+          toolbar: [],
+          plugins: ['SlowPlugin'],
+        }),
+      });
+
+      await vi.waitFor(() => {
+        expect(createdEditor).not.toBeNull();
+      });
+
+      component.remove();
+      releaseInit();
+
+      await vi.waitFor(() => {
+        expect(createdEditor!.state).toBe('destroyed');
+      });
+
+      expect(registerSpy).not.toHaveBeenCalled();
+      expect(EditorsRegistry.the.hasItem('short-lived-editor')).toBe(false);
+    });
+
+    it('should not destroy the editor twice if it was destroyed manually before unmount', async () => {
+      // Spied before creation, so the spy is what the idempotent `destroy()` wraps.
+      const destroySpy = vi.spyOn(ClassicEditor.prototype, 'destroy');
+      const component = renderTestEditor({ editorId: 'manually-destroyed-editor' });
+
+      const editor = await waitForTestEditor('manually-destroyed-editor');
+
+      await editor.destroy();
+
+      // Unregistered by the `destroy` listener, not by the component.
+      expect(EditorsRegistry.the.hasItem('manually-destroyed-editor')).toBe(false);
+
+      component.remove();
+      await timeout(0);
+
+      expect(destroySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should log and swallow errors thrown while destroying the editor', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const component = renderTestEditor({ editorId: 'failing-destroy-editor' });
+
+      const editor = await waitForTestEditor('failing-destroy-editor');
+      const error = new Error('Destroy failed');
+      const destroySpy = vi.spyOn(editor, 'destroy').mockRejectedValueOnce(error);
+
+      // `disconnectedCallback()` is not awaited, so a rejection here would be unhandled (and fail the run).
+      component.remove();
+
+      await vi.waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to destroy CKEditor5 instance with ID "failing-destroy-editor".', error);
+      });
+
+      // The editor is not registered anymore, so the cleanup won't destroy it.
+      destroySpy.mockRestore();
+      await editor.destroy();
     });
   });
 });

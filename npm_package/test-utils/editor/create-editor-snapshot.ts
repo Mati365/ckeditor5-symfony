@@ -20,7 +20,6 @@ export function createEditorSnapshot(): EditorSnapshot {
       content: 'en',
     },
     saveDebounceMs: 500,
-    watchdog: false,
   };
 }
 
@@ -32,11 +31,6 @@ export type EditorSnapshot = {
    * The unique identifier for the CKEditor5 instance.
    */
   editorId: string;
-
-  /**
-   * Whether to use a watchdog for the CKEditor5 instance.
-   */
-  watchdog: boolean;
 
   /**
    * The identifier of the CKEditor context.

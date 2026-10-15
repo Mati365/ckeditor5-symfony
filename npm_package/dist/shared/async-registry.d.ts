@@ -106,7 +106,7 @@ export declare class AsyncRegistry<T extends Destructible> {
      */
     destroyAll(): Promise<void>;
     /**
-     * Destroys all registered editors and removes all watchers.
+     * Destroys all registered items, removes all watchers and clears initialization errors.
      */
     reset(): Promise<void>;
     /**

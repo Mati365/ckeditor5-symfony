@@ -5,7 +5,7 @@ return [
         'default' => [
             'editorType' => 'classic',
             'cloud' => [
-                'editorVersion' => '48.2.0',
+                'editorVersion' => '49.0.0',
                 'premium' => false,
                 'translations' => ['en'],
             ],

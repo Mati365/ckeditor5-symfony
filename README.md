@@ -70,7 +70,8 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
 | CKEditor 5 Version | Integration Version |
 |--------------------|---------------------|
 | 43.x – 47.x        | `<= 1.8.x`          |
-| >= 48.0            | `>= 1.9.x`          |
+| 48.x               | `1.9.x`             |
+| >= 49.x            | `>= 1.10.x`         |
 
 ## Installation 🚀
 
@@ -99,7 +100,7 @@ CKEditor 5 for Symfony >=6.4.x — a lightweight WYSIWYG editor integration for 
    Bundles assets locally. No Node.js required.
 
    ```bash
-   php bin/console ckeditor5:assets-mapper:install # --editor-version 48.2.0 --premium --translations en,pl
+   php bin/console ckeditor5:assets-mapper:install # --editor-version 49.0.0 --premium --translations en,pl
    ```
 
    **📦 Self-hosted via Webpack Encore**
@@ -891,7 +892,7 @@ Usage:
 Options:
       --distribution=DISTRIBUTION      Distribution type: cloud or npm [default: "npm"]
       --importmap-path=IMPORTMAP-PATH  Path to importmap.php file [default: "importmap.php"]
-      --editor-version=EDITOR-VERSION  CKEditor version [default: "48.2.0"]
+      --editor-version=EDITOR-VERSION  CKEditor version [default: "49.0.0"]
       --translations=TRANSLATIONS      Comma-separated list of translations [default: "en"]
       --template-path=TEMPLATE-PATH    Path to base template file [default: "templates/base.html.twig"]
       --js-path=JS-PATH                Path to main JS file [default: "assets/app.js"]
